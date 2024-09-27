@@ -134,7 +134,7 @@ In another terminal, navigate to the `client` directory and start the React deve
 
 ```bash
 cd client
-npm start  # or yarn start
+npm start
 ```
 
 The frontend will now be running at `http://localhost:5173`.
@@ -162,9 +162,9 @@ Real-time functionality is powered by Phoenix Channels and WebSockets.
 ### Joining a Chat Room
 
 ```elixir
-socket "/socket", ChatAppWeb.UserSocket
+socket "/socket", BackendWeb.UserSocket
 
-channel "room:*", ChatAppWeb.RoomChannel
+channel "room:*", BackendWeb.RoomChannel
 ```
 
 ## Database Schema
