@@ -1,12 +1,13 @@
 # Toucan
 
-Welcome to **Toucan** – the ultimate platform to stay connected with friends, family, and loved ones. Whether you're catching up, sharing moments, or simply staying in touch, **Toucan** is here to make communication easy, fun, and always within reach. Never feel alone, no matter where you are – join chat rooms, send real-time messages, and be a part of the conversation instantly. 
+Welcome to **Toucan** – the ultimate platform to stay connected with friends, family, and loved ones. Whether you're catching up, sharing moments, or simply staying in touch, **Toucan** is here to make communication easy, fun, and always within reach. Never feel alone, no matter where you are – join chat rooms, send real-time messages, and be a part of the conversation instantly.
 
 With **Toucan**, you'll enjoy seamless, real-time chats that keep you connected to the people who matter most. Our sleek, responsive interface ensures that your communication is smooth and uninterrupted, whether you're on desktop or mobile. Say goodbye to isolation and hello to vibrant conversations that bring people together.
 
 Start chatting today – because with **Toucan**, you're never far from the ones you care about.
 
 ## Table of Contents
+
 1. [Features](#features)
 2. [Tech Stack](#tech-stack)
 3. [Getting Started](#getting-started)
@@ -53,22 +54,6 @@ Ensure you have the following installed:
 - [Node.js](https://nodejs.org/) (v14+)
 - [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
-### Project Structure
-
-```
-├── assets/            # Frontend React + TypeScript code
-├── config/            # Phoenix config
-├── lib/
-│   ├── chat_app/      # Core backend business logic (Elixir)
-│   └── chat_app_web/  # Phoenix Web Interface (Channels, Controllers, Views)
-├── priv/              # Static assets, database migrations
-├── test/              # Backend tests (ExUnit)
-├── docker-compose.yml # Docker configuration
-├── mix.exs            # Elixir project configuration
-├── package.json       # Node.js frontend package config
-├── README.md          # Project readme
-```
-
 ## Installation
 
 Follow these steps to install and set up the application.
@@ -77,12 +62,13 @@ Follow these steps to install and set up the application.
 
 ```bash
 git clone https://github.com/solobarine/toucan.git
-cd chat_app
+cd toucan
 ```
 
 ### 2. Install Elixir Dependencies
 
 ```bash
+cd backend
 mix deps.get
 ```
 
@@ -102,17 +88,17 @@ mix ecto.migrate
 
 ### 5. Install Node.js Dependencies (Frontend)
 
-Navigate to the `assets/` directory to install frontend dependencies:
+Navigate to the `client` directory to install frontend dependencies:
 
 ```bash
-cd assets
-npm install  # or yarn install
+cd client
+npm install
 ```
 
 ### 6. Compile Assets
 
 ```bash
-npm run build  # or yarn build
+npm run build
 ```
 
 ### 7. Environment Variables
@@ -144,14 +130,14 @@ The API will now be accessible at `http://localhost:4000`.
 
 ### Run React Frontend
 
-In another terminal, navigate to the `assets/` directory and start the React development server:
+In another terminal, navigate to the `client` directory and start the React development server:
 
 ```bash
-cd assets
+cd client
 npm start  # or yarn start
 ```
 
-The frontend will now be running at `http://localhost:3000`.
+The frontend will now be running at `http://localhost:5173`.
 
 ## API Endpoints
 
@@ -181,55 +167,39 @@ socket "/socket", ChatAppWeb.UserSocket
 channel "room:*", ChatAppWeb.RoomChannel
 ```
 
-Frontend connects via WebSocket using Phoenix’s JavaScript client:
-
-```typescript
-import { Socket } from "phoenix";
-
-let socket = new Socket("ws://localhost:4000/socket");
-socket.connect();
-
-let channel = socket.channel("room:lobby", {});
-channel.join()
-  .receive("ok", resp => { console.log("Joined room", resp); })
-  .receive("error", resp => { console.log("Unable to join", resp); });
-
-channel.push("new_message", { body: "Hello!" });
-```
-
 ## Database Schema
 
 ### Users Table
 
-| Column      | Type        |
-|-------------|-------------|
-| id          | ID          |
-| first_name  | String      |
-| last_name   | String      |
-| email       | String      |
-| password    | String (Hashed) |
-| date_of_birth | Date      |
-| inserted_at | Datetime    |
-| updated_at  | Datetime    |
+| Column        | Type            |
+| ------------- | --------------- |
+| id            | ID              |
+| first_name    | String          |
+| last_name     | String          |
+| email         | String          |
+| password      | String (Hashed) |
+| date_of_birth | Date            |
+| inserted_at   | Datetime        |
+| updated_at    | Datetime        |
 
 ### Rooms Table
 
-| Column      | Type        |
-|-------------|-------------|
-| id          | ID          |
-| name        | String      |
-| inserted_at | Datetime    |
-| updated_at  | Datetime    |
+| Column      | Type     |
+| ----------- | -------- |
+| id          | ID       |
+| name        | String   |
+| inserted_at | Datetime |
+| updated_at  | Datetime |
 
 ### Messages Table
 
-| Column      | Type        |
-|-------------|-------------|
-| id          | ID          |
-| room_id     | ID (FK)     |
-| user_id     | ID (FK)     |
-| body        | String      |
-| inserted_at | Datetime    |
+| Column      | Type     |
+| ----------- | -------- |
+| id          | ID       |
+| room_id     | ID (FK)  |
+| user_id     | ID (FK)  |
+| body        | String   |
+| inserted_at | Datetime |
 
 ## Environment Variables
 
@@ -269,3 +239,4 @@ npm run lint
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
