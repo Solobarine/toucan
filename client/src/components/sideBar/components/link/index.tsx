@@ -5,7 +5,13 @@ const Link = ({
   icon,
   name,
   isSideBarOpen,
-}: NavLinkProps & { icon: string; name: string; isSideBarOpen: boolean }) => {
+  handleClick,
+}: NavLinkProps & {
+  icon: string;
+  name: string;
+  isSideBarOpen: boolean;
+  handleClick?: () => void;
+}) => {
   const { pathname } = useLocation();
   return (
     <NavLink
@@ -13,6 +19,7 @@ const Link = ({
       className={`relative flex items-center gap-2 px-2 py-1 rounded-md hover:bg-light hover:dark:bg-stone-700 ${
         pathname === to ? "bg-light dark:bg-stone-700" : ""
       }`}
+      onClick={handleClick}
     >
       <i className={`${icon} text-lg`} />
       {isSideBarOpen && <p className="text-sm">{name}</p>}
