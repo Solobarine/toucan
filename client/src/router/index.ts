@@ -11,9 +11,12 @@ import ChatBox from "../pages/chat/chatBox";
 import Settings from "../pages/settings";
 import Account from "../pages/settings/account";
 import Notifications from "../pages/settings/notifications";
+import NotificationsPage from "../pages/notifications";
 import Security from "../pages/settings/security";
 import Call from "../pages/call";
 import CallInfo from "../pages/call/callInfo";
+import Feed from "../pages/feed";
+import Profile from "../pages/profile";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +41,18 @@ const router = createBrowserRouter([
     path: "/",
     Component: Main,
     children: [
+      {
+        path: "feed",
+        Component: Feed,
+      },
+      {
+        path: "notifications",
+        Component: NotificationsPage,
+      },
+      {
+        path: "profile",
+        Component: Profile,
+      },
       {
         path: "chats",
         Component: Chat,
