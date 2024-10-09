@@ -11,7 +11,7 @@ const SideBar = () => {
 
   return (
     <aside
-      className={`absolute sm:sticky top-0 flex flex-col bg-white dark:bg-stone-900 justify-between h-screen px-1 py-2 transition-all duration-700 z-20 sm:translate-x-0 ${
+      className={`fixed sm:sticky top-0 flex flex-col bg-white dark:bg-stone-900 justify-between h-screen px-1 py-2 transition-all duration-700 shrink-0 z-20 sm:translate-x-0 ${
         isSideBarOpen ? "translate-x-0 w-52" : "-translate-x-52 w-auto"
       }`}
     >
@@ -22,6 +22,12 @@ const SideBar = () => {
         >
           <i className="bx bx-menu" />
         </button>
+        <Link
+          to="/feed"
+          icon="bx bx-layer"
+          name="Feed"
+          isSideBarOpen={isSideBarOpen}
+        />
         <Link
           to="/chats"
           icon="bx bx-message-square-dots"
