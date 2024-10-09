@@ -1,82 +1,118 @@
-import { useState } from "react";
-import Button from "../../../components/settings/button";
+import React, { useState } from "react";
 
-const Notifications = () => {
-  const [options, setOptions] = useState<{
-    news: boolean;
-    tips: boolean;
-    comments: boolean;
-  }>({
-    news: false,
-    tips: false,
-    comments: false,
-  });
+const NotificationsSettings = () => {
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [smsNotifications, setSmsNotifications] = useState(false);
+  const [pushNotifications, setPushNotifications] = useState(true);
+  const [newsletters, setNewsletters] = useState(true);
 
   return (
-    <section className="px-4 py-2 sm:p-2 min-h-screen">
-      <h2 className="text-xl font-semibold">Notifications</h2>
-      <p className="text-sm">Customize your notifications settings</p>
-      <div>
-        <div className="mt-6 flex flex-col gap-3 md:grid md:grid-cols-2">
-          <span>
-            <p className="font-semibold">Email Notifications</p>
-            <p className="text-sm">
-              Get email keeping you up-to-date when you're not online
-            </p>
-          </span>
-          <div>
-            <div className="flex items-start gap-3">
-              <Button
-                isSelected={options.news}
-                setIsSelected={() =>
-                  setOptions((values) => ({ ...values, news: !values.news }))
-                }
+    <div className="min-h-screen py-10 px-5 md:px-20">
+      <div className="max-w-3xl mx-auto bg-white dark:bg-stone-700 rounded-lg shadow-md p-8">
+        {/* Email Notifications */}
+        <div className="border-b pb-4 mb-5">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold">Email Notifications</h2>
+            <button
+              className={`${
+                emailNotifications ? "bg-green-500" : "bg-gray-300"
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none`}
+              onClick={() => setEmailNotifications(!emailNotifications)}
+            >
+              <span
+                className={`${
+                  emailNotifications ? "translate-x-6" : "translate-x-1"
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
               />
-              <div className="py-2">
-                <p className="text-sm font-semibold">News and Updates</p>
-                <p className="text-xs opacity-90">
-                  News about product and feature updates
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Button
-                isSelected={options.tips}
-                setIsSelected={() =>
-                  setOptions((values) => ({ ...values, tips: !values.tips }))
-                }
-              />
-              <div className="py-2">
-                <p className="text-sm font-semibold">Tips and Tutorials</p>
-                <p className="text-xs opacity-90">
-                  Get more out of Toucan with Tips and Tutorials
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Button
-                isSelected={options.comments}
-                setIsSelected={() =>
-                  setOptions((values) => ({
-                    ...values,
-                    comments: !values.comments,
-                  }))
-                }
-              />
-              <div className="py-2">
-                <p className="text-sm font-semibold">Comments</p>
-                <p className="text-xs opacity-90">Replies to your messages</p>
-              </div>
-            </div>
+            </button>
           </div>
+          <p className="text-sm mt-2">
+            Enable to receive notifications via email for account activity and
+            updates.
+          </p>
         </div>
-        <div>
-          <span></span>
-          <div></div>
+
+        {/* SMS Notifications */}
+        <div className="border-b pb-4 mb-5">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold">SMS Notifications</h2>
+            <button
+              className={`${
+                smsNotifications ? "bg-green-500" : "bg-gray-300"
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none`}
+              onClick={() => setSmsNotifications(!smsNotifications)}
+            >
+              <span
+                className={`${
+                  smsNotifications ? "translate-x-6" : "translate-x-1"
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </button>
+          </div>
+          <p className="text-sm mt-2">
+            Enable to receive notifications via SMS for important alerts and
+            reminders.
+          </p>
         </div>
+
+        {/* Push Notifications */}
+        <div className="border-b pb-4 mb-5">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold">Push Notifications</h2>
+            <button
+              className={`${
+                pushNotifications ? "bg-green-500" : "bg-gray-300"
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none`}
+              onClick={() => setPushNotifications(!pushNotifications)}
+            >
+              <span
+                className={`${
+                  pushNotifications ? "translate-x-6" : "translate-x-1"
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </button>
+          </div>
+          <p className="text-sm mt-2">
+            Enable to receive real-time updates and alerts on your device.
+          </p>
+        </div>
+
+        {/* Newsletters */}
+        <div className="border-b pb-4 mb-5">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold">Newsletters</h2>
+            <button
+              className={`${
+                newsletters ? "bg-green-500" : "bg-gray-300"
+              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none`}
+              onClick={() => setNewsletters(!newsletters)}
+            >
+              <span
+                className={`${
+                  newsletters ? "translate-x-6" : "translate-x-1"
+                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+              />
+            </button>
+          </div>
+          <p className="text-sm mt-2">
+            Enable to receive our monthly newsletters with updates and special
+            offers.
+          </p>
+        </div>
+
+        {/* Save Changes Button */}
+        <button
+          className="mt-6 bg-primary hover:opacity-80 text-white px-4 py-2 rounded-lg"
+          onClick={() => {
+            // Add logic to save changes
+            alert("Settings saved successfully!");
+          }}
+        >
+          Save Changes
+        </button>
       </div>
-    </section>
+    </div>
   );
 };
 
-export default Notifications;
+export default NotificationsSettings;

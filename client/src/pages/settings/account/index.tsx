@@ -1,8 +1,14 @@
 import { useFormik } from "formik";
+import { useState } from "react";
 import TextInput from "../../../components/form/inputs";
 import PrimaryButton from "../../../components/primaryButton";
+import UpdateEmail from "../../../components/settings/email/changeEmail";
+import UpdateAccountDetails from "../../../components/settings/accountDetails";
 
 const Account = () => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [username, setUsername] = useState("");
+
   const {
     values,
     errors,
@@ -15,6 +21,7 @@ const Account = () => {
     initialValues: {
       first_name: "Arthur",
       last_name: "Morgan",
+      username: "arthur2019",
       email: "arthur@gmail.com",
     },
     onSubmit: (values) => {
@@ -33,52 +40,57 @@ const Account = () => {
         <p className="text-3xl font-semibold">Arthur Morgan</p>
         <p className="text-sm">arthur@gmail.com</p>
       </div>
-      <div className="grid gap-24 p-4">
-        <div className="flex flex-col gap-3 md:flex-row">
-          <div className="md:basis-56">
-            <p className="font-semibold">Personal Info</p>
-            <p className="text-sm">Update your Information</p>
+      <div className="min-h-screen py-10 px-5">
+        <div className="bg-white dark:bg-stone-700 rounded-lg shadow-md p-8">
+          <UpdateAccountDetails />
+          <UpdateEmail />
+
+          <div className="mt-8 border-t pt-5">
+            <h2 className="text-lg font-semibold text-red-600">
+              Delete Account
+            </h2>
+            <p className="text-sm mb-2">
+              This action is irreversible. Please proceed with caution.
+            </p>
+            <button
+              className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg"
+              onClick={() => setShowDeleteModal(true)}
+            >
+              Delete Account
+            </button>
           </div>
-          <div className="grow">
-            <form className="grid gap-4 max-w-lg p-6 border border-white dark:border-gray-100 rounded-3xl">
-              <div>
-                <label htmlFor="first_name">First Name</label>
-                <TextInput
-                  name="first_name"
-                  value={values.first_name}
-                  handleChange={handleChange}
-                  placeholder="Enter First Name"
-                  error={errors.first_name}
-                  touched={touched.first_name}
-                />
+
+          {/* Account Deletion Modal */}
+          {showDeleteModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white rounded-lg p-8 shadow-md max-w-md w-full relative">
+                <button
+                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                  onClick={() => setShowDeleteModal(false)}
+                >
+                  ✕
+                </button>
+                <h3 className="text-xl font-semibold text-gray-700 mb-4">
+                  Confirm Account Deletion
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Are you sure you want to delete your account? This action
+                  cannot be undone.
+                </p>
+                <button
+                  className="w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg"
+                  onClick={() => {
+                    // Add logic to handle account deletion
+                    setShowDeleteModal(false);
+                  }}
+                >
+                  Yes, Delete My Account
+                </button>
               </div>
-              <div>
-                <label htmlFor="last_name">Last Name</label>
-                <TextInput
-                  name="last_name"
-                  value={values.last_name}
-                  handleChange={handleChange}
-                  placeholder="Enter Last Name"
-                  error={errors.last_name}
-                  touched={touched.last_name}
-                />
-              </div>
-              <PrimaryButton className="py-2 w-fit" onClick={submitForm}>
-                {isSubmitting ? "Updating..." : "Update Information"}
-              </PrimaryButton>
-            </form>
-          </div>
+            </div>
+          )}
         </div>
-        <div>
-          <div className="text-red-600">
-            <p className="font-semibold">Delete Account</p>
-            <p className="text-sm">Delete Your Account and Clear All Data</p>
-          </div>
-          <PrimaryButton className="py-2 bg-red-500 mt-6" onClick={() => {}}>
-            Delete Account
-          </PrimaryButton>
-        </div>
-      </div>
+      </div>{" "}
     </section>
   );
 };
