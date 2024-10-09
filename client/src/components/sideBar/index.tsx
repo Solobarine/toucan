@@ -1,13 +1,21 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../features/store";
 import Link from "./components/link";
-import { toggleSideBar, toggleTheme } from "../../features/slices/settings";
+import {
+  setSideBarState,
+  toggleSideBar,
+  toggleTheme,
+} from "../../features/slices/settings";
 
 const SideBar = () => {
   const dispatch: AppDispatch = useDispatch();
   const { isDarkTheme, isSideBarOpen } = useSelector(
     (state: RootState) => state.settings
   );
+
+  const handleClick = () => {
+    dispatch(setSideBarState(false));
+  };
 
   return (
     <aside
@@ -27,24 +35,28 @@ const SideBar = () => {
           icon="bx bx-layer"
           name="Feed"
           isSideBarOpen={isSideBarOpen}
+          handleClick={handleClick}
         />
         <Link
           to="/chats"
           icon="bx bx-message-square-dots"
           name="Chats"
           isSideBarOpen={isSideBarOpen}
+          handleClick={handleClick}
         />
         <Link
           to="/calls"
           icon="bx bx-phone"
           name="Calls"
           isSideBarOpen={isSideBarOpen}
+          handleClick={handleClick}
         />
         <Link
           to="/status"
           icon="bx bx-hive"
           name="Status"
           isSideBarOpen={isSideBarOpen}
+          handleClick={handleClick}
         />
         <button
           className="text-lg w-fit px-2 py-1 flex items-center gap-2"
@@ -66,12 +78,14 @@ const SideBar = () => {
           icon="bx bx-cog"
           name="Settings"
           isSideBarOpen={isSideBarOpen}
+          handleClick={handleClick}
         />
         <Link
           to="/profile"
           icon="bx bx-user"
           name="Profile"
           isSideBarOpen={isSideBarOpen}
+          handleClick={handleClick}
         />
         <button className="flex items-center gap-2 px-2 py-1 text-red-500">
           <i className="bx bx-log-out-circle text-lg" />
