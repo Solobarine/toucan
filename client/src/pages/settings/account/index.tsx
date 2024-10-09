@@ -1,34 +1,11 @@
 import { useFormik } from "formik";
 import { useState } from "react";
-import TextInput from "../../../components/form/inputs";
-import PrimaryButton from "../../../components/primaryButton";
-import UpdateEmail from "../../../components/settings/email/changeEmail";
-import UpdateAccountDetails from "../../../components/settings/accountDetails";
+import UpdateEmail from "../../../components/settings/email/updateEmail";
+import UpdateAccountDetails from "../../../components/settings/account";
 
 const Account = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [username, setUsername] = useState("");
 
-  const {
-    values,
-    errors,
-    touched,
-    submitForm,
-    handleChange,
-    isSubmitting,
-    setSubmitting,
-  } = useFormik({
-    initialValues: {
-      first_name: "Arthur",
-      last_name: "Morgan",
-      username: "arthur2019",
-      email: "arthur@gmail.com",
-    },
-    onSubmit: (values) => {
-      setSubmitting(true);
-      console.log(values);
-    },
-  });
   return (
     <section>
       <div className="px-2 pt-16 pb-4 bg-white dark:bg-stone-700">
