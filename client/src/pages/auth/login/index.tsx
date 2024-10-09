@@ -54,7 +54,7 @@ const Login = () => {
               Register
             </Link>
           </p>
-          <div className="grid gap-3 grid-cols-1 md:grid-cols-2 mt-10">
+          <div className="flex flex-col gap-3 mt-10">
             <TextInput
               type="email"
               name="email"
