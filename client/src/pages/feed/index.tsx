@@ -1,6 +1,9 @@
+import { useState } from "react";
 import Card from "../../components/posts/card";
+import Create from "../../components/posts/create";
 
 const Feed = () => {
+  const [isCreatePost, setIsCreatePost] = useState(false);
   return (
     <section className="p-3 sm:px-20">
       <div className="p-3 rounded-lg bg-white dark:bg-stone-700 border dark:border-stone-600 shadow-md">
@@ -8,9 +11,12 @@ const Feed = () => {
           <img
             src=""
             alt=""
-            className="w-10 h-10 rounded-full bg-light dark:bg-stone-700"
+            className="w-10 h-10 rounded-full bg-light dark:bg-dark"
           />
-          <button className="text-sm p-2 w-full max-w-40 rounded-full border">
+          <button
+            className="text-sm p-2 w-full max-w-40 rounded-full border"
+            onClick={() => setIsCreatePost(true)}
+          >
             Create a Post
           </button>
         </span>
@@ -20,6 +26,7 @@ const Feed = () => {
           <Card key={index} />
         ))}
       </div>
+      {isCreatePost && <Create closeModal={() => setIsCreatePost(false)} />}
     </section>
   );
 };
