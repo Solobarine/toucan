@@ -3,7 +3,7 @@ import Card from "../../components/posts/card";
 const Feed = () => {
   return (
     <section className="p-3 sm:px-20">
-      <div className="p-3 rounded-lg bg-white dark:bg-dark border dark:border-stone-600 shadow-md">
+      <div className="p-3 rounded-lg bg-white dark:bg-stone-700 border dark:border-stone-600 shadow-md">
         <span className="flex items-center gap-3">
           <img
             src=""
