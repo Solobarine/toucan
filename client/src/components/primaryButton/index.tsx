@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from "react";
 
 interface PrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  onClick: (e?: any) => void;
+  onClick?: (e?: any) => void;
 }
 
 const PrimaryButton = ({
