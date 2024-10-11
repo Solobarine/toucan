@@ -3,7 +3,7 @@ import Create from "../../comments/create";
 
 const Card = () => {
   return (
-    <div className="border dark:border-stone-600 rounded-xl shadow-md bg-white dark:bg-dark p-3">
+    <div className="border dark:border-stone-600 rounded-xl max-w-xl mx-auto shadow-md bg-white dark:bg-stone-700 p-3">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <img src="" alt="" className="bg-gray-400 rounded-full w-10 h-10" />
@@ -26,7 +26,7 @@ const Card = () => {
         <img
           src=""
           alt=""
-          className="min-h-52 bg-light dark:bg-stone-700 mt-2 rounded-lg"
+          className="min-h-52 bg-light dark:bg-dark mt-2 rounded-lg"
         />
       </div>
       <span className="flex items-center justify-between">

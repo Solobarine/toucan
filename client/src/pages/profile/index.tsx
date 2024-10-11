@@ -48,7 +48,7 @@ const posts: Post[] = [
 
 const Profile: React.FC = () => {
   const { isDarkTheme } = useSelector((state: RootState) => state.settings);
-  const [user, setUser] = useState<User>({
+  const [user, _] = useState<User>({
     name: "Solly",
     username: "@solly_explorer",
     bio: "Adventurer | Photographer | Nature Enthusiast",
