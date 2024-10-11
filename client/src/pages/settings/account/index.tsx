@@ -1,4 +1,3 @@
-import { useFormik } from "formik";
 import { useState } from "react";
 import UpdateEmail from "../../../components/settings/email/updateEmail";
 import UpdateAccountDetails from "../../../components/settings/account";
