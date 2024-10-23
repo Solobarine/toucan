@@ -12,7 +12,6 @@
 
 # Ignore .fetch files in case you like to edit your project deps locally.
 /.fetch
-
 # Ignore .env file
 /.env
 
@@ -30,4 +29,6 @@ erl_crash.dump
 
 # Ignore package tarball (built via "mix hex.build").
 backend-*.tar
+
+/config/secrets.exs
 

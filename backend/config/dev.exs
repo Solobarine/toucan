@@ -23,7 +23,7 @@ config :backend, BackendWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: System.get_env("SECRETS_KEY_BASE"),
+  secret_key_base: "hCzVxwt5Veo6d4uucixPq3T/FesJhJk6gU/mE+OGwutNlxDQ4emHh74ddEKNlnFC",
   watchers: []
 
 # ## SSL Support
