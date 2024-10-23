@@ -9,7 +9,8 @@ config :backend, Backend.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
-  database: "backend_test#{System.get_env("MIX_TEST_PARTITION")}",
+  # database: "backend_test#{System.get_env("MIX_TEST_PARTITION")}",
+  database: "toucan_test",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
 
@@ -17,7 +18,7 @@ config :backend, Backend.Repo,
 # you can enable the server option below.
 config :backend, BackendWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "+iA4O6JyPYXw5Dqum/7mfGCZI52K66KPifEiNDGIhTBXTbSA/3g+TN2tlFUNb3js",
+  secret_key_base: "E2//OPZU8A4Xb6iu9JSMeDgRX25XbWrTY3fKXjbyzaHREC4CEUdTaI//EDVnvy8L",
   server: false
 
 # In test we don't send emails
