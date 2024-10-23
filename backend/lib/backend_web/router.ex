@@ -7,6 +7,11 @@ defmodule BackendWeb.Router do
 
   scope "/api", BackendWeb do
     pipe_through :api
+
+    post "/register", AuthController, :register
+    post "/login", AuthController, :login
+    delete "/logout", AuthController, :logout
+
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
