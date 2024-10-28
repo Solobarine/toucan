@@ -1,4 +1,3 @@
-
 defmodule BackendWeb.AuthController do
   @moduledoc """
   Authentication Controller
@@ -10,8 +9,20 @@ defmodule BackendWeb.AuthController do
   @doc """
   Register User
   """
-  def register(conn, %{"first_name" => first_name, "last_name" => last_name, "username" => username,"email" => email, "password_hash" => password}) do
-    case Accounts.register(%{"first_name" => first_name, "last_name" => last_name, "username" => username,"email" => email, "password_hash" => password}) do
+  def register(conn, %{
+        "first_name" => first_name,
+        "last_name" => last_name,
+        "username" => username,
+        "email" => email,
+        "password_hash" => password
+      }) do
+    case Accounts.register(%{
+           "first_name" => first_name,
+           "last_name" => last_name,
+           "username" => username,
+           "email" => email,
+           "password_hash" => password
+         }) do
       {:ok, user} ->
         token = Guardian.generate_jwt(user)
         json(conn, %{token: token})
@@ -19,7 +30,15 @@ defmodule BackendWeb.AuthController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{errors: changeset.errors})
+        |> json(%{
+          errors:
+            Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+              # Formats errors with `:error` messages
+              Enum.reduce(opts, msg, fn {key, value}, acc ->
+                String.replace(acc, "%{#{key}}", to_string(value))
+              end)
+            end)
+        })
     end
   end
 
