@@ -5,12 +5,30 @@ defmodule BackendWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug BackendWeb.AuthPipeline
+
+    plug Guardian.Plug.Pipeline,
+    module: Backend.Guardian,
+    error_handler: BackendWeb.AuthErrorHandler
+
+  plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+  plug Guardian.Plug.LoadResource
+  end
+
   scope "/api", BackendWeb do
     pipe_through :api
 
     post "/register", AuthController, :register
     post "/login", AuthController, :login
     delete "/logout", AuthController, :logout
+    get "/me", AuthController, :me
+
+    resources "/posts", PostController, only: [:index, :show]
+
+    pipe_through [:auth]
+
+    resources "/posts", PostController, only: [:create, :update, :delete]
 
   end
 
