@@ -7,6 +7,10 @@ defmodule Backend.Posts.Post do
     field :body, :string
     field :user_id, :id
 
+    has_many :comments, Backend.Comments.Comment,
+      foreign_key: :content_id,
+      where: [content_type: "post"]
+
     timestamps(type: :utc_datetime)
   end
 
