@@ -9,11 +9,11 @@ defmodule BackendWeb.Router do
     plug BackendWeb.AuthPipeline
 
     plug Guardian.Plug.Pipeline,
-    module: Backend.Guardian,
-    error_handler: BackendWeb.AuthErrorHandler
+      module: Backend.Guardian,
+      error_handler: BackendWeb.AuthErrorHandler
 
-  plug Guardian.Plug.VerifyHeader, realm: "Bearer"
-  plug Guardian.Plug.LoadResource
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug Guardian.Plug.LoadResource
   end
 
   scope "/api", BackendWeb do
@@ -29,7 +29,8 @@ defmodule BackendWeb.Router do
     pipe_through [:auth]
 
     resources "/posts", PostController, only: [:create, :update, :delete]
-
+    resources "/comments", CommentController, only: [:index, :create, :show, :update, :delete]
+    post "/replies", CommentController, :create_reply
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
