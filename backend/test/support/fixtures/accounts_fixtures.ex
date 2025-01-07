@@ -7,16 +7,15 @@ defmodule Backend.AccountsFixtures do
   @doc """
   Generate a user.
   """
-  def user_fixture(attrs \\ %{}) do
+  def user_fixture do
     {:ok, user} =
-      attrs
-      |> Enum.into(%{
-        email: "some email",
-        first_name: "some first_name",
-        last_name: "some last_name",
-        password_hash: "some password_hash",
-        username: "some username"
-      })
+      %{
+        email: FakerElixir.Internet.email,
+        first_name: FakerElixir.Name.first_name,
+        last_name: FakerElixir.Name.last_name,
+        password_hash: "password",
+        username: FakerElixir.Lorem.word
+      }
       |> Backend.Accounts.create_user()
 
     user

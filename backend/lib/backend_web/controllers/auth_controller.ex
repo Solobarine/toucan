@@ -1,4 +1,3 @@
-
 defmodule BackendWeb.AuthController do
   @moduledoc """
   Authentication Controller
@@ -10,16 +9,36 @@ defmodule BackendWeb.AuthController do
   @doc """
   Register User
   """
-  def register(conn, %{"first_name" => first_name, "last_name" => last_name, "username" => username,"email" => email, "password" => password}) do
-    case Accounts.register(%{"first_name" => first_name, "last_name" => last_name, "username" => username,"email" => email, "password" => password}) do
+  def register(conn, %{
+        "first_name" => first_name,
+        "last_name" => last_name,
+        "username" => username,
+        "email" => email,
+        "password_hash" => password
+      }) do
+    case Accounts.register(%{
+           "first_name" => first_name,
+           "last_name" => last_name,
+           "username" => username,
+           "email" => email,
+           "password_hash" => password
+         }) do
       {:ok, user} ->
-        token = Accounts.generate_jwt(user)
+        token = Guardian.generate_jwt(user)
         json(conn, %{token: token})
 
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{errors: changeset.errors})
+        |> json(%{
+          errors:
+            Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+              # Formats errors with `:error` messages
+              Enum.reduce(opts, msg, fn {key, value}, acc ->
+                String.replace(acc, "%{#{key}}", to_string(value))
+              end)
+            end)
+        })
     end
   end
 
@@ -29,13 +48,25 @@ defmodule BackendWeb.AuthController do
   def login(conn, %{"email" => email, "password" => password}) do
     case Accounts.authenticate(email, password) do
       {:ok, user} ->
-        token = Accounts.generate_jwt(user)
+        token = Guardian.generate_jwt(user)
         json(conn, %{token: token})
 
       {:error, _changeset} ->
         conn
         |> put_status(:unauthorized)
         |> json(%{error: "Invalid Credentials"})
+    end
+  end
+
+  def me(conn, _) do
+    user = Guardian.Plug.current_resource(conn)
+
+    case user do
+      nil ->
+        conn |> put_status(401) |> json(%{error: "Unauthorized"})
+
+      _ ->
+        conn |> put_status(200) |> json(%{user: user})
     end
   end
 

@@ -209,7 +209,7 @@ const NotificationPage: React.FC = () => {
   );
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-4xl mx-auto my-4 rounded-xl bg-white dark:bg-stone-900">
       <header className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-semibold">Notifications</h1>
         <i className="bx bx-bell text-4xl text-primary"></i>
