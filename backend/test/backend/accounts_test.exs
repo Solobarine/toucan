@@ -4,12 +4,18 @@ defmodule Backend.AccountsTest do
   alias Backend.Accounts
 
   import Backend.AccountsFixtures
-  @valid_attrs %{username: "art", first_name: FakerElixir.Name.first_name, last_name: FakerElixir.Name.last_name, email: FakerElixir.Internet.email, password_hash: "password123"}
+
+  @valid_attrs %{
+    username: "art",
+    first_name: FakerElixir.Name.first_name(),
+    last_name: FakerElixir.Name.last_name(),
+    email: FakerElixir.Internet.email(),
+    password_hash: "password123"
+  }
   @invalid_attrs %{username: nil, first_name: nil, last_name: nil, email: nil, password_hash: nil}
 
   describe "users" do
     alias Backend.Accounts.User
-
 
     test "list_users/0 returns all users" do
       user = user_fixture()
@@ -22,7 +28,13 @@ defmodule Backend.AccountsTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      valid_attrs = %{username: "some username", first_name: "some first_name", last_name: "some last_name", email: "some email", password_hash: "some password_hash"}
+      valid_attrs = %{
+        username: "some username",
+        first_name: "some first_name",
+        last_name: "some last_name",
+        email: "some email",
+        password_hash: "some password_hash"
+      }
 
       assert {:ok, %User{} = user} = Accounts.create_user(valid_attrs)
       assert user.username == "some username"
@@ -37,7 +49,14 @@ defmodule Backend.AccountsTest do
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
-      update_attrs = %{username: "some updated username", first_name: "some updated first_name", last_name: "some updated last_name", email: "some updated email", password_hash: "some updated password_hash"}
+
+      update_attrs = %{
+        username: "some updated username",
+        first_name: "some updated first_name",
+        last_name: "some updated last_name",
+        email: "some updated email",
+        password_hash: "some updated password_hash"
+      }
 
       assert {:ok, %User{} = user} = Accounts.update_user(user, update_attrs)
       assert user.username == "some updated username"
@@ -93,11 +112,13 @@ defmodule Backend.AccountsTest do
     end
 
     test "does not authenticate with invalid email" do
-      assert {:error, :invalid_credentials} = Accounts.authenticate("wrong@example.com", "password123")
+      assert {:error, :invalid_credentials} =
+               Accounts.authenticate("wrong@example.com", "password123")
     end
 
     test "does not authenticate with invalid password", %{user: _user} do
-      assert {:error, :invalid_credentials} = Accounts.authenticate("user@example.com", "wrongpassword")
+      assert {:error, :invalid_credentials} =
+               Accounts.authenticate("user@example.com", "wrongpassword")
     end
   end
 
