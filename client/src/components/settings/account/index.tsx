@@ -1,12 +1,16 @@
 import { useFormik } from "formik";
 import TextInput from "../../form/inputs";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../features/store";
+import { capitalizeText } from "../../../utils";
 
 const Account = () => {
+  const { user } = useSelector((state: RootState) => state.auth);
   const { values, errors, handleChange, touched, submitForm } = useFormik({
     initialValues: {
-      first_name: "",
-      last_name: "",
-      username: "",
+      first_name: capitalizeText(user?.first_name) ?? "",
+      last_name: capitalizeText(user?.last_name) ?? "",
+      username: user?.username ?? "",
     },
     onSubmit: (values) => {
       console.log(values);

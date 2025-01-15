@@ -1,11 +1,19 @@
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { ChangeEvent } from "react";
 import { Helmet } from "react-helmet";
 import TextInput from "../../../components/form/inputs";
 import { LoginSchema } from "../../../schemas/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../features/store";
+import { loginUser } from "../../../features/thunks/auth";
 
 const Login = () => {
+  const {
+    login: { error },
+    isLoggedIn,
+  } = useSelector((state: RootState) => state.auth);
+  const dispatch: AppDispatch = useDispatch();
   const {
     values,
     errors,
@@ -22,15 +30,20 @@ const Login = () => {
     validationSchema: LoginSchema,
     onSubmit: (values) => {
       console.log(values);
+      dispatch(loginUser(values));
     },
   });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setValues((values) => ({ ...values, [name]: value }));
   };
 
-  return (
+  return isLoggedIn ? (
+    <Navigate to="/feed" />
+  ) : (
     <section className="grid grid-cols-1 sm:grid-cols-2">
       <Helmet>
         <title>Toucan - Login</title>
@@ -48,13 +61,16 @@ const Login = () => {
           className="max-w-lg mx-auto"
         >
           <h1 className="text-3xl font-semibold">Welcome Back</h1>
-          <p>
+          <p className="mb-10">
             Don't have an Account?{"  "}
             <Link to="/register" className="text-primary hover:underline">
               Register
             </Link>
           </p>
-          <div className="flex flex-col gap-3 mt-10">
+          {error && (
+            <p className="text-red-500 font-semibold text-sm my-2">{error}</p>
+          )}
+          <div className="flex flex-col gap-3">
             <TextInput
               type="email"
               name="email"

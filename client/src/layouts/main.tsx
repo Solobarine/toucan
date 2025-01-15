@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import Footer from "../components/footer";
 import SideBar from "../components/sideBar";
 import { AppDispatch, RootState } from "../features/store";
@@ -6,11 +6,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
 import { setSideBarState, toggleSideBar } from "../features/slices/settings";
 import SmallAvatar from "../components/avatar/small";
+import { me } from "../features/thunks/auth";
+import Loading from "../components/loading";
+import NetworkError from "../pages/errors/networkError";
 
 const Main = () => {
   const { isDarkTheme, isSideBarOpen } = useSelector(
     (state: RootState) => state.settings
   );
+  const {
+    isLoggedIn,
+    me: { status, error, statusCode },
+  } = useSelector((state: RootState) => state.auth);
+  const dispatch: AppDispatch = useDispatch();
+
   // Set Theme
   useEffect(() => {
     if (isDarkTheme) {
@@ -20,7 +29,10 @@ const Main = () => {
     }
   }, [isDarkTheme]);
 
-  const dispatch: AppDispatch = useDispatch();
+  useEffect(() => {
+    dispatch(me());
+  }, []);
+
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
 
@@ -56,6 +68,13 @@ const Main = () => {
 
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("auth_token");
+  if (!token) return <Navigate to="login" />;
+
+  if (status === "pending") return <Loading />;
+
+  if (statusCode == 401) return <Navigate to="/login" />;
+
   return (
     <section className="main font-itim bg-light dark:bg-dark text-gray-800 dark:text-gray-100">
       <div className="flex items-start min-h-svh">
@@ -89,7 +108,7 @@ const Main = () => {
               </button>
             </div>
           </div>
-          <Outlet />
+          {!isLoggedIn && error ? <NetworkError message={error} /> : <Outlet />}
         </section>
       </div>
       <Footer />

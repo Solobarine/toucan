@@ -1,8 +1,13 @@
 import { useFormik } from "formik";
 import TextInput from "../../form/inputs";
 import PrimaryButton from "../../primaryButton";
+import LargeAvatar from "../../avatar/large";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../features/store";
 
 const Create = ({ closeModal }: { closeModal: () => void }) => {
+  const { user } = useSelector((state: RootState) => state.auth);
+  console.log(user);
   const { values, errors, touched, handleChange, submitForm } = useFormik({
     initialValues: {
       title: "",
@@ -24,12 +29,20 @@ const Create = ({ closeModal }: { closeModal: () => void }) => {
     >
       <form
         onSubmit={submitForm}
-        className="w-full max-w-xl mx-auto bg-light dark:bg-stone-700 p-4 sm:p-8 grid gap-3 rounded-2xl shadow-lg"
+        className="w-full max-w-xl mx-auto bg-light dark:bg-stone-700 py-2 px-4 grid gap-3 rounded-2xl shadow-lg"
       >
-        <div className="flex items-center justify-between">
-          <h1 className="text-lg font-semibold">Create a Post</h1>
+        <div className="relative flex items-start justify-between">
+          <div className="flex items-start gap-2">
+            <LargeAvatar className="w-12 h-12" />
+            <div>
+              <p className="text-lg">
+                {user?.first_name} {user?.last_name}
+              </p>
+              <p className="text-sm">@aubery</p>
+            </div>
+          </div>
           <button
-            className="text-2xl text-red-600 hover:opacity-80 focus:opacity-80"
+            className="text-4xl text-red-600 hover:opacity-80 focus:opacity-80"
             onClick={closeModal}
           >
             &times;
@@ -38,7 +51,7 @@ const Create = ({ closeModal }: { closeModal: () => void }) => {
         <TextInput
           name="title"
           type="text"
-          placeholder="Enter Post Title"
+          placeholder="Add a Title (Optional)"
           handleChange={handleChange}
           error={errors.title}
           touched={touched.title}
@@ -47,13 +60,27 @@ const Create = ({ closeModal }: { closeModal: () => void }) => {
         <TextInput
           name="content"
           type="textarea"
-          placeholder="Write...."
+          placeholder="What happened today?"
           handleChange={handleChange}
           error={errors.content}
           touched={touched.content}
           value={values.content}
         />
-        <PrimaryButton type="submit">Create Post</PrimaryButton>
+        <div className="px-4 flex items-center justify-between">
+          <div className="flex items-center gap-4 text-2xl">
+            <button className="border-none text-primary">
+              <i className="bx bxs-camera" />
+            </button>
+
+            <button className="border-none text-primary">
+              <i className="bx bxs-image-alt" />
+            </button>
+            <button className="border-none text-primary">
+              <i className="bx bxs-video-recording" />
+            </button>
+          </div>
+          <PrimaryButton type="submit">Create Post</PrimaryButton>
+        </div>
       </form>
     </div>
   );
