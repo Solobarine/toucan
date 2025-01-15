@@ -31,6 +31,7 @@ defmodule BackendWeb.Router do
     resources "/posts", PostController, only: [:create, :update, :delete]
     resources "/comments", CommentController, only: [:index, :create, :show, :update, :delete]
     post "/replies", CommentController, :create_reply
+    resources "/chats", ChatController, except: [:new, :edit]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
