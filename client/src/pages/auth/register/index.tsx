@@ -1,11 +1,20 @@
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { ChangeEvent } from "react";
 import { Helmet } from "react-helmet";
 import TextInput from "../../../components/form/inputs";
 import { RegisterSchema } from "../../../schemas/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../features/store";
+import { registerUser } from "../../../features/thunks/auth";
 
 const Register = () => {
+  const {
+    isLoggedIn,
+    register: { error, errors: registerErrors },
+  } = useSelector((state: RootState) => state.auth);
+  const dispatch: AppDispatch = useDispatch();
+
   const {
     values,
     errors,
@@ -19,21 +28,28 @@ const Register = () => {
       first_name: "",
       last_name: "",
       email: "",
-      password: "",
+      password_hash: "",
       tos: false,
     },
     validationSchema: RegisterSchema,
     onSubmit: (values) => {
-      console.log(values);
+      setSubmitting(true);
+      dispatch(registerUser(values)).finally(() => {
+        setSubmitting(false);
+      });
     },
   });
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  console.log(isSubmitting);
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setValues((values) => ({ ...values, [name]: value }));
   };
 
-  return (
+  return !isLoggedIn ? (
+    <Navigate to="/feed" />
+  ) : (
     <section className="grid grid-cols-1 sm:grid-cols-2">
       <Helmet>
         <title>Toucan - Register</title>
@@ -45,19 +61,35 @@ const Register = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            setSubmitting(true);
-            submitForm().finally(() => setSubmitting(false));
+            submitForm();
           }}
           className="max-w-lg mx-auto"
         >
           <h1 className="text-3xl font-semibold">Create An Account</h1>
-          <p>
+          <p className="mb-10">
             Already have an account?{"  "}
             <Link to="/login" className="text-primary hover:underline">
               Login
             </Link>
           </p>
-          <div className="grid gap-3 grid-cols-1 md:grid-cols-2 mt-10">
+          {error && (
+            <p className="text-red-500 font-semibold text-sm my-2">{error}</p>
+          )}
+          {registerErrors && (
+            <div className="mb-5">
+              {Object.keys(registerErrors).map((key, index) => (
+                <div key={index} className="text-red-500">
+                  <p>{key.toUpperCase()} :</p>
+                  {registerErrors[key].map((value, i) => (
+                    <small key={i} className="ml-3">
+                      {value}
+                    </small>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="grid gap-3 grid-cols-1 md:grid-cols-2">
             <TextInput
               name="first_name"
               placeholder="First Name"
@@ -87,12 +119,12 @@ const Register = () => {
             <TextInput
               type="password"
               className="md:col-span-2"
-              name="password"
+              name="password_hash"
               placeholder="Password"
-              value={values.password}
+              value={values.password_hash}
               handleChange={handleChange}
-              error={errors.password}
-              touched={touched.password}
+              error={errors.password_hash}
+              touched={touched.password_hash}
             />
             <div className="grid gap-2 sm:col-span-2">
               <span className="text-sm flex items-center gap-1">
@@ -117,7 +149,7 @@ const Register = () => {
               )}
             </div>
             <button className="px-5 py-2 text-sm rounded-md text-white bg-primary w-fit ">
-              {isSubmitting ? "Creating an Account..." : "Create an Account"}
+              {isSubmitting ? "Creating..." : "Create an Account"}
             </button>
           </div>
         </form>
