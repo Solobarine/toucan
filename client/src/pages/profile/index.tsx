@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { AppDispatch, RootState } from "../../features/store";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../../features/slices/settings";
+import { capitalizeText } from "../../utils";
 
 type Post = {
   id: number;
@@ -12,16 +13,6 @@ type Post = {
   likes: number;
   comments: number;
   timestamp: string;
-};
-
-type User = {
-  name: string;
-  username: string;
-  bio: string;
-  avatar: string;
-  followers: number;
-  following: number;
-  theme: "light" | "dark";
 };
 
 const posts: Post[] = [
@@ -48,31 +39,26 @@ const posts: Post[] = [
 
 const Profile: React.FC = () => {
   const { isDarkTheme } = useSelector((state: RootState) => state.settings);
-  const [user, _] = useState<User>({
-    name: "Solly",
-    username: "@solly_explorer",
-    bio: "Adventurer | Photographer | Nature Enthusiast",
-    avatar: "https://via.placeholder.com/150",
-    followers: 1200,
-    following: 500,
-    theme: "light",
-  });
-
+  const { user } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
-
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <header className="flex items-center justify-between mb-6">
         <div className="flex items-center">
           <img
-            src={user.avatar}
+            src="https://via.placeholder.com/150"
             alt="User avatar"
             className="w-24 h-24 rounded-full border-4 border-primary"
           />
           <div className="ml-4">
-            <h1 className="text-3xl font-semibold">{user.name}</h1>
-            <p className="opacity-75">{user.username}</p>
-            <p className="opacity-90 mt-2">{user.bio}</p>
+            <h1 className="text-3xl font-semibold">
+              {capitalizeText(user?.first_name)}{" "}
+              {capitalizeText(user?.last_name)}
+            </h1>
+            <p className="opacity-75">{user?.email}</p>
+            <p className="opacity-90 mt-2">
+              {"Adventurer | Photographer | Nature Enthusiast"}
+            </p>
           </div>
         </div>
         <div className="flex items-center">
@@ -94,11 +80,11 @@ const Profile: React.FC = () => {
 
       <div className="grid grid-cols-3 gap-4 text-center mb-8">
         <div>
-          <h2 className="text-2xl font-bold">{user.followers}</h2>
+          <h2 className="text-2xl font-bold">{20}</h2>
           <p className="opacity-85">Followers</p>
         </div>
         <div>
-          <h2 className="text-2xl font-bold">{user.following}</h2>
+          <h2 className="text-2xl font-bold">{84}</h2>
           <p className="opacity-85">Following</p>
         </div>
         <div>

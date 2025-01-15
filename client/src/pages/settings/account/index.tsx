@@ -1,8 +1,13 @@
 import { useState } from "react";
 import UpdateEmail from "../../../components/settings/email/updateEmail";
 import UpdateAccountDetails from "../../../components/settings/account";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../features/store";
+import { capitalizeText } from "../../../utils";
 
 const Account = () => {
+  const { user } = useSelector((state: RootState) => state.auth);
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   return (
@@ -13,8 +18,10 @@ const Account = () => {
           alt=""
           className="w-16 h-16 rounded-full bg-white dark:bg-gray-800"
         />
-        <p className="text-3xl font-semibold">Arthur Morgan</p>
-        <p className="text-sm">arthur@gmail.com</p>
+        <p className="text-3xl font-semibold">
+          {capitalizeText(user?.first_name)} {capitalizeText(user?.last_name)}
+        </p>
+        <p className="text-sm">{user?.email}</p>
       </div>
       <div className="min-h-screen py-10 px-5">
         <div className="bg-white dark:bg-stone-700 rounded-lg shadow-md p-8">
