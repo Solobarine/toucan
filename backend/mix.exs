@@ -47,7 +47,8 @@ defmodule Backend.MixProject do
       {:bandit, "~> 1.5"},
       {:guardian, "~> 2.3"},
       {:bcrypt_elixir, "~> 3.2.0"},
-      {:faker_elixir_octopus, "> 0.0.0"}
+      {:faker_elixir_octopus, "> 0.0.0"},
+      {:cors_plug, "~> 3.0"}
     ]
   end
 
