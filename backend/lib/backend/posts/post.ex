@@ -11,6 +11,10 @@ defmodule Backend.Posts.Post do
       foreign_key: :content_id,
       where: [content_type: "post"]
 
+    has_many :likes, Backend.Likes.Like,
+      foreign_key: :content_id,
+      where: [content_type: "post"]
+
     timestamps(type: :utc_datetime)
   end
 
