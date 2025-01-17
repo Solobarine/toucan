@@ -18,7 +18,7 @@ const Header = () => {
         <h2>TOUCAN</h2>
       </Link>
       <div
-        className={`absolute py-4 md:py-0 md:static grow flex flex-col md:flex-row bg-red-500 gap-10 md:bg-transparent w-full top-12 left-0 items-center justify-between transition-transform duration-700 md:translate-y-0 opacity-100 ${
+        className={`absolute py-4 md:py-0 md:static grow flex flex-col md:flex-row bg-primary gap-10 md:bg-transparent w-full top-12 left-0 items-center justify-between transition-transform duration-700 md:translate-y-0 opacity-100 ${
           isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-96 opacity-0"
         }`}
       >
