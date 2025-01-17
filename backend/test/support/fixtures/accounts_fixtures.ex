@@ -10,11 +10,12 @@ defmodule Backend.AccountsFixtures do
   def user_fixture do
     {:ok, user} =
       %{
-        email: FakerElixir.Internet.email,
-        first_name: FakerElixir.Name.first_name,
-        last_name: FakerElixir.Name.last_name,
+        email: FakerElixir.Internet.email(),
+        first_name: FakerElixir.Name.first_name(),
+        last_name: FakerElixir.Name.last_name(),
         password_hash: "password",
-        username: FakerElixir.Lorem.word
+        username: FakerElixir.Lorem.word(),
+        tos: true
       }
       |> Backend.Accounts.create_user()
 
