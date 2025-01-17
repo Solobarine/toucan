@@ -1,7 +1,8 @@
 defmodule BackendWeb.AuthPipeline do
-  use Guardian.Plug.Pipeline, otp_app: :backend,
+  use Guardian.Plug.Pipeline,
+    otp_app: :backend,
     module: Backend.Guardian,
-    error_handler: Backend.AuthErrorHandler
+    error_handler: BackendWeb.AuthErrorHandler
 
   # Ensure there is a token in the Authorization header
   plug Guardian.Plug.VerifyHeader, realm: "Bearer"
