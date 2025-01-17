@@ -10,7 +10,8 @@ defmodule Backend.AccountsTest do
     first_name: FakerElixir.Name.first_name(),
     last_name: FakerElixir.Name.last_name(),
     email: FakerElixir.Internet.email(),
-    password_hash: "password123"
+    password_hash: "password123",
+    tos: true
   }
   @invalid_attrs %{username: nil, first_name: nil, last_name: nil, email: nil, password_hash: nil}
 
@@ -33,7 +34,8 @@ defmodule Backend.AccountsTest do
         first_name: "some first_name",
         last_name: "some last_name",
         email: "some email",
-        password_hash: "some password_hash"
+        password_hash: "some password_hash",
+        tos: true
       }
 
       assert {:ok, %User{} = user} = Accounts.create_user(valid_attrs)
