@@ -1,18 +1,20 @@
 import { Helmet } from "react-helmet";
 import Hero from "../../components/home/hero";
 import Features from "../../components/home/features";
-import Benefits from "../../components/home/benefits";
 import Reviews from "../../components/home/reviews";
+import Perks from "../../components/home/perks";
+import Looks from "../../components/home/looks";
 
 const Home = () => {
   return (
-    <div className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 min-h-screen">
+    <div className="min-h-screen">
       <Helmet>
         <title>Toucan - Connecting You, Effortlessly and Vibrantly!</title>
       </Helmet>
       <Hero />
+      <Perks />
       <Features />
-      <Benefits />
+      <Looks />
       <Reviews />
     </div>
   );

@@ -1,11 +1,16 @@
 import { useState } from "react";
 import Card from "../../components/posts/card";
 import Create from "../../components/posts/create";
+import { Helmet } from "react-helmet";
 
 const Feed = () => {
   const [isCreatePost, setIsCreatePost] = useState(false);
   return (
     <section className="p-3 sm:px-20">
+      <Helmet>
+        <title>Toucan - Posts Feed</title>
+        <meta name="description" content="Posts Feed" />
+      </Helmet>
       <div className="p-3 rounded-lg bg-white dark:bg-stone-700 border dark:border-stone-600 shadow-md">
         <span className="flex items-center gap-3">
           <img
