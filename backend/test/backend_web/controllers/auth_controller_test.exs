@@ -6,11 +6,18 @@ defmodule Backend.AuthControllerTest do
   @valid_attrs %{
     first_name: FakerElixir.Name.first_name(),
     last_name: FakerElixir.Name.last_name(),
-    username: "example",
     email: "user@example.com",
+    tos: true,
     password_hash: "password123"
   }
-  @invalid_attrs %{first_name: "", last_name: "", email: "invalid_email", password_hash: "", username: ""}
+  @invalid_attrs %{
+    first_name: "",
+    last_name: "",
+    email: "invalid_email",
+    password_hash: "",
+    username: "",
+    tos: false
+  }
 
   describe "POST /register" do
     test "registers a new user with valid data", %{conn: conn} do
@@ -48,6 +55,20 @@ defmodule Backend.AuthControllerTest do
         })
 
       assert json_response(conn, 401)["error"] == "Invalid Credentials"
+    end
+  end
+
+  describe "GET /me" do
+    setup do
+      {:ok, user} = Accounts.register(@valid_attrs)
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+      %{token: token, user: user}
+    end
+
+    test "returns currently authenticated user", %{conn: conn, token: token, user: user} do
+      conn = conn |> put_req_header("authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/me")
+      assert json_response(conn, 200)["user"]["id"] == user.id
     end
   end
 
