@@ -12,16 +12,16 @@ defmodule BackendWeb.AuthController do
   def register(conn, %{
         "first_name" => first_name,
         "last_name" => last_name,
-        "username" => username,
         "email" => email,
-        "password_hash" => password
+        "password_hash" => password,
+        "tos" => tos
       }) do
     case Accounts.register(%{
            "first_name" => first_name,
            "last_name" => last_name,
-           "username" => username,
            "email" => email,
-           "password_hash" => password
+           "password_hash" => password,
+           "tos" => tos
          }) do
       {:ok, user} ->
         token = Guardian.generate_jwt(user)
