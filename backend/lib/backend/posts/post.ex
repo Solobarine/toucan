@@ -22,6 +22,6 @@ defmodule Backend.Posts.Post do
   def changeset(post, attrs) do
     post
     |> cast(attrs, [:title, :body, :user_id])
-    |> validate_required([:title, :body, :user_id])
+    |> validate_required([:body, :user_id])
   end
 end
