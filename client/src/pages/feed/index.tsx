@@ -1,10 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "../../components/posts/card";
 import Create from "../../components/posts/create";
 import { Helmet } from "react-helmet";
+import { AppDispatch, RootState } from "../../features/store";
+import { useDispatch, useSelector } from "react-redux";
+import { getPostsFeed } from "../../features/thunks/posts";
+import { AnimatePresence } from "framer-motion";
+import NetworkError from "../errors/networkError";
 
 const Feed = () => {
   const [isCreatePost, setIsCreatePost] = useState(false);
+  const dispatch: AppDispatch = useDispatch();
+
+  const {
+    posts: { data, error },
+  } = useSelector((state: RootState) => state.posts);
+
+  useEffect(() => {
+    dispatch(getPostsFeed());
+  }, []);
+
+  if (error) return <NetworkError message="Something went wrong" />;
   return (
     <section className="p-3 sm:px-20">
       <Helmet>
@@ -27,11 +43,13 @@ const Feed = () => {
         </span>
       </div>
       <div className="grid grid-cols-1 gap-3 mt-4">
-        {[1, 2, 3, 4, 5, 6].map((_, index) => (
-          <Card key={index} />
+        {data.map((post, index) => (
+          <Card key={index} post={post} />
         ))}
       </div>
-      {isCreatePost && <Create closeModal={() => setIsCreatePost(false)} />}
+      <AnimatePresence>
+        {isCreatePost && <Create closeModal={() => setIsCreatePost(false)} />}
+      </AnimatePresence>
     </section>
   );
 };
