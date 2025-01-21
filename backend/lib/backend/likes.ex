@@ -47,6 +47,19 @@ defmodule Backend.Likes do
   end
 
   @doc """
+  Get Likes Count for a Content
+  """
+  def count_likes(content_id, content_type) do
+    Backend.Repo.aggregate(
+      from(l in Like,
+        where: l.content_id == ^content_id and l.content_type == ^content_type
+      ),
+      :count,
+      :id
+    )
+  end
+
+  @doc """
   Creates a like.
 
   ## Examples
@@ -109,6 +122,19 @@ defmodule Backend.Likes do
       )
 
     Repo.one(query) || 0
+  end
+
+  def is_liked_by_user(user_id, content_type) do
+    like =
+      Like
+      |> where([l], l.user_id == ^user_id and l.content_type == ^content_type)
+      |> Repo.one()
+
+    if is_nil(like) do
+      false
+    else
+      true
+    end
   end
 
   @doc """
