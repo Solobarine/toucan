@@ -23,7 +23,7 @@ const Account = () => {
         </p>
         <p className="text-sm">{user?.email}</p>
       </div>
-      <div className="min-h-screen py-10 px-5">
+      <div className="min-h-screen py-10 px-5 max-w-3xl mx-auto">
         <div className="bg-white dark:bg-stone-700 rounded-lg shadow-md p-8">
           <UpdateAccountDetails />
           <UpdateEmail />
