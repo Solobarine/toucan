@@ -18,7 +18,8 @@ defmodule Backend.Posts do
 
   """
   def list_posts do
-    Repo.all(Post)
+    from(p in Post, order_by: [desc: :inserted_at])
+    |> Repo.all()
   end
 
   @doc """
@@ -87,6 +88,10 @@ defmodule Backend.Posts do
   """
   def delete_post(%Post{} = post) do
     Repo.delete(post)
+  end
+
+  def is_post_owner(post_user_id, user_id) do
+    post_user_id == user_id
   end
 
   @doc """
