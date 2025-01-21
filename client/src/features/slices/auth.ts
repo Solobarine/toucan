@@ -2,6 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { loginUser, me, registerUser } from "../thunks/auth";
 import { AxiosResponse } from "axios";
 import { User } from "../../types/auth";
+import { serverError } from "../../utils";
 
 interface InitialState {
   isLoggedIn: boolean;
@@ -115,7 +116,7 @@ const authSlice = createSlice({
         action.payload as { statusCode: number | undefined }
       ).statusCode;
       if (state.me.statusCode === 500) {
-        state.me.error = "Server Error. We are working to resolve this";
+        state.me.error = serverError();
       }
     });
   },
