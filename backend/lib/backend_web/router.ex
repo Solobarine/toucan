@@ -26,6 +26,8 @@ defmodule BackendWeb.Router do
     pipe_through [:auth]
 
     get "/me", AuthController, :me
+    get "/profile", AuthController, :profile
+    get "/user/:id", UserController, :show
     resources "/posts", PostController, except: [:new, :edit]
     resources "/comments", CommentController, only: [:index, :create, :show, :update, :delete]
     post "/replies", CommentController, :create_reply

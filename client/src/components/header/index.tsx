@@ -12,8 +12,11 @@ const Header = () => {
   const { isMenuOpen } = useSelector((state: RootState) => state.settings);
 
   return (
-    <header className="sticky top-0 z-50 px-2 md:px-10 py-2 flex items-center justify-between gap-3 bg-gray-100/40 backdrop-blur-sm">
-      <Link to="/" className="flex items-center gap-1 shrink-0 font-bold">
+    <header className="sticky top-0 z-50 px-2 md:px-10 py-4 flex items-center justify-between gap-3 bg-gray-100/40 backdrop-blur-sm">
+      <Link
+        to="/"
+        className="flex items-center gap-1 text-2xl shrink-0 font-bold"
+      >
         <img src="/favicon-32x32.png" alt="Logo of Toucan" />
         <h2>TOUCAN</h2>
       </Link>

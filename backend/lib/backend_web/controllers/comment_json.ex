@@ -24,7 +24,7 @@ defmodule BackendWeb.CommentJSON do
       user_id: comment.user_id,
       text: comment.text,
       user: Accounts.get_user!(comment.user_id),
-      replies: Comments.list_comment_replies(comment.id),
+      replies: index(%{comments: Comments.list_comment_replies(comment.id)}).comments,
       inserted_at: comment.inserted_at
     }
   end

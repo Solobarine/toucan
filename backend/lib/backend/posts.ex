@@ -75,6 +75,13 @@ defmodule Backend.Posts do
   end
 
   @doc """
+  Count User Posts
+  """
+  def count_posts(user_id) do
+    Repo.aggregate(from(p in Post, where: p.user_id == ^user_id), :count, :id)
+  end
+
+  @doc """
   Deletes a post.
 
   ## Examples

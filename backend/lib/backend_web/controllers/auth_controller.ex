@@ -70,6 +70,12 @@ defmodule BackendWeb.AuthController do
     end
   end
 
+  def profile(conn, _) do
+    user = Guardian.Plug.current_resource(conn)
+
+    render(conn, :index, user: user)
+  end
+
   @doc """
   Log a User Out by invalidating token
   """

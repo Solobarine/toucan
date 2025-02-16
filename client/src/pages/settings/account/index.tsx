@@ -4,6 +4,7 @@ import UpdateAccountDetails from "../../../components/settings/account";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../features/store";
 import { capitalizeText } from "../../../utils";
+import { Helmet } from "react-helmet";
 
 const Account = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -12,6 +13,10 @@ const Account = () => {
 
   return (
     <section>
+      <Helmet>
+        <title>Toucan - Acount Setting</title>
+        <meta name="description" content="User Account Setting" />
+      </Helmet>
       <div className="px-2 pt-16 pb-4 bg-white dark:bg-stone-700">
         <img
           src="#"
@@ -45,18 +50,18 @@ const Account = () => {
 
           {/* Account Deletion Modal */}
           {showDeleteModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-              <div className="bg-white rounded-lg p-8 shadow-md max-w-md w-full relative">
+            <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white dark:bg-dark rounded-lg p-8 shadow-md max-w-md w-full relative">
                 <button
-                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                  className="absolute top-2 right-2 hover:text-gray-700"
                   onClick={() => setShowDeleteModal(false)}
                 >
                   ✕
                 </button>
-                <h3 className="text-xl font-semibold text-gray-700 mb-4">
+                <h3 className="text-xl font-semibold mb-4">
                   Confirm Account Deletion
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm mb-4">
                   Are you sure you want to delete your account? This action
                   cannot be undone.
                 </p>

@@ -4,7 +4,13 @@ import { Comment as CommentInterface } from "../../types/comment";
 import { capitalizeText } from "../../utils";
 import { formatDistanceToNow } from "date-fns";
 
-const Comment = ({ comment }: { comment: CommentInterface }) => {
+const Comment = ({
+  comment,
+  showActions,
+}: {
+  comment: CommentInterface;
+  showActions: boolean;
+}) => {
   const [replyState, setReplyState] = useState(false);
   return (
     <div className="flex items-start gap-3">
@@ -25,11 +31,26 @@ const Comment = ({ comment }: { comment: CommentInterface }) => {
           </span>
           <p className="my-2">{comment.text}</p>
           <span className="flex items-center gap-2 text-sm mb-3">
-            <button>Like</button>|
-            <button onClick={() => setReplyState(true)}>Reply</button>
+            <button>Like</button>
+            {showActions && (
+              <>
+                <p>|</p>
+                <button onClick={() => setReplyState(true)}>Reply</button>
+              </>
+            )}
           </span>
         </div>
-        {replyState && <NewComment comment_id={comment.id} />}
+        {replyState && showActions && (
+          <NewComment
+            comment_id={comment.id}
+            post_id={comment.content_id as number}
+          />
+        )}
+        <div className="mt-4 scale-90">
+          {comment.replies.map((reply, index) => (
+            <Comment key={index} comment={reply} showActions={false} />
+          ))}
+        </div>
       </div>
     </div>
   );

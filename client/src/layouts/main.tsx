@@ -113,7 +113,7 @@ const Main = () => {
           {!isLoggedIn && error ? <NetworkError message={error} /> : <Outlet />}
         </section>
       </div>
-      <Footer />
+      {/** <Footer /> **/}
     </section>
   );
 };

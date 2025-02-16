@@ -16,7 +16,7 @@ const App = () => {
     }
   }, [isDarkTheme]);
   return (
-    <main className="app font-itim bg-light dark:bg-dark text-gray-800 dark:text-gray-100">
+    <main className="app font-itim bg-white dark:bg-dark text-gray-800 dark:text-gray-100">
       <Header />
       <section>
         <Outlet />

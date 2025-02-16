@@ -36,7 +36,7 @@ defmodule BackendWeb.UserSocket do
         {:ok, assign(socket, %{user_id: claims["sub"], conn_status: "Connected"})}
 
       {:error, _reason} ->
-        {:error}
+        {:error, "Unauthorized connection"}
     end
   end
 

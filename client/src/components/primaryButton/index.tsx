@@ -5,7 +5,7 @@ interface PrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const PrimaryButton = ({
-  className = "",
+  className,
   children,
   onClick,
   ...props
@@ -13,10 +13,7 @@ const PrimaryButton = ({
   return (
     <button
       onClick={onClick}
-      className={
-        "text-sm px-4 py-1 rounded-lg shadow-md text-white bg-primary font-semibold " +
-        className
-      }
+      className={`${className} text-sm px-4 py-1 rounded-lg shadow-md text-white bg-primary font-semibold`}
       {...props}
     >
       {children}

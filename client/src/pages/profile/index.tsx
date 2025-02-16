@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AppDispatch, RootState } from "../../features/store";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../../features/slices/settings";
 import { capitalizeText } from "../../utils";
+import { Helmet } from "react-helmet";
+import { getProfile } from "../../features/thunks/auth";
+import NetworkError from "../errors/networkError";
+import PrimaryButton from "../../components/primaryButton";
+import SecondaryButton from "../../components/secondaryButton";
 
 type Post = {
   id: number;
@@ -39,12 +44,24 @@ const posts: Post[] = [
 
 const Profile: React.FC = () => {
   const { isDarkTheme } = useSelector((state: RootState) => state.settings);
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, profile } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getProfile());
+  }, []);
+
+  if (profile.error && profile.status === "failed")
+    return <NetworkError message={profile.error} />;
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
+      <Helmet>
+        <title>Toucan - User Profile Page</title>
+        <meta name="description" content="User Profile" />
+      </Helmet>
       <header className="flex items-center justify-between mb-6">
-        <div className="flex items-center">
+        <div className="flex items-center flex-wrap gap-y-3">
           <img
             src="https://via.placeholder.com/150"
             alt="User avatar"
@@ -72,7 +89,7 @@ const Profile: React.FC = () => {
               <i className="bx bx-sun text-2xl" />
             )}
           </button>
-          <button className="p-2 ml-4 rounded-full hover:bg-gray-200">
+          <button className="p-2 ml-4 rounded-full">
             <i className="bx bx-cog text-2xl" />
           </button>
         </div>
@@ -80,22 +97,30 @@ const Profile: React.FC = () => {
 
       <div className="grid grid-cols-3 gap-4 text-center mb-8">
         <div>
-          <h2 className="text-2xl font-bold">{20}</h2>
+          <h2 className="text-2xl font-bold">{profile.data?.followers}</h2>
           <p className="opacity-85">Followers</p>
         </div>
         <div>
-          <h2 className="text-2xl font-bold">{84}</h2>
+          <h2 className="text-2xl font-bold">{profile.data?.following}</h2>
           <p className="opacity-85">Following</p>
         </div>
         <div>
-          <h2 className="text-2xl font-bold">{posts.length}</h2>
+          <h2 className="text-2xl font-bold">{profile.data?.posts_count}</h2>
           <p className="opacity-85">Posts</p>
         </div>
       </div>
 
+      <div className="flex items-center justify-center gap-4 p-2">
+        <PrimaryButton>Follow</PrimaryButton>
+        <PrimaryButton className="bg-red-600">Unfollow</PrimaryButton>
+        <PrimaryButton className="bg-white text-purple-600 dark:bg-stone-800 border border-primary p-6">
+          Message
+        </PrimaryButton>
+      </div>
+
       <section className="mb-6">
         <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
-        <div className="bg-white dark:bg-dark rounded-lg shadow-md p-4">
+        <div className="bg-white dark:bg-stone-900 rounded-lg shadow-md p-4">
           {posts.map((post) => (
             <div key={post.id} className="mb-6">
               <div className="flex items-center mb-2">

@@ -9,3 +9,11 @@ export const createComment = createAsyncThunk(
     return postRequest(url, data, { rejectWithValue });
   }
 );
+
+export const createReply = createAsyncThunk(
+  "COMMENTS/CREATE_REPLY",
+  async (data: any, { rejectWithValue }) => {
+    const url = `${API_URL}/api/replies`;
+    return postRequest(url, data, { rejectWithValue });
+  }
+);

@@ -17,6 +17,8 @@ import Call from "../pages/call";
 import CallInfo from "../pages/call/callInfo";
 import Feed from "../pages/feed";
 import Profile from "../pages/profile";
+import Post from "../pages/feed/post";
+import UserProfile from "../components/user/profile";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +47,7 @@ const router = createBrowserRouter([
         path: "feed",
         Component: Feed,
       },
+      { path: "posts/:id", Component: Post },
       {
         path: "notifications",
         Component: NotificationsPage,
@@ -53,6 +56,7 @@ const router = createBrowserRouter([
         path: "profile",
         Component: Profile,
       },
+      { path: "/u/:id", Component: UserProfile },
       {
         path: "chats",
         Component: Chat,

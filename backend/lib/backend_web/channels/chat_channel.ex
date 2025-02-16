@@ -1,26 +1,28 @@
 defmodule BackendWeb.ChatChannel do
   use BackendWeb, :channel
+  alias BackendWeb.ChatJSON
   alias Backend.Chats
 
   @impl true
   def join("chat:recents:" <> user_id, _payload, socket) do
     if user_authorized?(user_id, socket.assigns[:user_id]) do
       chats = Chats.recents(socket.assigns[:user_id])
-      {:ok, assign(socket, "chats", chats)}
+      {:ok, ChatJSON.index_with_user(%{chats: chats}), assign(socket, "chats", chats)}
     else
       {:error, %{reason: "Unauthorized"}}
     end
   end
 
   def join("chat:" <> user_ids, payload, socket) do
-    if authorized?(user_ids, socket.assigns[:user_id]) do
+    if authorized?(user_ids, socket.assigns[:user_id], payload["user_id"]) do
       chats = Chats.chat_history(socket.assigns[:user_id], payload["user_id"])
-      {:ok, assign(socket, "chats", chats)}
+      {:ok, ChatJSON.index(%{chats: chats}), assign(socket, "chats", chats)}
     else
-      {:error, %{reason: "Unauthorized"}}
+      {:error, %{reason: "Unauthorized connection"}}
     end
   end
 
+  @impl true
   def handle_in("ping", payload, socket) do
     {:reply, {:ok, payload}, socket}
   end
@@ -30,13 +32,54 @@ defmodule BackendWeb.ChatChannel do
     {:noreply, socket}
   end
 
+  def handle_in("new_message", payload, socket) do
+    current_user_id = String.to_integer(socket.assigns[:user_id])
+
+    name =
+      "chats:" <>
+        Integer.to_string(min(current_user_id, payload["receiver_id"])) <>
+        "," <> Integer.to_string(max(current_user_id, payload["receiver_id"]))
+
+    chat_params = %{
+      "message" => payload["message"],
+      "sender_id" => current_user_id,
+      "receiver_id" => payload["receiver_id"],
+      "name" => name
+    }
+
+    case Chats.create_chat(chat_params) do
+      {:ok, chat} ->
+        broadcast(socket, "new_message", ChatJSON.show(%{chat: chat}))
+
+        if Enum.member?([chat.sender_id, chat.receiver_id], socket.assigns[:user_id]) do
+          broadcast(socket, "latest", ChatJSON.data_with_user(%{chat: chat}))
+        end
+
+      {:error, reason} ->
+        broadcast(socket, "new_message", %{error: reason})
+    end
+
+    {:noreply, socket}
+  end
+
+  def handle_in("latest", payload, socket) do
+    broadcast(socket, "latest", payload)
+    {:noreply, socket}
+  end
+
   defp user_authorized?(user_id, socket_user_id) do
     user_id == socket_user_id
   end
 
-  defp authorized?(user_ids, user_id) do
-    user_ids
-    |> String.split(",")
-    |> Enum.member?(user_id)
+  defp authorized?(user_ids, user_id, payload_user_id) do
+    IO.puts("User IDs: #{user_ids}")
+    IO.puts("user id: #{user_id}")
+
+    split_ids =
+      user_ids
+      |> String.split(",")
+
+    Enum.member?(split_ids, user_id) and Enum.member?(split_ids, payload_user_id) and
+      user_id !== payload_user_id
   end
 end

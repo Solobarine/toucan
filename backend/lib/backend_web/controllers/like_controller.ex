@@ -39,7 +39,8 @@ defmodule BackendWeb.LikeController do
   end
 
   def delete(conn, %{"id" => id}) do
-    like = Likes.get_like!(id)
+    user = Guardian.Plug.current_resource(conn)
+    like = Likes.get_like!(user.id, id, "post")
 
     LikesPolicy.delete(conn, like)
 

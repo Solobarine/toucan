@@ -1,10 +1,15 @@
 import { formatDistanceToNow } from "date-fns";
 import { Post } from "../../../types/post";
 import { capitalizeText } from "../../../utils";
-import Comment from "../../comments";
-import Create from "../../comments/create";
+import { useNavigate } from "react-router-dom";
+import { AppDispatch } from "../../../features/store";
+import { useDispatch } from "react-redux";
+import { cachePost } from "../../../features/slices/posts";
 
 const Card = ({ post }: { post: Post }) => {
+  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
+
   return (
     <div className="border dark:border-stone-600 rounded-xl max-w-xl w-full mx-auto shadow-md bg-white dark:bg-stone-700 p-3">
       <div className="flex items-start justify-between">
@@ -57,21 +62,24 @@ const Card = ({ post }: { post: Post }) => {
             Like
           </button>
         )}
-        <button className="flex items-center gap-1">
+        <button
+          className="flex items-center gap-1"
+          onClick={() => {
+            dispatch(cachePost(post));
+            navigate(`/posts/${post.id}`);
+          }}
+        >
           <i className="bx bx-message-square-dots" />
           Comment
+        </button>
+        <button className="flex items-center gap-1">
+          <i className="bx bx-circle" />
+          Repost
         </button>
         <button className="flex items-center gap-1">
           <i className="bx bx-share" />
           Share
         </button>
-      </div>
-      <hr />
-      <Create content_id={post.id as number} />
-      <div className="grid gap-3">
-        {post.comments.map((comment, index) => (
-          <Comment key={index} comment={comment} />
-        ))}
       </div>
     </div>
   );

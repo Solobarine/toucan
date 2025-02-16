@@ -47,7 +47,7 @@ const Register = () => {
     setValues((values) => ({ ...values, [name]: value }));
   };
 
-  return !isLoggedIn ? (
+  return isLoggedIn ? (
     <Navigate to="/feed" />
   ) : (
     <section className="grid grid-cols-1 sm:grid-cols-2">
@@ -57,7 +57,7 @@ const Register = () => {
         <link rel="canonical" href="" />
       </Helmet>
       <div></div>
-      <div className="px-2 py-10">
+      <div className="bg-light dark:bg-stone-900 px-2 py-10 rounded-xl">
         <form
           onSubmit={(e) => {
             e.preventDefault();

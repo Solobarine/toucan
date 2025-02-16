@@ -6,6 +6,7 @@ import {
   toggleSideBar,
   toggleTheme,
 } from "../../features/slices/settings";
+import { logoutUser } from "../../features/thunks/auth";
 
 const SideBar = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -87,7 +88,11 @@ const SideBar = () => {
           isSideBarOpen={isSideBarOpen}
           handleClick={handleClick}
         />
-        <button className="flex items-center gap-2 px-2 py-1 text-red-500">
+        <button
+          type="button"
+          className="flex items-center gap-2 px-2 py-1 text-red-500"
+          onClick={() => dispatch(logoutUser())}
+        >
           <i className="bx bx-log-out-circle text-lg" />
           {isSideBarOpen && <p className="text-sm">Logout</p>}
         </button>

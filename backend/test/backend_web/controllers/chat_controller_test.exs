@@ -34,7 +34,7 @@ defmodule BackendWeb.ChatControllerTest do
     test "lists all chats", %{conn: conn, token: token} do
       conn = conn |> put_req_header("authorization", "Bearer #{token}")
       conn = get(conn, ~p"/api/chats")
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200)["chats"] == []
     end
   end
 
@@ -47,14 +47,14 @@ defmodule BackendWeb.ChatControllerTest do
 
       conn = conn |> put_req_header("authorization", "Bearer #{token}")
       conn = post(conn, ~p"/api/chats", chat: params)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      assert %{"id" => id} = json_response(conn, 201)["chat"]
 
       conn = get(conn, ~p"/api/chats/#{id}")
 
       assert %{
                "id" => ^id,
                "name" => chat_name
-             } = json_response(conn, 200)["data"]
+             } = json_response(conn, 200)["chat"]
     end
 
     test "renders errors when data is invalid", %{conn: conn, token: token} do
@@ -84,7 +84,7 @@ defmodule BackendWeb.ChatControllerTest do
       assert %{
                "id" => ^id,
                "name" => chat_name
-             } = json_response(conn, 200)["data"]
+             } = json_response(conn, 200)["chat"]
     end
 
     test "renders errors when data is invalid", %{

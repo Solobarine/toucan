@@ -51,7 +51,7 @@ const Login = () => {
         <link rel="canonical" href="" />
       </Helmet>
       <div></div>
-      <div className="px-2 py-10">
+      <div className="px-2 py-10 bg-light dark:bg-stone-900 rounded-xl">
         <form
           onSubmit={(e) => {
             e.preventDefault();

@@ -17,3 +17,11 @@ export const createPost = createAsyncThunk(
     return postRequest(url, data, { rejectWithValue });
   }
 );
+
+export const getPost = createAsyncThunk(
+  "POST/GET_POST",
+  async (id: number | string, { rejectWithValue }) => {
+    const url = `${API_URL}/api/posts/${id}`;
+    return getRequest(url, { rejectWithValue });
+  }
+);
