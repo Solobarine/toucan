@@ -5,7 +5,10 @@ import { Chat } from "../../types/chat";
 
 export const createChat = createAsyncThunk(
   "CHAT/CREATE",
-  async (data: any, { rejectWithValue }) => {
+  async (
+    data: { chat: Pick<Chat, "message" | "receiver_id"> },
+    { rejectWithValue }
+  ) => {
     const url = `${API_URL}/api/chats`;
     return postRequest(url, data, { rejectWithValue });
   }

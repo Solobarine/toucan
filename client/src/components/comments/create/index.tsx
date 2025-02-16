@@ -62,7 +62,7 @@ const Create = ({ content_id }: { content_id: number }) => {
           <i className="bx bx-send" />
         </button>
       </span>
-      {false && (
+      {showEmojiPicker && (
         <div>
           <button
             className="text-2xl text-red-600 font-semibold absolute bottom-1 right-1"

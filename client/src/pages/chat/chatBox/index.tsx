@@ -3,7 +3,7 @@ import ChatCard from "../../../components/chat/components/cards/chats";
 import { capitalizeText } from "../../../utils";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../features/store";
-import { Socket } from "phoenix";
+import { Channel, Socket } from "phoenix";
 import { useEffect, useState } from "react";
 import {
   appendPrivateChat,
@@ -44,7 +44,7 @@ const ChatBox = () => {
     },
   });
 
-  const [channel, setChannel] = useState<any>(null);
+  const [channel, setChannel] = useState<Channel | null>(null);
 
   useEffect(() => {
     socket.connect();
@@ -112,8 +112,8 @@ const ChatBox = () => {
           </div>
           <div className="flex flex-col">
             <h2 className="font-semibold text-gray-900 dark:text-white">
-              {capitalizeText(user?.first_name)}{" "}
-              {capitalizeText(user?.last_name)}
+              {capitalizeText(user2?.first_name)}{" "}
+              {capitalizeText(user2?.last_name)}
             </h2>
             <span className="text-sm text-green-600 dark:text-green-400 font-medium">
               Active now

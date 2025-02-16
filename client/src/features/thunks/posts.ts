@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { API_URL } from "../../constants";
 import { getRequest, postRequest } from "../../utils/api";
+import { Post } from "../../types/post";
 
 export const getPostsFeed = createAsyncThunk(
   "POSTS/FEED",
@@ -12,7 +13,7 @@ export const getPostsFeed = createAsyncThunk(
 
 export const createPost = createAsyncThunk(
   "POSTS/CREATE",
-  async (data: any, { rejectWithValue }) => {
+  async (data: { post: Pick<Post, "title" | "body"> }, { rejectWithValue }) => {
     const url = `${API_URL}/api/posts`;
     return postRequest(url, data, { rejectWithValue });
   }
