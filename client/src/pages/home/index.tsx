@@ -7,15 +7,23 @@ import Looks from "../../components/home/looks";
 
 const Home = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen w-lvw overflow-y-hidden">
       <Helmet>
-        <title>Toucan - Connecting You, Effortlessly and Vibrantly!</title>
+        <title>SocialConnect - Bringing People Together</title>
+        <meta
+          name="description"
+          content="Experience the next generation of social networking with SocialConnect. Connect, share, and thrive in our vibrant online community."
+        />
+        <link rel="icon" href="/favicon.ico" />
       </Helmet>
-      <Hero />
-      <Perks />
-      <Features />
-      <Looks />
-      <Reviews />
+
+      <main>
+        <Hero />
+        <Features />
+        <Looks />
+        <Perks />
+        <Reviews />
+      </main>
     </div>
   );
 };

@@ -1,22 +1,49 @@
-// src/components/Features.tsx
 import { motion } from "framer-motion";
+import {
+  MessageSquare,
+  Video,
+  UserCircle,
+  Globe,
+  Shield,
+  Zap,
+} from "lucide-react";
 
 const features = [
   {
-    title: "Instant Messaging",
+    title: "Real-time Messaging",
     description:
-      "Chat with friends instantly using our real-time messaging system.",
-    icon: "💬",
+      "Connect instantly with friends through our lightning-fast chat system.",
+    icon: MessageSquare,
   },
   {
     title: "Video Sharing",
-    description: "Upload and share videos easily.",
-    icon: "🎥",
+    description:
+      "Share your moments with stunning video uploads and live streaming.",
+    icon: Video,
   },
   {
     title: "Customizable Profiles",
-    description: "Express yourself with fully customizable profiles.",
-    icon: "👤",
+    description:
+      "Express your unique personality with fully customizable profile pages.",
+    icon: UserCircle,
+  },
+  {
+    title: "Global Community",
+    description:
+      "Join diverse groups and connect with people from around the world.",
+    icon: Globe,
+  },
+  {
+    title: "Privacy Controls",
+    description:
+      "Stay in control with advanced privacy settings and content filters.",
+    icon: Shield,
+  },
+  {
+    title: "Instant Notifications",
+    description:
+      "Never miss a beat with real-time notifications for all activities.",
+    icon: Zap,
   },
 ];
 
@@ -25,32 +52,37 @@ const featureVariant = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.2 },
+    transition: { delay: i * 0.1, duration: 0.5 },
   }),
 };
 
-const Features: React.FC = () => (
-  <section className="py-20 bg-light dark:bg-dark">
-    <div className="max-w-7xl mx-auto px-4">
-      <h2 className="text-4xl font-bold mb-10 text-center">Features</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {features.map((feature, index) => (
-          <motion.div
-            key={feature.title}
-            custom={index}
-            initial="hidden"
-            whileInView="visible"
-            variants={featureVariant}
-            className="p-8 bg-white dark:bg-stone-700 rounded-lg shadow-lg text-center"
-          >
-            <span className="text-4xl mb-4">{feature.icon}</span>
-            <h3 className="text-2xl font-semibold mb-2">{feature.title}</h3>
-            <p>{feature.description}</p>
-          </motion.div>
-        ))}
+export default function Features() {
+  return (
+    <section className="py-20 bg-gray-50 dark:bg-stone-900">
+      <div className="container mx-auto px-4">
+        <h2 className="text-4xl font-bold mb-12 text-center">
+          Powerful Features for Seamless Connections
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
+            <motion.div
+              key={feature.title}
+              custom={index}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={featureVariant}
+              className="bg-white dark:bg-stone-800 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl"
+            >
+              <feature.icon className="w-12 h-12 text-purple-600 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                {feature.description}
+              </p>
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
-
-export default Features;
+    </section>
+  );
+}
