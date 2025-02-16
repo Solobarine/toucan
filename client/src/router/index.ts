@@ -19,6 +19,7 @@ import Feed from "../pages/feed";
 import Profile from "../pages/profile";
 import Post from "../pages/feed/post";
 import UserProfile from "../components/user/profile";
+import LoadingPage from "../components/loading";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "login",
         Component: Login,
+      },
+      {
+        path: "loading",
+        Component: LoadingPage,
       },
     ],
   },
