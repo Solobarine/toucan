@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Channel, Socket } from "phoenix";
 import Recents from "../../components/chat/recents";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,10 +44,15 @@ const Chat = () => {
     console.log(payload);
   });
 
+  const location = useLocation();
   return (
-    <section className="chats flex h-screen">
+    <section className="chats sm:flex h-screen">
       <Recents />
-      <div className="grow">
+      <div
+        className={`grow ${
+          location.pathname === "/chats" ? "hidden sm:block" : ""
+        } h-full`}
+      >
         <Outlet />
       </div>
     </section>

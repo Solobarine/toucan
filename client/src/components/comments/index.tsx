@@ -4,13 +4,7 @@ import { Comment as CommentInterface } from "../../types/comment";
 import { capitalizeText } from "../../utils";
 import { formatDistanceToNow } from "date-fns";
 
-const Comment = ({
-  comment,
-  showActions,
-}: {
-  comment: CommentInterface;
-  showActions: boolean;
-}) => {
+const Comment = ({ comment }: { comment: CommentInterface }) => {
   const [replyState, setReplyState] = useState(false);
   return (
     <div className="flex items-start gap-3">
@@ -18,7 +12,7 @@ const Comment = ({
       <div className="grow">
         <div>
           <span className="flex items-center justify-between">
-            <p>
+            <p className="font-semibold text-sm">
               {capitalizeText(comment.user.first_name)}{" "}
               {capitalizeText(comment.user.last_name)}
             </p>
@@ -30,27 +24,26 @@ const Comment = ({
             </span>
           </span>
           <p className="my-2">{comment.text}</p>
-          <span className="flex items-center gap-2 text-sm mb-3">
-            <button>Like</button>
-            {showActions && (
-              <>
-                <p>|</p>
-                <button onClick={() => setReplyState(true)}>Reply</button>
-              </>
-            )}
-          </span>
+          <div className="flex items-center justify-between gap-3">
+            <span className="flex items-center gap-2 text-sm mb-3">
+              <button>Like</button>
+              <p>|</p>
+              <button onClick={() => setReplyState(true)}>Reply</button>
+            </span>
+            <button
+              type="button"
+              className="italic text-sm hover:underline hover:text-primary transition-all duration-200"
+            >
+              Load Replies
+            </button>
+          </div>
         </div>
-        {replyState && showActions && (
+        {replyState && (
           <NewComment
             comment_id={comment.id}
             post_id={comment.content_id as number}
           />
         )}
-        <div className="mt-4 scale-90">
-          {comment.replies.map((reply, index) => (
-            <Comment key={index} comment={reply} showActions={false} />
-          ))}
-        </div>
       </div>
     </div>
   );

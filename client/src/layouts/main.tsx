@@ -87,7 +87,7 @@ const Main = () => {
           onTouchEnd={handleTouchEnd}
         >
           <ToastContainer />
-          <div className="sticky top-0 bg-white dark:bg-stone-900 py-2 px-4 flex items-center justify-between">
+          <div className="sticky top-0 z-20 bg-white dark:bg-stone-900 py-2 px-4 flex items-center justify-between">
             <SmallAvatar src="/favicon-32x32.png" alt="Toucan Logo" />
             <div className="text-2xl text-gray-600 dark:text-gray-200 flex items-center gap-2">
               <button
