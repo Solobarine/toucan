@@ -156,7 +156,7 @@ const post = createSlice({
         state.create.status = "idle";
         state.create.message = "Post created successfully";
         toast(state.create.message, {});
-        state.posts.data = [action.payload.data, ...state.posts.data];
+        state.posts.data = [action.payload.data.post, ...state.posts.data];
       }
     );
     builder.addCase(createPost.rejected, (state, action) => {
