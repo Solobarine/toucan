@@ -1,4 +1,15 @@
 import React, { useState } from "react";
+import {
+  Heart,
+  MessageSquare,
+  UserPlus,
+  AtSign,
+  Settings,
+  Bell,
+  Trash2,
+  Check,
+  ChevronRight,
+} from "lucide-react";
 
 type Notification = {
   id: number;
@@ -18,7 +29,8 @@ const notificationsData: Notification[] = [
     timestamp: "2 minutes ago",
     isRead: false,
     user: "Solly",
-    avatar: "https://via.placeholder.com/150",
+    avatar:
+      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop&crop=faces",
   },
   {
     id: 2,
@@ -27,7 +39,8 @@ const notificationsData: Notification[] = [
     timestamp: "10 minutes ago",
     isRead: false,
     user: "Jessica",
-    avatar: "https://via.placeholder.com/150",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=faces",
   },
   {
     id: 3,
@@ -36,7 +49,8 @@ const notificationsData: Notification[] = [
     timestamp: "1 hour ago",
     isRead: true,
     user: "Michael",
-    avatar: "https://via.placeholder.com/150",
+    avatar:
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=150&h=150&fit=crop&crop=faces",
   },
   {
     id: 4,
@@ -45,7 +59,8 @@ const notificationsData: Notification[] = [
     timestamp: "Yesterday",
     isRead: false,
     user: "Sarah",
-    avatar: "https://via.placeholder.com/150",
+    avatar:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=faces",
   },
   {
     id: 5,
@@ -90,19 +105,37 @@ const NotificationPage: React.FC = () => {
   };
 
   const renderNotificationIcon = (type: Notification["type"]) => {
+    const iconClasses = "w-5 h-5";
     switch (type) {
       case "like":
-        return <i className="bx bx-heart text-red-500 text-2xl"></i>;
+        return <Heart className={iconClasses} />;
       case "comment":
-        return <i className="bx bx-comment text-primary text-2xl"></i>;
+        return <MessageSquare className={iconClasses} />;
       case "follow":
-        return <i className="bx bx-user-plus text-green-500 text-2xl"></i>;
+        return <UserPlus className={iconClasses} />;
       case "mention":
-        return <i className="bx bx-at text-yellow-500 text-2xl"></i>;
+        return <AtSign className={iconClasses} />;
       case "system":
-        return <i className="bx bx-cog text-gray-500 text-2xl"></i>;
+        return <Settings className={iconClasses} />;
       default:
         return null;
+    }
+  };
+
+  const getIconBackground = (type: Notification["type"]) => {
+    switch (type) {
+      case "like":
+        return "bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400";
+      case "comment":
+        return "bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400";
+      case "follow":
+        return "bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400";
+      case "mention":
+        return "bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400";
+      case "system":
+        return "bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-400";
+      default:
+        return "bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-400";
     }
   };
 
@@ -127,113 +160,162 @@ const NotificationPage: React.FC = () => {
     );
 
     return (
-      <>
+      <div className="space-y-8">
         {todayNotifications.length > 0 && (
-          <section className="mb-6">
-            <h2 className="text-lg font-semibold mb-4 opacity-85">Today</h2>
-            {todayNotifications.map((notification) =>
-              renderNotification(notification)
-            )}
+          <section>
+            <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">
+              Today
+            </h2>
+            <div className="space-y-3">
+              {todayNotifications.map((notification) =>
+                renderNotification(notification)
+              )}
+            </div>
           </section>
         )}
         {yesterdayNotifications.length > 0 && (
-          <section className="mb-6">
-            <h2 className="text-lg font-semibold mb-4 opacity-85">Yesterday</h2>
-            {yesterdayNotifications.map((notification) =>
-              renderNotification(notification)
-            )}
+          <section>
+            <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">
+              Yesterday
+            </h2>
+            <div className="space-y-3">
+              {yesterdayNotifications.map((notification) =>
+                renderNotification(notification)
+              )}
+            </div>
           </section>
         )}
         {earlierNotifications.length > 0 && (
-          <section className="mb-6">
-            <h2 className="text-lg font-semibold mb-4 opacity-85">Earlier</h2>
-            {earlierNotifications.map((notification) =>
-              renderNotification(notification)
-            )}
+          <section>
+            <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">
+              Earlier
+            </h2>
+            <div className="space-y-3">
+              {earlierNotifications.map((notification) =>
+                renderNotification(notification)
+              )}
+            </div>
           </section>
         )}
-      </>
+      </div>
     );
   };
 
   const renderNotification = (notification: Notification) => (
     <div
       key={notification.id}
-      className={`p-4 rounded-lg shadow-md flex items-center justify-between transition duration-200 mb-4 ${
+      className={`group relative p-4 rounded-xl transition-all duration-200 ${
         notification.isRead
-          ? "bg-white/20"
-          : "bg-primary/20 border-l-4 border-primary"
+          ? "bg-white dark:bg-stone-800"
+          : "bg-blue-50 dark:bg-blue-500/10 shadow-sm"
       }`}
     >
-      <div className="flex items-center">
+      <div className="flex items-start gap-4">
         {notification.avatar ? (
           <img
             src={notification.avatar}
-            alt="User avatar"
-            className="w-12 h-12 rounded-full mr-4"
+            alt={`${notification.user}'s avatar`}
+            className="w-10 h-10 rounded-full object-cover"
           />
         ) : (
-          <div className="w-12 h-12 bg-gray-300 rounded-full mr-4 flex items-center justify-center">
+          <div
+            className={`w-10 h-10 rounded-full flex items-center justify-center ${getIconBackground(
+              notification.type
+            )}`}
+          >
             {renderNotificationIcon(notification.type)}
           </div>
         )}
 
-        <div>
-          <p className="text-lg">
-            <span className="font-semibold">
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-gray-900 dark:text-gray-100 leading-5">
+            <span className="font-medium">
               {notification.user ? `${notification.user} ` : ""}
             </span>
             {notification.message}
           </p>
-          <p className="text-sm opacity-60">{notification.timestamp}</p>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            {notification.timestamp}
+          </p>
         </div>
-      </div>
 
-      <div className="flex items-center space-x-2">
-        {!notification.isRead && (
+        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          {!notification.isRead && (
+            <button
+              onClick={() => markAsRead(notification.id)}
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-stone-700 text-gray-500 dark:text-gray-400"
+              aria-label="Mark as read"
+            >
+              <Check className="w-4 h-4" />
+            </button>
+          )}
           <button
-            onClick={() => markAsRead(notification.id)}
-            className="text-primary hover:underline text-sm"
+            onClick={() => deleteNotification(notification.id)}
+            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-stone-700 text-gray-500 dark:text-gray-400"
+            aria-label="Delete notification"
           >
-            Mark as Read
+            <Trash2 className="w-4 h-4" />
           </button>
-        )}
-        <button
-          onClick={() => deleteNotification(notification.id)}
-          className="text-red-500 hover:underline text-sm"
-        >
-          Delete
-        </button>
+        </div>
       </div>
     </div>
   );
 
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
   return (
-    <div className="p-6 max-w-4xl mx-auto my-4 rounded-xl bg-white dark:bg-stone-900">
-      <header className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-semibold">Notifications</h1>
-        <i className="bx bx-bell text-4xl text-primary"></i>
-      </header>
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="bg-white dark:bg-stone-700 rounded-2xl shadow-sm p-6">
+        <header className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
+              Notifications
+            </h1>
+            {unreadCount > 0 && (
+              <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 rounded-full">
+                {unreadCount} new
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={markAllAsRead}
+              className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+            >
+              Mark all as read
+            </button>
+            <button
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-stone-700 text-gray-500 dark:text-gray-400"
+              aria-label="Notification settings"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
+          </div>
+        </header>
 
-      <div className="flex justify-between mb-6">
-        <button
-          onClick={markAllAsRead}
-          className="text-primary hover:underline text-sm"
-        >
-          Mark All as Read
-        </button>
-        <button className="text-primary hover:underline text-sm">
-          Notification Settings
-        </button>
+        {renderGroupedNotifications()}
+
+        {notifications.length > 0 && (
+          <footer className="mt-8 text-center">
+            <button className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+              View all notifications
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </footer>
+        )}
+
+        {notifications.length === 0 && (
+          <div className="text-center py-12">
+            <Bell className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">
+              No notifications
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400">
+              We'll notify you when something arrives
+            </p>
+          </div>
+        )}
       </div>
-
-      {renderGroupedNotifications()}
-
-      <footer className="text-center mt-8">
-        <button className="text-primary hover:underline">
-          View All Notifications
-        </button>
-      </footer>
     </div>
   );
 };
