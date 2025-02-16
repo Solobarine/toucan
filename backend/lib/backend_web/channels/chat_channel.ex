@@ -51,9 +51,17 @@ defmodule BackendWeb.ChatChannel do
       {:ok, chat} ->
         broadcast(socket, "new_message", ChatJSON.show(%{chat: chat}))
 
-        if Enum.member?([chat.sender_id, chat.receiver_id], socket.assigns[:user_id]) do
-          broadcast(socket, "latest", ChatJSON.data_with_user(%{chat: chat}))
-        end
+        BackendWeb.Endpoint.broadcast(
+          "chat:recents:#{chat.receiver_id}",
+          "latest",
+          ChatJSON.show(%{chat: chat})
+        )
+
+        BackendWeb.Endpoint.broadcast(
+          "chat:recents:#{chat.sender_id}",
+          "latest",
+          ChatJSON.show(%{chat: chat})
+        )
 
       {:error, reason} ->
         broadcast(socket, "new_message", %{error: reason})
