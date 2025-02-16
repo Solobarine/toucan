@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet";
 
 const NotificationsSettings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -8,6 +9,10 @@ const NotificationsSettings = () => {
 
   return (
     <div className="min-h-screen py-10 px-5 md:px-20">
+      <Helmet>
+        <title>Toucan - Notifications Setting</title>
+        <meta name="description" content="User Notifications Setting" />
+      </Helmet>
       <div className="max-w-3xl mx-auto bg-white dark:bg-stone-700 rounded-lg shadow-md p-8">
         {/* Email Notifications */}
         <div className="border-b pb-4 mb-5">

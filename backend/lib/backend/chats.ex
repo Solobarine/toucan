@@ -120,7 +120,14 @@ defmodule Backend.Chats do
   def recents(user_id) do
     from(c in Chat,
       where: c.sender_id == ^user_id or c.receiver_id == ^user_id,
-      distinct: true,
+      distinct:
+        fragment(
+          "LEAST(?, ?), GREATEST(?, ?)",
+          c.sender_id,
+          c.receiver_id,
+          c.sender_id,
+          c.receiver_id
+        ),
       order_by: [desc: c.inserted_at],
       limit: 20
     )

@@ -72,6 +72,24 @@ defmodule Backend.AuthControllerTest do
     end
   end
 
+  describe "GET /profile" do
+    setup do
+      {:ok, user} = Accounts.register(@valid_attrs)
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+      %{token: token, user: user}
+    end
+
+    test "returns profile of currently authenticated user", %{
+      conn: conn,
+      token: token,
+      user: user
+    } do
+      conn = conn |> put_req_header("authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/profile")
+      assert json_response(conn, 200)["profile"]
+    end
+  end
+
   describe "DELETE /logout" do
     setup do
       {:ok, user} = Accounts.register(@valid_attrs)

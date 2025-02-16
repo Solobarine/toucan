@@ -23,12 +23,12 @@ defmodule BackendWeb.Router do
     post "/login", AuthController, :login
     delete "/logout", AuthController, :logout
 
-    resources "/posts", PostController, only: [:index, :show]
-
     pipe_through [:auth]
 
     get "/me", AuthController, :me
-    resources "/posts", PostController, only: [:create, :update, :delete]
+    get "/profile", AuthController, :profile
+    get "/user/:id", UserController, :show
+    resources "/posts", PostController, except: [:new, :edit]
     resources "/comments", CommentController, only: [:index, :create, :show, :update, :delete]
     post "/replies", CommentController, :create_reply
     resources "/chats", ChatController, except: [:new, :edit]

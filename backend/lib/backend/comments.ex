@@ -27,6 +27,7 @@ defmodule Backend.Comments do
   def list_post_comments(post_id) do
     Comment
     |> where([c], c.content_id == ^post_id and c.content_type == "post")
+    |> order_by(desc: :inserted_at)
     |> Repo.all()
   end
 
@@ -36,7 +37,18 @@ defmodule Backend.Comments do
   def list_comment_replies(comment_id) do
     Comment
     |> where([c], c.content_id == ^comment_id and c.content_type == "comment")
+    |> order_by(desc: :inserted_at)
     |> Repo.all()
+  end
+
+  def count_comments(content_id, content_type) do
+    Repo.aggregate(
+      from(c in Comment,
+        where: c.content_id == ^content_id and c.content_type == ^content_type
+      ),
+      :count,
+      :id
+    )
   end
 
   @doc """

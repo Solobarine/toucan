@@ -1,32 +1,49 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { loginUser, me, registerUser } from "../thunks/auth";
+import {
+  loginUser,
+  logoutUser,
+  me,
+  getProfile,
+  registerUser,
+} from "../thunks/auth";
 import { AxiosResponse } from "axios";
-import { User } from "../../types/auth";
+import { User, UserProfile } from "../../types/auth";
+import { serverError } from "../../utils";
+import { toast } from "react-toastify";
 
 interface InitialState {
   isLoggedIn: boolean;
-  user: User | undefined;
+  user: User | null;
   login: {
-    statusCode: number | undefined;
+    statusCode: number | null;
     status: "idle" | "pending" | "failed";
-    error: string | undefined;
+    error: string | null;
   };
   register: {
-    statusCode: number | undefined;
+    statusCode: number | null;
     status: "idle" | "pending" | "failed";
-    error: string | undefined;
-    errors: { [key: string]: string[] } | undefined;
+    error: string | null;
+    errors: { [key: string]: string[] } | null;
   };
   me: {
-    statusCode: number | undefined;
+    statusCode: number | null;
     status: "idle" | "pending" | "failed";
-    error: string | undefined;
+    error: string | null;
+  };
+  logout: {
+    message: string | null;
+  };
+  profile: {
+    status: "idle" | "pending" | "failed";
+    error: string | null;
+    data: UserProfile | null;
   };
 }
 
 const initialState: InitialState = {
   isLoggedIn: false,
   user: {
+    id: 0,
     first_name: "",
     last_name: "",
     username: "",
@@ -34,20 +51,28 @@ const initialState: InitialState = {
     bio: "",
   },
   login: {
-    statusCode: undefined,
+    statusCode: null,
     status: "idle",
-    error: undefined,
+    error: null,
   },
   register: {
-    statusCode: undefined,
+    statusCode: null,
     status: "idle",
-    error: undefined,
-    errors: undefined,
+    error: null,
+    errors: null,
   },
   me: {
-    statusCode: undefined,
+    statusCode: null,
     status: "idle",
-    error: undefined,
+    error: null,
+  },
+  logout: {
+    message: null,
+  },
+  profile: {
+    status: "idle",
+    error: null,
+    data: null,
   },
 };
 
@@ -60,8 +85,8 @@ const authSlice = createSlice({
     builder.addCase(loginUser.pending, (state) => {
       state.isLoggedIn = false;
       state.login.status = "pending";
-      state.login.error = undefined;
-      state.login.statusCode = undefined;
+      state.login.error = null;
+      state.login.statusCode = null;
     });
     builder.addCase(
       loginUser.fulfilled,
@@ -79,9 +104,9 @@ const authSlice = createSlice({
     builder.addCase(registerUser.pending, (state) => {
       state.isLoggedIn = false;
       state.register.status = "pending";
-      state.register.error = undefined;
-      state.register.errors = undefined;
-      state.register.statusCode = undefined;
+      state.register.error = null;
+      state.register.errors = null;
+      state.register.statusCode = null;
     });
     builder.addCase(registerUser.fulfilled, (state, action) => {
       state.isLoggedIn = true;
@@ -94,15 +119,15 @@ const authSlice = createSlice({
         action.payload as { errors: { [key: string]: string[] } }
       ).errors;
       state.register.statusCode = (
-        action.payload as { statusCode: number | undefined }
+        action.payload as { statusCode: number | null }
       ).statusCode;
     });
 
     /** ME REDUCERS **/
     builder.addCase(me.pending, (state) => {
       state.me.status = "pending";
-      state.me.error = undefined;
-      state.me.statusCode = undefined;
+      state.me.error = null;
+      state.me.statusCode = null;
     });
     builder.addCase(me.fulfilled, (state, action) => {
       state.me.status = "idle";
@@ -110,13 +135,47 @@ const authSlice = createSlice({
     });
     builder.addCase(me.rejected, (state, action) => {
       state.me.status = "failed";
-      state.me.error = action.error.message;
+      state.me.error = action.error.message as string;
       state.me.statusCode = (
-        action.payload as { statusCode: number | undefined }
+        action.payload as { statusCode: number | null }
       ).statusCode;
       if (state.me.statusCode === 500) {
-        state.me.error = "Server Error. We are working to resolve this";
+        state.me.error = serverError();
       }
+    });
+
+    /** PROFILE REDUCERS **/
+    builder.addCase(getProfile.pending, (state) => {
+      state.profile = {
+        ...state.profile,
+        status: "pending",
+        error: null,
+      };
+    });
+    builder.addCase(getProfile.fulfilled, (state, action) => {
+      state.profile = {
+        ...state.profile,
+        status: "idle",
+        data: action.payload.data.profile,
+      };
+    });
+    builder.addCase(getProfile.rejected, (state) => {
+      state.profile = {
+        ...state.profile,
+        status: "failed",
+        error: "Something went wrong",
+      };
+    });
+
+    /** LOGOUT REDUCERS **/
+    builder.addCase(logoutUser.fulfilled, (state) => {
+      state.isLoggedIn = false;
+      state.user = null;
+      toast("User successfully logged out");
+      localStorage.removeItem("auth_token");
+    });
+    builder.addCase(logoutUser.rejected, () => {
+      toast("Unable to Logout");
     });
   },
 });

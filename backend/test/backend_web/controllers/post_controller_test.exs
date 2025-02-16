@@ -14,8 +14,9 @@ defmodule BackendWeb.PostControllerTest do
   end
 
   describe "index/2" do
-    test "lists all posts", %{conn: conn} do
+    test "lists all posts", %{conn: conn, token: token} do
       conn = get(conn, ~p"/api/posts")
+      conn = conn |> put_req_header("authorization", "Bearer #{token}")
 
       assert json_response(conn, 200)["posts"]
     end
@@ -35,9 +36,11 @@ defmodule BackendWeb.PostControllerTest do
   end
 
   describe "show/2" do
-    test "shows the chosen post", %{conn: conn, user: user} do
+    test "shows the chosen post", %{conn: conn, user: user, token: token} do
       params = Map.merge(@valid_attrs, %{user_id: user.id})
       {:ok, post} = Posts.create_post(params)
+
+      conn = conn |> put_req_header("authorization", "Bearer #{token}")
 
       conn = get(conn, ~p"/api/posts/#{post.id}")
 

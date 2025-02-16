@@ -1,6 +1,7 @@
 defmodule BackendWeb.ChatController do
   use BackendWeb, :controller
 
+  alias BackendWeb.ChatJSON
   alias BackendWeb.Policies.ChatsPolicy
   alias Backend.Chats
   alias Backend.Chats.Chat
@@ -23,13 +24,27 @@ defmodule BackendWeb.ChatController do
     updated_params = Map.merge(chat_params, %{"sender_id" => current_user.id, "name" => name})
 
     with {:ok, %Chat{} = chat} <- Chats.create_chat(updated_params) do
-      BackendWeb.Endpoint.broadcast(name, "new_message", %{"chat" => chat})
+      BackendWeb.Endpoint.broadcast(name, "shout", %{
+        "chat" => ChatJSON.show(%{chat: chat})["chat"]
+      })
 
-      BackendWeb.Endpoint.broadcast(
+      BackendWeb.Endpoint.broadcast!(name, "new_message", %{
+        "chat" => ChatJSON.show(%{chat: chat})["chat"]
+      })
+
+      BackendWeb.Endpoint.broadcast!(
         "chat:recents:" <> Integer.to_string(current_user.id),
         "latest",
         %{
-          "chat" => chat
+          "chat" => ChatJSON.show(%{chat: chat})["chat"]
+        }
+      )
+
+      BackendWeb.Endpoint.broadcast!(
+        "chat:recents:" <> Integer.to_string(chat_params["receiver_id"]),
+        "latest",
+        %{
+          "chat" => ChatJSON.show(%{chat: chat})["chat"]
         }
       )
 

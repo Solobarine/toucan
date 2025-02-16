@@ -30,7 +30,7 @@ defmodule BackendWeb.CommentController do
     current_user = Guardian.Plug.current_resource(conn)
 
     updated_params =
-      Map.merge(comment_params, %{user_id: current_user.id, content_type: "comment"})
+      Map.merge(comment_params, %{"user_id" => current_user.id, "content_type" => "comment"})
 
     with {:ok, %Comment{} = comment} <- Comments.create_comment(updated_params) do
       conn

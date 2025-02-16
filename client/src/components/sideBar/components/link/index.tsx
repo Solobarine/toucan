@@ -16,8 +16,8 @@ const Link = ({
   return (
     <NavLink
       to={to}
-      className={`relative flex items-center gap-2 px-2 py-1 rounded-md hover:bg-light hover:dark:bg-stone-700 ${
-        pathname === to ? "bg-light dark:bg-stone-700" : ""
+      className={`relative flex items-center gap-2 px-2 py-1 rounded-md hover:bg-light ${
+        pathname === to ? "bg-light text-primary" : ""
       }`}
       onClick={handleClick}
     >

@@ -1,6 +1,9 @@
+import { useSelector } from "react-redux";
 import Card from "./components/card";
+import { RootState } from "../../../features/store";
 
 const Recents = () => {
+  const { chats } = useSelector((state: RootState) => state.chats.recents);
   return (
     <div className="flex flex-col basis-72 shrink-0 bg-white/60 dark:bg-stone-700 border-r-2 border-light dark:border-dark min-h-full p-3">
       <div className="flex items-center justify-between">
@@ -19,7 +22,7 @@ const Recents = () => {
         />
       </div>
       <div className="recentChats h-full max-h-full mt-6 grid gap-1 overflow-y-scroll">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((_, index) => (
+        {chats.map((_, index) => (
           <Card key={index} />
         ))}
       </div>

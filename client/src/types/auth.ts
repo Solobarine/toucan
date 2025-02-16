@@ -13,6 +13,14 @@ export interface LoginInterface {
 
 export interface User
   extends Pick<RegisterInterface, "first_name" | "last_name" | "email"> {
+  id: number;
   username: string;
   bio: string;
+}
+
+export interface UserProfile {
+  followers: number;
+  following: number;
+  posts_count: number;
+  activity: [];
 }

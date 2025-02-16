@@ -1,9 +1,9 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import TextInput from "../../../components/form/inputs";
+import { Helmet } from "react-helmet";
 
 const SecuritySettings = () => {
-  // States for toggling 2FA, notifications, and password change modal
   const [twoFactorAuth, setTwoFactorAuth] = useState(false);
   const [securityNotifications, setSecurityNotifications] = useState(true);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -19,6 +19,10 @@ const SecuritySettings = () => {
 
   return (
     <div className="min-h-screen py-10 px-5 md:px-20">
+      <Helmet>
+        <title>Toucan - Security Setting</title>
+        <meta name="description" content="User Security Setting" />
+      </Helmet>
       <div className="max-w-3xl mx-auto bg-white dark:bg-stone-700 rounded-lg shadow-md p-8">
         {/* Two-Factor Authentication */}
         <div className="border-b pb-4 mb-5">
