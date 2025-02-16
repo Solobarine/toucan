@@ -14,6 +14,7 @@ import { getUser } from "../../../features/thunks/user";
 import { useFormik } from "formik";
 import { ChatSchema } from "../../../schemas/chat";
 import { createChat } from "../../../features/thunks/chats";
+import { MoreVertical, Phone, Video } from "lucide-react";
 
 const ChatBox = () => {
   const { id } = useParams();
@@ -99,30 +100,47 @@ const ChatBox = () => {
   ) : (
     <div className="messages">
       {/* Chat Header */}
-      <div className="bg-white dark:bg-stone-700 p-2 flex items-center justify-between sticky top-0">
-        <div className="flex items-start gap-2">
-          <img
-            src="#"
-            alt="Chat Avatar"
-            className="w-10 h-10 overflow-hidden rounded-full bg-gray-400"
-          />
-          <div>
-            <p className="font-semibold">
-              {capitalizeText(user2.first_name)}{" "}
-              {capitalizeText(user2.last_name)}
-            </p>
-            <p className="text-sm mt-0.5">online</p>
+      <header className="bg-white dark:bg-stone-800 p-4 flex items-center justify-between sticky top-0 shadow-sm z-10 border-b border-gray-200 dark:border-stone-700">
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <img
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces"
+              alt="Chat Avatar"
+              className="w-11 h-11 rounded-full object-cover border-2 border-white dark:border-stone-700"
+            />
+            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-stone-800 rounded-full"></span>
+          </div>
+          <div className="flex flex-col">
+            <h2 className="font-semibold text-gray-900 dark:text-white">
+              {capitalizeText(user?.first_name)}{" "}
+              {capitalizeText(user?.last_name)}
+            </h2>
+            <span className="text-sm text-green-600 dark:text-green-400 font-medium">
+              Active now
+            </span>
           </div>
         </div>
-        <div>
-          <button className="px-2 py-0.5 rounded-md hover:bg-gray-400/20 hover:dark:bg-gray-100/20">
-            <i className="bx bx-video" />
+        <div className="flex items-center gap-1">
+          <button
+            className="p-2.5 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-stone-700 transition-colors duration-200"
+            aria-label="Start video call"
+          >
+            <Video className="w-5 h-5" />
           </button>
-          <button className="px-2 py-0.5 rounded-md hover:bg-gray-400/20 hover:dark:bg-gray-100/20">
-            <i className="bx bx-phone" />
+          <button
+            className="p-2.5 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-stone-700 transition-colors duration-200"
+            aria-label="Start voice call"
+          >
+            <Phone className="w-5 h-5" />
+          </button>
+          <button
+            className="p-2.5 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-stone-700 transition-colors duration-200 ml-1"
+            aria-label="More options"
+          >
+            <MoreVertical className="w-5 h-5" />
           </button>
         </div>
-      </div>
+      </header>
       {/* Messages */}
       <div className="overflow-y-scroll p-4 gap-3">
         {chats.map((chat, index) => (
