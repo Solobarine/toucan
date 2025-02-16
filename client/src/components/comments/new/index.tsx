@@ -28,6 +28,10 @@ const NewComment = ({
     <div className="flex items-start gap-2">
       <SmallAvatar />
       <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          submitForm();
+        }}
         className={`border ${
           values.text ? "rounded-3xl p-2" : "rounded-full p-1"
         } w-full`}
@@ -46,6 +50,9 @@ const NewComment = ({
           >
             Reply
           </PrimaryButton>
+        )}
+        {errors.text && touched.text && (
+          <p className="text-red-600 text-sm">{errors.text}</p>
         )}
       </form>
     </div>
