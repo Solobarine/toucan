@@ -107,7 +107,7 @@ const Post = () => {
       </div>
       <div className="flex items-center justify-between py-3 border-y border-gray-200 dark:border-stone-900">
         <button
-          className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
+          className={`flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-4 py-2 rounded-full transition-colors ${
             data?.is_liked_by_user
               ? "text-blue-500"
               : "text-gray-500 dark:text-light"
@@ -123,7 +123,7 @@ const Post = () => {
           </svg>
           {data?.is_liked_by_user ? "Unlike" : "Like"}
         </button>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-500 dark:text-light transition-colors">
+        <button className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-4 py-2 rounded-full text-gray-500 dark:text-light transition-colors">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
@@ -138,7 +138,7 @@ const Post = () => {
           </svg>
           Comment
         </button>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-500 dark:text-light transition-colors">
+        <button className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-4 py-2 rounded-full text-gray-500 dark:text-light transition-colors">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
@@ -153,7 +153,7 @@ const Post = () => {
           </svg>
           Repost
         </button>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-500 dark:text-light transition-colors">
+        <button className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-4 py-2 rounded-full text-gray-500 dark:text-light transition-colors">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"

@@ -21,7 +21,7 @@ const SideBar = () => {
   return (
     <aside
       className={`fixed sm:sticky top-0 flex flex-col bg-primary dark:bg-primary-dark text-white justify-between h-screen px-1 py-2 transition-all duration-700 shrink-0 z-20 sm:translate-x-0 ${
-        isSideBarOpen ? "translate-x-0 w-52" : "-translate-x-52 w-auto"
+        isSideBarOpen ? "translate-x-0 w-52" : "-translate-x-52 w-auto z-30"
       }`}
     >
       <div className="grid gap-2">
