@@ -86,7 +86,7 @@ const Main = () => {
           onTouchEnd={handleTouchEnd}
         >
           <ToastContainer />
-          <header className="sticky top-0 z-20 bg-white dark:bg-stone-800 py-3 px-4 flex items-center justify-between border-b border-gray-200 dark:border-stone-700 shadow-sm">
+          <header className="sticky top-0 bg-white dark:bg-stone-800 py-3 px-4 flex items-center justify-between border-b border-gray-200 dark:border-stone-700 shadow-sm z-10">
             <div className="flex items-center gap-2">
               <img
                 src="/favicon-32x32.png"
@@ -120,7 +120,7 @@ const Main = () => {
 
               <button
                 className="sm:hidden p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-stone-700 transition-colors duration-200"
-                onClick={() => toggleSideBar()}
+                onClick={() => dispatch(toggleSideBar())}
                 aria-label={isSideBarOpen ? "Close menu" : "Open menu"}
               >
                 {isSideBarOpen ? (

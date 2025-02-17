@@ -24,9 +24,9 @@ export default function Hero() {
           moments.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <PrimaryButton className="bg-white text-primary hover:bg-gray-100">
+          <button className="px-4 py-3 rounded-md bg-white text-primary hover:bg-gray-100">
             Get Started
-          </PrimaryButton>
+          </button>
           <PrimaryButton className="bg-transparent border-white text-white hover:bg-white hover:text-purple-600 flex items-center justify-between gap-2">
             Learn More
             <ArrowRight className="ml-2 h-4 w-4" />
