@@ -2,9 +2,9 @@ import { useParams } from "react-router-dom";
 import ChatCard from "../../../components/chat/components/cards/chats";
 import { capitalizeText } from "../../../utils";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../features/store";
-import { Channel, Socket } from "phoenix";
-import { useEffect, useState } from "react";
+import type { AppDispatch, RootState } from "../../../features/store";
+import { type Channel, Socket } from "phoenix";
+import { useEffect, useRef, useState } from "react";
 import {
   appendPrivateChat,
   appendRecents,
@@ -20,36 +20,66 @@ const ChatBox = () => {
   const { id } = useParams();
   const { user } = useSelector((state: RootState) => state.auth);
   const {
-    privateChat: { status, error, user: user2, chats },
+    privateChat: { status, user: user2, chats },
   } = useSelector((state: RootState) => state.chats);
   const dispatch: AppDispatch = useDispatch();
-  console.log(chats);
+
   const chatId =
-    (user?.id as number) < parseInt(id as string)
-      ? `${user?.id},${id}`
-      : `${id},${user?.id}`;
-  const socket = new Socket("ws://localhost:4000/socket", {
-    params: { token: localStorage.getItem("auth_token") },
-  });
+    user?.id && id
+      ? user.id < Number.parseInt(id)
+        ? `${user.id},${id}`
+        : `${id},${user.id}`
+      : null;
+
+  const socketRef = useRef<Socket | null>(null);
+  const [channel, setChannel] = useState<Channel | null>(null);
 
   const { values, errors, handleChange } = useFormik({
     initialValues: {
-      receiver_id: parseInt(id as string),
+      receiver_id: Number.parseInt(id as string),
       message: "",
     },
     validationSchema: ChatSchema,
     onSubmit: (values) => {
-      console.log(values);
       dispatch(createChat({ chat: values }));
     },
   });
 
-  const [channel, setChannel] = useState<Channel | null>(null);
-
   useEffect(() => {
-    socket.connect();
-    const newChannel = socket.channel(`chat:${chatId}`, { user_id: id });
+    if (!chatId) return;
 
+    if (!socketRef.current) {
+      socketRef.current = new Socket("ws://localhost:4000/socket", {
+        params: { token: localStorage.getItem("auth_token") },
+      });
+      socketRef.current.connect();
+    }
+
+    // Create channel
+    const newChannel = socketRef.current.channel(`chat:${chatId}`, {
+      user_id: id,
+    });
+
+    // Set up all event listeners before joining
+    const eventHandlers = {
+      new_message: (response: any) => {
+        console.log(response.chat);
+        dispatch(appendPrivateChat(response.chat));
+      },
+      latest: (response: any) => {
+        console.log(response);
+        dispatch(appendRecents(response.chat));
+      },
+      ping: (response: any) => {
+        console.log(response);
+      },
+    };
+
+    Object.entries(eventHandlers).forEach(([event, handler]) => {
+      newChannel.on(event, handler);
+    });
+
+    // Join the channel
     newChannel
       .join()
       .receive("ok", (response) => {
@@ -60,44 +90,43 @@ const ChatBox = () => {
       .receive("error", (response) => {
         console.error("Chat join error:", response);
         dispatch(populatePrivateChat([]));
-        setChannel(newChannel);
       });
 
-    newChannel.on("new_message", (response) => {
-      console.log(response.chat);
-      dispatch(appendPrivateChat(response.chat));
-    });
-
-    newChannel.on("latest", (response) => {
-      console.log(response);
-      dispatch(appendRecents(response.chat));
-    });
-
-    newChannel.on("ping", (response) => {
-      console.log(response);
-    });
-
+    // Cleanup function
     return () => {
-      newChannel.leave();
-      socket.disconnect();
+      // Remove all event listeners
+      Object.keys(eventHandlers).forEach((event) => {
+        newChannel.off(event);
+      });
+
+      // Leave the channel
+      if (newChannel) {
+        newChannel.leave();
+      }
+
+      // Only disconnect socket when component unmounts
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
     };
-  }, [chatId, id]);
+  }, [chatId, id, dispatch]);
 
   useEffect(() => {
-    dispatch(getUser(id as string));
-  }, [id]);
+    if (id) {
+      dispatch(getUser(id));
+    }
+  }, [id, dispatch]);
+
+  const handleClick = () => {
+    if (!channel || !values.message.trim()) return;
+    channel.push("new_message", values);
+    values.message = "";
+  };
 
   if (status === "pending") return <p>Loading chat...</p>;
 
-  const handleClick = () => {
-    //submitForm();
-    if (!channel) return;
-    channel.push("new_message", values);
-  };
-
-  return error ? (
-    <div>{error}</div>
-  ) : (
+  return (
     <div className="messages">
       {/* Chat Header */}
       <header className="bg-white dark:bg-stone-800 p-4 flex items-center justify-between sticky top-0 shadow-sm z-10 border-b border-gray-200 dark:border-stone-700">
@@ -141,12 +170,14 @@ const ChatBox = () => {
           </button>
         </div>
       </header>
+
       {/* Messages */}
       <div className="overflow-y-scroll p-4 gap-3">
         {chats.map((chat, index) => (
           <ChatCard key={index} chat={chat} />
         ))}
       </div>
+
       {/* Message Input */}
       <div className="sticky bottom-0 bg-white dark:bg-stone-700 shadow-lg transition-all duration-300 ease-in-out">
         {errors.message && (
@@ -182,7 +213,7 @@ const ChatBox = () => {
             <i className="bx bx-send text-xl" />
           </button>
         </div>
-      </div>{" "}
+      </div>
     </div>
   );
 };

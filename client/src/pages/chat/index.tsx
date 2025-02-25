@@ -1,50 +1,63 @@
+"use client";
+
 import { Outlet, useLocation } from "react-router-dom";
-import { Channel, Socket } from "phoenix";
+import { Socket } from "phoenix";
 import Recents from "../../components/chat/recents";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../features/store";
-import { useEffect, useState } from "react";
+import type { AppDispatch, RootState } from "../../features/store";
+import { useEffect, useRef } from "react";
 import { populateRecents } from "../../features/slices/chats";
 
 const Chat = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
-  const socket = new Socket("ws://localhost:4000/socket", {
-    params: { token: localStorage.getItem("auth_token") },
-  });
+  const location = useLocation();
 
-  const [channel, setChannel] = useState<Channel | null>(null);
+  // Move socket creation outside of render
+  const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    socket.connect();
-    const newChannel = socket.channel("chat:recents:" + user?.id, {});
-
-    if (user?.id) {
-      console.log(user);
-      newChannel
-        .join()
-        .receive("ok", (response) => {
-          console.log("Joined successfully:", response);
-          setChannel(channel);
-          dispatch(populateRecents(response.chats));
-        })
-        .receive("error", (response) => {
-          console.error("Unable to join:", response);
-          dispatch(populateRecents([]));
-        });
+    // Only create the socket once
+    if (!socketRef.current) {
+      socketRef.current = new Socket("ws://localhost:4000/socket", {
+        params: { token: localStorage.getItem("auth_token") },
+      });
+      socketRef.current.connect();
     }
 
+    if (!user?.id || !socketRef.current) return;
+
+    const newChannel = socketRef.current.channel("chat:recents:" + user.id, {});
+
+    // Set up event listener before joining
+    newChannel.on("latest", (payload) => {
+      console.log(payload);
+    });
+
+    newChannel
+      .join()
+      .receive("ok", (response) => {
+        console.log("Joined successfully:", response);
+        dispatch(populateRecents(response.chats));
+      })
+      .receive("error", (response) => {
+        console.error("Unable to join:", response);
+        dispatch(populateRecents([]));
+      });
+
     return () => {
-      newChannel.leave();
-      socket.disconnect();
+      // Clean up channel and socket
+      if (newChannel) {
+        newChannel.leave();
+      }
+      // Only disconnect socket when component unmounts
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
     };
-  }, []);
+  }, [user?.id, dispatch]); // Add dispatch to dependencies
 
-  channel?.on("latest", (payload) => {
-    console.log(payload);
-  });
-
-  const location = useLocation();
   return (
     <section className="chats sm:flex h-screen">
       <Recents />
