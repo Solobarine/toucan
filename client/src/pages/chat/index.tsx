@@ -1,11 +1,11 @@
 "use client";
 
 import { Outlet, useLocation } from "react-router-dom";
-import { type Channel, Socket } from "phoenix";
+import { Socket } from "phoenix";
 import Recents from "../../components/chat/recents";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../features/store";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { populateRecents } from "../../features/slices/chats";
 
 const Chat = () => {
@@ -15,7 +15,6 @@ const Chat = () => {
 
   // Move socket creation outside of render
   const socketRef = useRef<Socket | null>(null);
-  const [channel, setChannel] = useState<Channel | null>(null);
 
   useEffect(() => {
     // Only create the socket once
@@ -39,7 +38,6 @@ const Chat = () => {
       .join()
       .receive("ok", (response) => {
         console.log("Joined successfully:", response);
-        setChannel(newChannel); // Store the new channel, not the old one
         dispatch(populateRecents(response.chats));
       })
       .receive("error", (response) => {
