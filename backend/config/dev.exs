@@ -26,6 +26,12 @@ config :backend, BackendWeb.Endpoint,
   secret_key_base: "hCzVxwt5Veo6d4uucixPq3T/FesJhJk6gU/mE+OGwutNlxDQ4emHh74ddEKNlnFC",
   watchers: []
 
+# Configure Guardian
+config :backend, Backend.Guardian,
+  issuer: :backend,
+  secret_key: "siaw4MIJQGC7NJm+TViJZrZooFwq/2A2SlO9nCEq7gscZAZActn6k9bBYT5avt1B",
+  ttl: {3, :days}
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
