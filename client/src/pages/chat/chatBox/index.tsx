@@ -20,11 +20,10 @@ const ChatBox = () => {
   const { id } = useParams();
   const { user } = useSelector((state: RootState) => state.auth);
   const {
-    privateChat: { status, error, user: user2, chats },
+    privateChat: { status, user: user2, chats },
   } = useSelector((state: RootState) => state.chats);
   const dispatch: AppDispatch = useDispatch();
 
-  // Calculate chatId once
   const chatId =
     user?.id && id
       ? user.id < Number.parseInt(id)
@@ -32,7 +31,6 @@ const ChatBox = () => {
         : `${id},${user.id}`
       : null;
 
-  // Move socket to useRef to maintain a single instance
   const socketRef = useRef<Socket | null>(null);
   const [channel, setChannel] = useState<Channel | null>(null);
 
@@ -47,11 +45,9 @@ const ChatBox = () => {
     },
   });
 
-  // Socket connection and channel management
   useEffect(() => {
-    if (!chatId) return; // Guard against missing chatId
+    if (!chatId) return;
 
-    // Create socket only once
     if (!socketRef.current) {
       socketRef.current = new Socket("ws://localhost:4000/socket", {
         params: { token: localStorage.getItem("auth_token") },
@@ -59,7 +55,7 @@ const ChatBox = () => {
       socketRef.current.connect();
     }
 
-    // Create and join channel
+    // Create channel
     const newChannel = socketRef.current.channel(`chat:${chatId}`, {
       user_id: id,
     });
@@ -79,7 +75,6 @@ const ChatBox = () => {
       },
     };
 
-    // Register all event handlers
     Object.entries(eventHandlers).forEach(([event, handler]) => {
       newChannel.on(event, handler);
     });
@@ -115,9 +110,8 @@ const ChatBox = () => {
         socketRef.current = null;
       }
     };
-  }, [chatId, id, dispatch]); // Add all required dependencies
+  }, [chatId, id, dispatch]);
 
-  // Fetch user data
   useEffect(() => {
     if (id) {
       dispatch(getUser(id));
@@ -127,7 +121,6 @@ const ChatBox = () => {
   const handleClick = () => {
     if (!channel || !values.message.trim()) return;
     channel.push("new_message", values);
-    // Reset message after sending
     values.message = "";
   };
 
