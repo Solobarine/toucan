@@ -32,3 +32,8 @@ config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Configure Guardian
+config :backend, Backend.Guardian,
+  issuer: "backend",
+  secret_key: "secret_key"
