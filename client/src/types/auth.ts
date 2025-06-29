@@ -16,6 +16,7 @@ export interface User
   id: number;
   username: string;
   bio: string;
+  inserted_at: string;
 }
 
 export interface UserProfile {

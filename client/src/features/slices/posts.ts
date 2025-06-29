@@ -1,17 +1,25 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Post } from "../../types/post";
-import { createPost, getPost, getPostsFeed } from "../thunks/posts";
+import { Post, Repost } from "../../types/post";
+import {
+  createPost,
+  getPost,
+  getPostsFeed,
+  getUserPosts,
+  repostPost,
+} from "../thunks/posts";
 import { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { createComment, createReply } from "../thunks/comments";
 import { likeContent, unlikeContent } from "../thunks/likes";
 // import { appendComment } from "../../utils";
 
+type FeedItem = Post | Repost;
+
 interface InitialState {
   posts: {
     statusCode: number | undefined;
     status: "idle" | "pending" | "failed";
-    data: [] | Post[];
+    data: [] | FeedItem[];
     error: string | undefined;
   };
   post: {
@@ -58,6 +66,12 @@ interface InitialState {
     status: "idle" | "pending" | "failed";
     error: string | undefined;
   };
+  userPosts: {
+    status: "idle" | "pending" | "failed";
+    data: Post[] | [];
+    error: string | undefined;
+  };
+  repost: { status: "idle" | "pending" | "failed" };
 }
 
 const initialState: InitialState = {
@@ -97,6 +111,11 @@ const initialState: InitialState = {
     message: undefined,
     error: undefined,
   },
+  userPosts: {
+    status: "idle",
+    data: [],
+    error: undefined,
+  },
   createReply: {
     statusCode: undefined,
     status: "idle",
@@ -108,6 +127,9 @@ const initialState: InitialState = {
     error: undefined,
   },
   unlike: { status: "idle", error: undefined },
+  repost: {
+    status: "idle",
+  },
 };
 
 const post = createSlice({
@@ -116,6 +138,113 @@ const post = createSlice({
   reducers: {
     cachePost: (state, action: { payload: Post; type: string }) => {
       state.post.data = action.payload;
+    },
+    incrementLikeCount: (
+      state,
+      action: { payload: { post_id: number; context: "posts" | "post" } }
+    ) => {
+      if (action.payload.context === "posts") {
+        const postIndex = state.posts.data.findIndex(
+          (post) => post.id === action.payload.post_id
+        );
+        const repostIndex = state.posts.data.findIndex(
+          (post) =>
+            post.item_type == "repost" &&
+            post.original_post_id === action.payload.post_id
+        );
+        console.log(repostIndex);
+        if (postIndex !== -1) {
+          let post = state.posts.data[postIndex];
+
+          if (post.item_type === "post") {
+            post = {
+              ...post,
+              is_liked_by_user: true,
+              likes_count: post.likes_count + 1,
+            };
+
+            const newPosts = [
+              ...state.posts.data.slice(0, postIndex),
+              post,
+              ...state.posts.data.slice(postIndex + 1),
+            ];
+
+            state.posts.data = newPosts;
+          }
+        }
+
+        if (repostIndex !== -1) {
+          let repost = state.posts.data[repostIndex] as Repost;
+
+          state.posts.data[repostIndex] = {
+            ...repost,
+            original_post: {
+              ...repost.original_post,
+              is_liked_by_user: true,
+              likes_count: repost.original_post.likes_count + 1,
+            },
+          };
+        }
+      } else {
+        state.post.data = {
+          ...(state.post.data as Post),
+          is_liked_by_user: true,
+          likes_count: (state.post.data?.likes_count as number) + 1,
+        };
+      }
+    },
+    decrementLikeCount: (
+      state,
+      action: { payload: { post_id: number; context: "posts" | "post" } }
+    ) => {
+      if (action.payload.context === "posts") {
+        const postIndex = state.posts.data.findIndex(
+          (post) => post.id === action.payload.post_id
+        );
+        const repostIndex = state.posts.data.findIndex(
+          (post) =>
+            post.item_type == "repost" &&
+            post.original_post_id === action.payload.post_id
+        );
+
+        if (postIndex !== -1) {
+          let post = state.posts.data[postIndex];
+
+          if (post.item_type === "post") {
+            post = {
+              ...post,
+              is_liked_by_user: false,
+              likes_count: post.likes_count - 1,
+            };
+
+            const newPosts = [
+              ...state.posts.data.slice(0, postIndex),
+              post,
+              ...state.posts.data.slice(postIndex + 1),
+            ];
+
+            state.posts.data = newPosts;
+          }
+        }
+
+        if (repostIndex !== -1) {
+          const repost = state.posts.data[repostIndex] as Repost;
+          state.posts.data[repostIndex] = {
+            ...repost,
+            original_post: {
+              ...repost.original_post,
+              is_liked_by_user: false,
+              likes_count: repost.original_post.likes_count - 1,
+            },
+          };
+        }
+      } else {
+        state.post.data = {
+          ...(state.post.data as Post),
+          is_liked_by_user: false,
+          likes_count: (state.post.data?.likes_count as number) - 1,
+        };
+      }
     },
   },
   extraReducers: (builder) => {
@@ -243,16 +372,6 @@ const post = createSlice({
       };
       console.log(action);
       toast("Reply created successfully");
-
-      // Recursively find and append reply
-      /**
-      if (state.post.data) {
-        state.post.data.comments = appendComment(
-          state.post.data.comments,
-          action.payload.data.comment
-        );
-      }
-      **/
     });
     builder.addCase(createReply.rejected, (state, action) => {
       const payload = action.payload as {
@@ -290,7 +409,7 @@ const post = createSlice({
     });
     builder.addCase(unlikeContent.fulfilled, (state) => {
       state.unlike.status = "idle";
-      toast("Content liked successfully");
+      toast("Content unliked successfully");
     });
     builder.addCase(unlikeContent.rejected, (state, action) => {
       state.unlike = {
@@ -300,7 +419,39 @@ const post = createSlice({
       };
       toast("Something went wrong");
     });
+
+    /** USER POSTS **/
+    builder.addCase(getUserPosts.pending, (state) => {
+      state.userPosts.status = "pending";
+      state.userPosts.data = [];
+      state.userPosts.error = undefined;
+    });
+
+    builder.addCase(getUserPosts.fulfilled, (state, action) => {
+      state.userPosts.status = "idle";
+      state.userPosts.data = action.payload.data.posts;
+    });
+    builder.addCase(getUserPosts.rejected, (state) => {
+      state.userPosts.status = "failed";
+      state.userPosts.error = "Something went wrong";
+    });
+
+    /** REPOST **/
+    builder.addCase(repostPost.pending, (state) => {
+      state.repost.status = "pending";
+    });
+
+    builder.addCase(repostPost.fulfilled, (state, action) => {
+      state.repost.status = "idle";
+      toast("Repost successful");
+    });
+
+    builder.addCase(repostPost.rejected, (state, action) => {
+      state.repost.status = "failed";
+      toast("Repost failed");
+    });
   },
 });
-export const { cachePost } = post.actions;
+export const { cachePost, incrementLikeCount, decrementLikeCount } =
+  post.actions;
 export default post.reducer;

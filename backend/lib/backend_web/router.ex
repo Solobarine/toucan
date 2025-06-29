@@ -27,8 +27,10 @@ defmodule BackendWeb.Router do
 
     get "/me", AuthController, :me
     get "/profile", AuthController, :profile
+    get "/user-posts", PostController, :user_posts
     get "/user/:id", UserController, :show
     resources "/posts", PostController, except: [:new, :edit]
+    post "/posts/repost", PostController, :repost
     resources "/comments", CommentController, only: [:index, :create, :show, :update, :delete]
     post "/replies", CommentController, :create_reply
     resources "/chats", ChatController, except: [:new, :edit]

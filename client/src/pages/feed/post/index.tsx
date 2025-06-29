@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { getPost } from "../../../features/thunks/posts";
 import { capitalizeText } from "../../../utils";
 import { formatDistanceToNow } from "date-fns";
+import { Heart, MessageCircleMore, Repeat } from "lucide-react";
 
 const Post = () => {
   const { id } = useParams();
@@ -113,56 +114,15 @@ const Post = () => {
               : "text-gray-500 dark:text-light"
           }`}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-          </svg>
+          <Heart />
           {data?.is_liked_by_user ? "Unlike" : "Like"}
         </button>
         <button className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-4 py-2 rounded-full text-gray-500 dark:text-light transition-colors">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <MessageCircleMore />
           Comment
         </button>
         <button className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-4 py-2 rounded-full text-gray-500 dark:text-light transition-colors">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Repost
-        </button>
-        <button className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-4 py-2 rounded-full text-gray-500 dark:text-light transition-colors">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
-          </svg>
-          Share
+          <Repeat /> Repost
         </button>
       </div>
       <div className="mt-6">

@@ -7,7 +7,7 @@ import {
   registerUser,
 } from "../thunks/auth";
 import { AxiosResponse } from "axios";
-import { User, UserProfile } from "../../types/auth";
+import { User } from "../../types/auth";
 import { serverError } from "../../utils";
 import { toast } from "react-toastify";
 
@@ -36,7 +36,7 @@ interface InitialState {
   profile: {
     status: "idle" | "pending" | "failed";
     error: string | null;
-    data: UserProfile | null;
+    data: User | null;
   };
 }
 
@@ -156,7 +156,7 @@ const authSlice = createSlice({
       state.profile = {
         ...state.profile,
         status: "idle",
-        data: action.payload.data.profile,
+        data: action.payload.data.user,
       };
     });
     builder.addCase(getProfile.rejected, (state) => {

@@ -1,18 +1,72 @@
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../features/store";
 import Link from "./components/link";
+import {
+  Cog,
+  Layers,
+  Mails,
+  Menu,
+  MessageSquareDot,
+  Moon,
+  Phone,
+  Sun,
+  Telescope,
+  TrendingUp,
+  User,
+  UsersRound,
+} from "lucide-react";
+
 import {
   setSideBarState,
   toggleSideBar,
   toggleTheme,
 } from "../../features/slices/settings";
 import { logoutUser } from "../../features/thunks/auth";
+import { AppDispatch, RootState } from "../../features/store";
+
+const topLinks = [
+  {
+    to: "/feed",
+    icon: Layers,
+    name: "Feed",
+  },
+  {
+    to: "/chats",
+    icon: MessageSquareDot,
+    name: "Chats",
+  },
+  {
+    to: "/calls",
+    icon: Phone,
+    name: "Calls",
+  },
+  {
+    to: "/network",
+    icon: UsersRound,
+    name: "My Network",
+  },
+  {
+    to: "/explore",
+    icon: Telescope,
+    name: "Explore",
+  },
+  {
+    to: "/trending",
+    icon: TrendingUp,
+    name: "Trending",
+  },
+  {
+    to: "/notifications",
+    icon: Mails,
+    name: "Notifications",
+  },
+];
 
 const SideBar = () => {
   const dispatch: AppDispatch = useDispatch();
   const { isDarkTheme, isSideBarOpen } = useSelector(
     (state: RootState) => state.settings
   );
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const handleClick = () => {
     dispatch(setSideBarState(false));
@@ -20,8 +74,8 @@ const SideBar = () => {
 
   return (
     <aside
-      className={`fixed sm:sticky top-0 flex flex-col bg-primary dark:bg-primary-dark text-white justify-between h-screen px-1 py-2 transition-all duration-700 shrink-0 z-20 sm:translate-x-0 ${
-        isSideBarOpen ? "translate-x-0 w-52" : "-translate-x-52 w-auto z-30"
+      className={`fixed sm:sticky top-0 flex flex-col bg-primary dark:bg-primary-dark text-white justify-between h-screen px-1 py-2 transition-all duration-700 shrink-0 z-30 sm:translate-x-0 ${
+        isSideBarOpen ? "translate-x-0 w-52" : "-translate-x-52 w-auto"
       }`}
     >
       <div className="grid gap-2">
@@ -29,45 +83,23 @@ const SideBar = () => {
           className="text-lg w-fit px-2 py-1"
           onClick={() => dispatch(toggleSideBar())}
         >
-          <i className="bx bx-menu" />
+          <Menu />
         </button>
-        <Link
-          to="/feed"
-          icon="bx bx-layer"
-          name="Feed"
-          isSideBarOpen={isSideBarOpen}
-          handleClick={handleClick}
-        />
-        <Link
-          to="/chats"
-          icon="bx bx-message-square-dots"
-          name="Chats"
-          isSideBarOpen={isSideBarOpen}
-          handleClick={handleClick}
-        />
-        <Link
-          to="/calls"
-          icon="bx bx-phone"
-          name="Calls"
-          isSideBarOpen={isSideBarOpen}
-          handleClick={handleClick}
-        />
-        <Link
-          to="/status"
-          icon="bx bx-hive"
-          name="Status"
-          isSideBarOpen={isSideBarOpen}
-          handleClick={handleClick}
-        />
+        {topLinks.map((link, index) => (
+          <Link
+            key={index}
+            to={link.to}
+            icon={link.icon}
+            name={link.name}
+            isSideBarOpen={isSideBarOpen}
+            handleClick={handleClick}
+          />
+        ))}
         <button
           className="text-lg w-fit px-2 py-1 flex items-center gap-2"
           onClick={() => dispatch(toggleTheme())}
         >
-          {isDarkTheme ? (
-            <i className="bx bxs-sun" />
-          ) : (
-            <i className="bx bx-moon" />
-          )}
+          {isDarkTheme ? <Sun type="solid" /> : <Moon />}
           {isSideBarOpen && (
             <p className="text-sm">{isDarkTheme ? "Light" : "Dark"}</p>
           )}
@@ -76,14 +108,14 @@ const SideBar = () => {
       <div className="grid gap-2">
         <Link
           to="/settings"
-          icon="bx bx-cog"
+          icon={Cog}
           name="Settings"
           isSideBarOpen={isSideBarOpen}
           handleClick={handleClick}
         />
         <Link
-          to="/profile"
-          icon="bx bx-user"
+          to={`/u/${user?.id}`}
+          icon={User}
           name="Profile"
           isSideBarOpen={isSideBarOpen}
           handleClick={handleClick}
@@ -93,7 +125,7 @@ const SideBar = () => {
           className="flex items-center gap-2 px-2 py-1 text-red-400"
           onClick={() => dispatch(logoutUser())}
         >
-          <i className="bx bx-log-out-circle text-lg" />
+          <i className="bx bx-log-out-circle text-xl" />
           {isSideBarOpen && <p className="text-sm">Logout</p>}
         </button>
       </div>

@@ -28,8 +28,8 @@ export const me = createAsyncThunk(
 
 export const getProfile = createAsyncThunk(
   "USER/PROFILE",
-  async (_, { rejectWithValue }) => {
-    const url = `${API_URL}/api/profile`;
+  async (id: string | undefined = undefined, { rejectWithValue }) => {
+    const url = `${API_URL}/api/user/${id}`;
     return getRequest(url, { rejectWithValue });
   }
 );

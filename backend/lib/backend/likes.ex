@@ -37,13 +37,13 @@ defmodule Backend.Likes do
   """
   def get_like!(id), do: Repo.get!(Like, id)
 
-  def get_like!(user_id, content_id, content_type) do
+  def get_like(user_id, content_id, content_type) do
     Like
     |> where(
       [l],
       l.user_id == ^user_id and l.content_id == ^content_id and l.content_type == ^content_type
     )
-    |> Repo.one!()
+    |> Repo.one()
   end
 
   @doc """
@@ -124,10 +124,10 @@ defmodule Backend.Likes do
     Repo.one(query) || 0
   end
 
-  def is_liked_by_user(user_id, content_type) do
+  def is_liked_by_user(user_id, content_id, content_type) do
     like =
       Like
-      |> where([l], l.user_id == ^user_id and l.content_type == ^content_type)
+      |> where([l], l.user_id == ^user_id and l.content_id == ^content_id and l.content_type == ^content_type)
       |> Repo.one()
 
     if is_nil(like) do

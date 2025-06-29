@@ -14,7 +14,14 @@ import { getUser } from "../../../features/thunks/user";
 import { useFormik } from "formik";
 import { ChatSchema } from "../../../schemas/chat";
 import { createChat } from "../../../features/thunks/chats";
-import { MoreVertical, Phone, Video } from "lucide-react";
+import {
+  MoreVertical,
+  Paperclip,
+  Phone,
+  Send,
+  Smile,
+  Video,
+} from "lucide-react";
 
 const ChatBox = () => {
   const { id } = useParams();
@@ -127,43 +134,47 @@ const ChatBox = () => {
   if (status === "pending") return <p>Loading chat...</p>;
 
   return (
-    <div className="messages">
+    <div className="messages flex flex-col h-full bg-stone-50 dark:bg-stone-900">
       {/* Chat Header */}
-      <header className="bg-white dark:bg-stone-800 p-4 flex items-center justify-between sticky top-0 shadow-sm z-10 border-b border-gray-200 dark:border-stone-700">
-        <div className="flex items-center gap-3">
+      <header className="flex-shrink-0 bg-white dark:bg-stone-950 p-4 flex items-center justify-between sticky top-0 shadow-sm z-10 border-b border-stone-200 dark:border-stone-800 backdrop-blur-sm bg-white/95 dark:bg-stone-950/95">
+        <div className="flex items-center gap-4">
           <div className="relative">
             <img
               src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces"
               alt="Chat Avatar"
-              className="w-11 h-11 rounded-full object-cover border-2 border-white dark:border-stone-700"
+              className="w-12 h-12 rounded-full object-cover border-2 border-stone-200 dark:border-stone-700 shadow-sm"
             />
-            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-stone-800 rounded-full"></span>
+            <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-stone-950 rounded-full shadow-sm"></span>
           </div>
           <div className="flex flex-col">
-            <h2 className="font-semibold text-gray-900 dark:text-white">
+            <h2 className="font-semibold text-stone-900 dark:text-stone-100 text-lg">
               {capitalizeText(user2?.first_name)}{" "}
               {capitalizeText(user2?.last_name)}
             </h2>
-            <span className="text-sm text-green-600 dark:text-green-400 font-medium">
-              Active now
-            </span>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">
+                Active now
+              </span>
+            </div>
           </div>
         </div>
+
         <div className="flex items-center gap-1">
           <button
-            className="p-2.5 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-stone-700 transition-colors duration-200"
+            className="group p-3 rounded-xl text-stone-600 dark:text-stone-400 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95"
             aria-label="Start video call"
           >
             <Video className="w-5 h-5" />
           </button>
           <button
-            className="p-2.5 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-stone-700 transition-colors duration-200"
+            className="group p-3 rounded-xl text-stone-600 dark:text-stone-400 hover:text-white hover:bg-gradient-to-r hover:from-emerald-500 hover:to-emerald-600 transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95"
             aria-label="Start voice call"
           >
             <Phone className="w-5 h-5" />
           </button>
           <button
-            className="p-2.5 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-stone-700 transition-colors duration-200 ml-1"
+            className="group p-3 rounded-xl text-stone-600 dark:text-stone-400 hover:text-stone-900 hover:bg-stone-100 dark:hover:text-stone-100 dark:hover:bg-stone-800 transition-all duration-200 hover:scale-105 active:scale-95 ml-1"
             aria-label="More options"
           >
             <MoreVertical className="w-5 h-5" />
@@ -172,45 +183,89 @@ const ChatBox = () => {
       </header>
 
       {/* Messages */}
-      <div className="overflow-y-scroll p-4 gap-3">
-        {chats.map((chat, index) => (
-          <ChatCard key={index} chat={chat} />
-        ))}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-stone-300 dark:scrollbar-thumb-stone-600 scrollbar-track-transparent hover:scrollbar-thumb-stone-400 dark:hover:scrollbar-thumb-stone-500">
+        {chats.length > 0 ? (
+          chats.map((chat, index) => <ChatCard key={index} chat={chat} />)
+        ) : (
+          <div className="flex flex-col items-center justify-center h-full text-center py-12">
+            <div className="w-20 h-20 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center mb-6">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                <span className="text-white text-lg">👋</span>
+              </div>
+            </div>
+            <h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-2">
+              Start the conversation
+            </h3>
+            <p className="text-stone-500 dark:text-stone-400 max-w-sm">
+              Send a message to begin chatting with{" "}
+              {capitalizeText(user2?.first_name)}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Message Input */}
-      <div className="sticky bottom-0 bg-white dark:bg-stone-700 shadow-lg transition-all duration-300 ease-in-out">
+      <div className="flex-shrink-0 bg-white dark:bg-stone-950 shadow-lg border-t border-stone-200 dark:border-stone-800">
         {errors.message && (
-          <p className="text-red-500 text-sm font-medium px-4 py-2 bg-red-100 dark:bg-red-900/30 rounded-t-lg">
-            {errors.message}
-          </p>
+          <div className="px-4 py-3 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800">
+            <p className="text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-2">
+              <span className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs">!</span>
+              </span>
+              {errors.message}
+            </p>
+          </div>
         )}
-        <div className="flex items-center gap-2 p-3 rounded-lg">
-          <button className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-            <i className="bx bx-smile text-xl" />
+
+        <div className="flex items-center gap-3 p-4">
+          {/* Emoji Button */}
+          <button
+            className="group p-2.5 rounded-xl text-stone-500 dark:text-stone-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all duration-200 hover:scale-110 active:scale-95"
+            aria-label="Add emoji"
+          >
+            <Smile className="w-5 h-5" />
           </button>
-          <button className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-            <i className="bx bx-paperclip text-xl" />
+
+          {/* Attachment Button */}
+          <button
+            className="group p-2.5 rounded-xl text-stone-500 dark:text-stone-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 hover:scale-110 active:scale-95"
+            aria-label="Attach file"
+          >
+            <Paperclip className="w-5 h-5" />
           </button>
-          <div className="flex-grow relative">
+
+          {/* Message Input */}
+          <div className="flex-1 relative">
             <input
               type="text"
               name="message"
-              placeholder="Type your message"
+              placeholder="Type your message..."
               onChange={handleChange}
               value={values.message}
-              className="w-full bg-gray-100 dark:bg-stone-800 text-gray-800 dark:text-white rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-dark transition-all duration-200"
+              className="w-full bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 rounded-2xl py-3 px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-stone-700 transition-all duration-200 border border-transparent hover:border-stone-200 dark:hover:border-stone-600"
             />
+            {values.message && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+              </div>
+            )}
           </div>
+
+          {/* Send Button */}
           <button
             type="button"
             onClick={(e) => {
               e.preventDefault();
               handleClick();
             }}
-            className="bg-primary hover:bg-primary/90 text-white p-2 aspect-square h-10 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+            disabled={!values.message?.trim()}
+            className="group relative p-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-stone-300 disabled:to-stone-400 dark:disabled:from-stone-600 dark:disabled:to-stone-700 text-white rounded-xl transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+            aria-label="Send message"
           >
-            <i className="bx bx-send text-xl" />
+            <Send className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-0.5" />
+            {values.message?.trim() && (
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full animate-ping"></div>
+            )}
           </button>
         </div>
       </div>
