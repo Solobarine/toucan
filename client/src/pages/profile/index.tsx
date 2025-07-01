@@ -14,7 +14,7 @@ import {
   User,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../features/store";
+import { AppDispatch, RootState } from "../../features/store";
 import { capitalizeText } from "../../utils";
 import { format } from "date-fns";
 import { getUserPosts } from "../../features/thunks/posts";
@@ -25,7 +25,7 @@ export default function Profile() {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("posts");
   const [isFollowing, setIsFollowing] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
 
   const { profile } = useSelector((state: RootState) => state.auth);
   const { userPosts } = useSelector((state: RootState) => state.posts);
@@ -37,7 +37,10 @@ export default function Profile() {
   ];
 
   useEffect(() => {
-    Promise.all([dispatch(getProfile(id)), dispatch(getUserPosts(id))]);
+    Promise.all([
+      dispatch(getProfile(id as string)),
+      dispatch(getUserPosts(id as string)),
+    ]);
   }, [dispatch, id]);
 
   return (
