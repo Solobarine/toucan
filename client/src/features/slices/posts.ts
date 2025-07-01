@@ -152,7 +152,7 @@ const post = createSlice({
             post.item_type == "repost" &&
             post.original_post_id === action.payload.post_id
         );
-        console.log(repostIndex);
+
         if (postIndex !== -1) {
           let post = state.posts.data[postIndex];
 
@@ -174,7 +174,7 @@ const post = createSlice({
         }
 
         if (repostIndex !== -1) {
-          let repost = state.posts.data[repostIndex] as Repost;
+          const repost = state.posts.data[repostIndex] as Repost;
 
           state.posts.data[repostIndex] = {
             ...repost,
@@ -256,10 +256,9 @@ const post = createSlice({
     });
     builder.addCase(
       getPostsFeed.fulfilled,
-      (state, action: PayloadAction<AxiosResponse, any>) => {
+      (state, action: PayloadAction<AxiosResponse>) => {
         state.posts.status = "idle";
         state.posts.data = action.payload.data.posts;
-        console.log(action);
       }
     );
     builder.addCase(getPostsFeed.rejected, (state, action) => {
@@ -270,7 +269,6 @@ const post = createSlice({
       state.posts.error = (
         action.payload as { error: string | undefined }
       ).error;
-      console.log(action);
     });
 
     /** CREATE POST **/
@@ -279,15 +277,12 @@ const post = createSlice({
       state.create.status = "pending";
       state.create.error = undefined;
     });
-    builder.addCase(
-      createPost.fulfilled,
-      (state, action: PayloadAction<any>) => {
-        state.create.status = "idle";
-        state.create.message = "Post created successfully";
-        toast(state.create.message, {});
-        state.posts.data = [action.payload.data.post, ...state.posts.data];
-      }
-    );
+    builder.addCase(createPost.fulfilled, (state, action) => {
+      state.create.status = "idle";
+      state.create.message = "Post created successfully";
+      toast(state.create.message, {});
+      state.posts.data = [action.payload.data.post, ...state.posts.data];
+    });
     builder.addCase(createPost.rejected, (state, action) => {
       state.create.statusCode = (
         action.payload as { statusCode: number | undefined }
@@ -441,12 +436,12 @@ const post = createSlice({
       state.repost.status = "pending";
     });
 
-    builder.addCase(repostPost.fulfilled, (state, action) => {
+    builder.addCase(repostPost.fulfilled, (state) => {
       state.repost.status = "idle";
       toast("Repost successful");
     });
 
-    builder.addCase(repostPost.rejected, (state, action) => {
+    builder.addCase(repostPost.rejected, (state) => {
       state.repost.status = "failed";
       toast("Repost failed");
     });

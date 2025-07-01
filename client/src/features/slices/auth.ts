@@ -49,6 +49,7 @@ const initialState: InitialState = {
     username: "",
     email: "",
     bio: "",
+    inserted_at: "",
   },
   login: {
     statusCode: null,
@@ -90,7 +91,7 @@ const authSlice = createSlice({
     });
     builder.addCase(
       loginUser.fulfilled,
-      (state, action: PayloadAction<AxiosResponse<any>>) => {
+      (state, action: PayloadAction<AxiosResponse>) => {
         state.isLoggedIn = true;
         state.login.status = "idle";
         localStorage.setItem("auth_token", action.payload.data.token);

@@ -69,16 +69,13 @@ const ChatBox = () => {
 
     // Set up all event listeners before joining
     const eventHandlers = {
-      new_message: (response: any) => {
+      new_message: (response: { chat: string }) => {
         console.log(response.chat);
         dispatch(appendPrivateChat(response.chat));
       },
-      latest: (response: any) => {
+      latest: (response: { chat: string }) => {
         console.log(response);
         dispatch(appendRecents(response.chat));
-      },
-      ping: (response: any) => {
-        console.log(response);
       },
     };
 

@@ -16,7 +16,7 @@ export const createComment = createAsyncThunk(
 
 export const createReply = createAsyncThunk(
   "COMMENTS/CREATE_REPLY",
-  async (data: any, { rejectWithValue }) => {
+  async (data: Comment, { rejectWithValue }) => {
     const url = `${API_URL}/api/replies`;
     return postRequest(url, data, { rejectWithValue });
   }

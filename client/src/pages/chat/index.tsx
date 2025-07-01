@@ -5,15 +5,13 @@ import { Socket } from "phoenix";
 import Recents from "../../components/chat/recents";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../features/store";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { populateRecents } from "../../features/slices/chats";
-import Splash from "./splash";
 
 const Chat = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
   const location = useLocation();
-  const [isVisible, setIsVisible] = useState(false);
 
   // Move socket creation outside of render
   const socketRef = useRef<Socket | null>(null);

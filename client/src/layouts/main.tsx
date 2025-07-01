@@ -29,7 +29,7 @@ const Main = () => {
 
   useEffect(() => {
     dispatch(me());
-  }, []);
+  }, [dispatch]);
 
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);

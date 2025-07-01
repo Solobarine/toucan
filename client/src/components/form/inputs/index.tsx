@@ -68,7 +68,6 @@ const TextInput = ({
 
   const hasError = touched && error;
   const isValid = touched && !error && value.length > 0;
-  const isEmpty = value.length === 0;
 
   const baseInputClasses = `
     w-full px-4 py-3 bg-white dark:bg-stone-800 

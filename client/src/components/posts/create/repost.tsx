@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { X, Repeat2, User } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Post } from "../../../types/post";
-import { capitalizeText } from "../../../utils";
 import { AppDispatch } from "../../../features/store";
 import { repostPost } from "../../../features/thunks/posts";
 

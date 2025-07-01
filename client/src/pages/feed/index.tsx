@@ -20,7 +20,7 @@ const Feed = () => {
 
   useEffect(() => {
     dispatch(getPostsFeed());
-  }, []);
+  }, [dispatch]);
 
   if (error) return <NetworkError message="Something went wrong" />;
   return (

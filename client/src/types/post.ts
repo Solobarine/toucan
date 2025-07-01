@@ -20,11 +20,7 @@ export interface Post {
 export interface Repost {
   id: number;
   item_type: "repost";
-  user: {
-    id: number;
-    first_name: string;
-    last_name: string;
-  };
+  user: User;
   user_id: number;
   body: string | null;
   original_post_id: number;

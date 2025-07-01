@@ -4,8 +4,7 @@ import { Sun, Moon } from "lucide-react";
 import { AppDispatch, RootState } from "../../features/store";
 import { toggleTheme } from "../../features/slices/settings";
 
-interface ThemeSwitchProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+type ThemeSwitchProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const ThemeSwitch: React.FC<ThemeSwitchProps> = ({ ...props }) => {
   const dispatch: AppDispatch = useDispatch();
