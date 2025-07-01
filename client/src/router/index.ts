@@ -18,8 +18,12 @@ import CallInfo from "../pages/call/callInfo";
 import Feed from "../pages/feed";
 import Profile from "../pages/profile";
 import Post from "../pages/feed/post";
-import UserProfile from "../components/user/profile";
 import LoadingPage from "../components/loading";
+import Explore from "../pages/explore";
+import Network from "../pages/networks";
+import Trending from "../pages/trending";
+import ForgotPassword from "../pages/auth/forgot-password";
+import ResetPassword from "../pages/auth/reset-password";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +46,14 @@ const router = createBrowserRouter([
         path: "loading",
         Component: LoadingPage,
       },
+      {
+        path: "/forgot-password",
+        Component: ForgotPassword,
+      },
+      {
+        path: "/reset-password",
+        Component: ResetPassword,
+      },
     ],
   },
   {
@@ -54,14 +66,16 @@ const router = createBrowserRouter([
       },
       { path: "posts/:id", Component: Post },
       {
+        path: "explore",
+        Component: Explore,
+      },
+      { path: "network", Component: Network },
+      { path: "trending", Component: Trending },
+      {
         path: "notifications",
         Component: NotificationsPage,
       },
-      {
-        path: "profile",
-        Component: Profile,
-      },
-      { path: "/u/:id", Component: UserProfile },
+      { path: "/u/:id", Component: Profile },
       {
         path: "chats",
         Component: Chat,

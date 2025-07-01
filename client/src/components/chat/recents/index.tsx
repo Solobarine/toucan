@@ -1,54 +1,88 @@
 import { useSelector } from "react-redux";
+import { Search, MessageCirclePlus } from "lucide-react";
 import RecentCard from "../components/cards/recents";
-import { RootState } from "../../../features/store";
+import type { RootState } from "../../../features/store";
 import { useLocation } from "react-router-dom";
 
 const Recents = () => {
   const location = useLocation();
   const { chats } = useSelector((state: RootState) => state.chats.recents);
+
   return (
     <div
-      className={`flex flex-col shrink-0 bg-white dark:bg-stone-900 border-r border-gray-200 dark:border-gray-700 p-4 sm:sticky top-0 left-0 transition-all duration-300 ease-in-out ${
-        location.pathname === "/chats"
-          ? "w-full grow sm:grow-0 sm:w-72"
+      className={`flex flex-col bg-white dark:bg-stone-950 border-r border-stone-200 dark:border-stone-800 transition-all duration-300 ease-in-out ${
+        location.pathname.replace(/\/+$/, "") === "/chats"
+          ? "w-full grow sm:grow-0 sm:w-80"
           : "absolute"
       } h-full`}
     >
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-          Chats
-        </h2>
-        <button className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition-colors duration-200">
-          <i className="bx bx-message-add text-xl" />
-        </button>
-      </div>
-      <div className="relative mb-6">
-        <input
-          type="search"
-          name="search"
-          id="search"
-          placeholder="Search Recent Chats"
-          className="w-full p-2 pl-10 h-10 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-        />
-        <svg
-          className="absolute left-3 top-3 h-4 w-4 text-gray-400"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      {/* Header */}
+      <div className="flex-shrink-0 p-6 pb-4 border-b border-stone-100 dark:border-stone-800">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 tracking-tight">
+              Messages
+            </h2>
+            <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+              {chats.length} conversation{chats.length !== 1 ? "s" : ""}
+            </p>
+          </div>
+          <button className="group relative p-2.5 text-stone-600 dark:text-stone-400 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 rounded-xl transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95">
+            <MessageCirclePlus className="w-5 h-5" />
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
+          </button>
+        </div>
+
+        {/* Search Input */}
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <Search className="h-4 w-4 text-stone-400 dark:text-stone-500" />
+          </div>
+          <input
+            type="search"
+            name="search"
+            id="search"
+            placeholder="Search conversations..."
+            className="w-full pl-11 pr-4 py-3 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 rounded-xl border border-stone-200 dark:border-stone-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:bg-stone-100 dark:hover:bg-stone-800"
           />
-        </svg>
+        </div>
       </div>
-      <div className="space-y-2 overflow-y-auto">
-        {chats.map((chat, index) => (
-          <RecentCard key={index} chat={chat} />
-        ))}
+
+      {/* Chat List */}
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-stone-300 dark:scrollbar-thumb-stone-600 scrollbar-track-transparent hover:scrollbar-thumb-stone-400 dark:hover:scrollbar-thumb-stone-500">
+          {chats.length > 0 ? (
+            <div className="p-3 space-y-1">
+              {chats.map((chat, index) => (
+                <RecentCard key={index} chat={chat} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+              <div className="w-16 h-16 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center mb-4">
+                <MessageCirclePlus className="w-8 h-8 text-stone-400 dark:text-stone-500" />
+              </div>
+              <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">
+                No conversations yet
+              </h3>
+              <p className="text-sm text-stone-500 dark:text-stone-400 max-w-xs">
+                Start a new conversation to connect with your friends and
+                colleagues.
+              </p>
+              <button className="mt-4 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 hover:shadow-md">
+                Start Chatting
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Footer with status indicator */}
+      <div className="flex-shrink-0 p-4 border-t border-stone-100 dark:border-stone-800">
+        <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400">
+          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+          <span>Online</span>
+        </div>
       </div>
     </div>
   );

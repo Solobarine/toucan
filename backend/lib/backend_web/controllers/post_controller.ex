@@ -1,6 +1,8 @@
 defmodule BackendWeb.PostController do
   use BackendWeb, :controller
 
+  require Logger
+  alias BackendWeb.RepostJSON
   alias BackendWeb.Policies.PostsPolicy
   alias Backend.Posts
   alias Backend.Posts.Post
@@ -10,12 +12,9 @@ defmodule BackendWeb.PostController do
 
   def index(conn, _params) do
     current_user = Guardian.Plug.current_resource(conn)
-    posts = Posts.list_posts()
+    feed = Posts.list_posts(current_user.id)
 
-    render(conn, :index,
-      posts: posts,
-      current_user_id: if(current_user, do: current_user.id, else: -1)
-    )
+    render(conn, :index, posts: feed, current_user_id: current_user.id)
   end
 
   def create(conn, %{"post" => post_params}) do
@@ -47,6 +46,32 @@ defmodule BackendWeb.PostController do
 
     with {:ok, %Post{} = post} <- Posts.update_post(post, post_params) do
       render(conn, :show, post: post, current_user_id: current_user.id || nil)
+    end
+  end
+
+  def user_posts(conn, _params) do
+    current_user = Guardian.Plug.current_resource(conn)
+    user_id = conn.params["user_id"]
+    posts = Posts.list_user_posts(user_id || current_user.id)
+
+    render(conn, :index, posts: posts, current_user_id: current_user.id)
+  end
+
+  def repost(conn, %{"repost" => repost_params}) do
+    current_user = Guardian.Plug.current_resource(conn)
+
+    params = Map.merge(repost_params, %{"user_id" => current_user.id})
+
+    post = Posts.get_post!(repost_params["original_post_id"])
+
+    PostsPolicy.repost(conn, post)
+
+    with {:ok, repost} <- Posts.create_repost(params) do
+      conn
+      |> put_status(:created)
+      |> put_resp_header("location", ~p"/api/posts/repost")
+      |> put_view(RepostJSON)
+      |> render(:show, repost: repost)
     end
   end
 

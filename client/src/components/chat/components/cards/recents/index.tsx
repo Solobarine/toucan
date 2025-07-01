@@ -1,26 +1,35 @@
 import { useSelector } from "react-redux";
-import { Chat } from "../../../../../types/chat";
-import { RootState } from "../../../../../features/store";
+import type { Chat } from "../../../../../types/chat";
+import type { RootState } from "../../../../../features/store";
 import { capitalizeText } from "../../../../../utils";
 import { NavLink } from "react-router-dom";
 
 const RecentCard = ({ chat }: { chat: Chat }) => {
   const { user } = useSelector((state: RootState) => state.auth);
+
   return (
     <NavLink
       to={`/chats/${
         user?.id === chat.sender_id ? chat.receiver_id : chat.sender_id
       }`}
-      className="flex items-center gap-3 p-3 rounded-lg bg-white dark:bg-stone-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 ease-in-out"
+      className="group flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-stone-900 hover:bg-stone-50 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 transition-all duration-300 ease-out hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
     >
-      <img
-        src="#"
-        alt="Profile Avatar"
-        className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
-      />
-      <div className="flex-1 min-w-0">
-        <div className="flex justify-between items-baseline mb-1">
-          <h3 className="text-sm font-semibold text-gray-800 dark:text-white truncate">
+      {/* Avatar with online indicator */}
+      <div className="relative flex-shrink-0">
+        <img
+          src="/placeholder.svg?height=48&width=48"
+          alt="Profile Avatar"
+          className="w-12 h-12 rounded-full object-cover border-2 border-stone-200 dark:border-stone-600 group-hover:border-stone-300 dark:group-hover:border-stone-500 transition-colors duration-200"
+        />
+        {/* Online status indicator */}
+        <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-stone-900 rounded-full"></div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0 space-y-1">
+        {/* Header with name and time */}
+        <div className="flex justify-between items-center">
+          <h3 className="text-base font-semibold text-stone-900 dark:text-stone-100 truncate group-hover:text-stone-700 dark:group-hover:text-stone-200 transition-colors duration-200">
             {user?.id === chat.sender_id
               ? `${capitalizeText(chat.receiver.first_name)} ${capitalizeText(
                   chat.receiver.last_name
@@ -29,18 +38,41 @@ const RecentCard = ({ chat }: { chat: Chat }) => {
                   chat.sender.last_name
                 )}`}
           </h3>
-          <span className="text-xs text-gray-500 dark:text-gray-400">
+          <span className="text-xs font-medium text-stone-500 dark:text-stone-400 whitespace-nowrap ml-2">
             09:10
           </span>
         </div>
-        <div className="flex justify-between items-center">
-          <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
+
+        {/* Message and unread count */}
+        <div className="flex justify-between items-center gap-3">
+          <p className="text-sm text-stone-600 dark:text-stone-400 truncate flex-1 leading-relaxed">
             {chat.message}
           </p>
-          <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-semibold text-white bg-primary rounded-full">
-            10
-          </span>
+
+          {/* Unread count badge */}
+          <div className="flex-shrink-0">
+            <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-full shadow-sm">
+              10
+            </span>
+          </div>
         </div>
+      </div>
+
+      {/* Subtle arrow indicator */}
+      <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <svg
+          className="w-4 h-4 text-stone-400 dark:text-stone-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
       </div>
     </NavLink>
   );

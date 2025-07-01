@@ -15,6 +15,9 @@ defmodule BackendWeb.LikeController do
   def create(conn, %{"like" => like_params}) do
     current_user = Guardian.Plug.current_resource(conn)
 
+    like = Likes.get_like(current_user.id, like_params["content_id"], like_params["content_type"])
+
+    LikesPolicy.create(conn, like)
     params = Map.merge(like_params, %{"user_id" => current_user.id})
 
     with {:ok, %Like{} = like} <- Likes.create_like(params) do
@@ -40,7 +43,8 @@ defmodule BackendWeb.LikeController do
 
   def delete(conn, %{"id" => id}) do
     user = Guardian.Plug.current_resource(conn)
-    like = Likes.get_like!(user.id, id, "post")
+    parsed_id = String.to_integer(id)
+    like = Likes.get_like(user.id, parsed_id, "post")
 
     LikesPolicy.delete(conn, like)
 

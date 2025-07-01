@@ -1,11 +1,12 @@
 import { useFormik } from "formik";
 import { Link, Navigate } from "react-router-dom";
-import { ChangeEvent } from "react";
+import { type ChangeEvent, useState } from "react";
 import { Helmet } from "react-helmet";
+import { Eye, Github, Chrome, ArrowRight, Sparkles } from "lucide-react";
 import TextInput from "../../../components/form/inputs";
 import { LoginSchema } from "../../../schemas/auth";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../features/store";
+import type { AppDispatch, RootState } from "../../../features/store";
 import { loginUser } from "../../../features/thunks/auth";
 
 const Login = () => {
@@ -14,6 +15,8 @@ const Login = () => {
     isLoggedIn,
   } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     values,
     errors,
@@ -29,8 +32,10 @@ const Login = () => {
     },
     validationSchema: LoginSchema,
     onSubmit: (values) => {
-      console.log(values);
-      dispatch(loginUser(values));
+      setIsLoading(true);
+      dispatch(loginUser(values)).finally(() => {
+        setIsLoading(false);
+      });
     },
   });
 
@@ -41,95 +46,230 @@ const Login = () => {
     setValues((values) => ({ ...values, [name]: value }));
   };
 
-  return isLoggedIn ? (
-    <Navigate to="/feed" />
-  ) : (
-    <section className="grid grid-cols-1 sm:grid-cols-2">
-      <Helmet>
-        <title>Toucan - Login</title>
-        <meta name="description" content="Login to your Account" />
-        <link rel="canonical" href="" />
-      </Helmet>
-      <div></div>
-      <div className="px-2 py-10 bg-light dark:bg-stone-900 rounded-xl">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setSubmitting(true);
-            submitForm().finally(() => setSubmitting(false));
-          }}
-          className="max-w-lg mx-auto"
-        >
-          <h1 className="text-3xl font-semibold">Welcome Back</h1>
-          <p className="mb-10">
-            Don't have an Account?{"  "}
-            <Link to="/register" className="text-primary hover:underline">
-              Register
-            </Link>
-          </p>
-          {error && (
-            <p className="text-red-500 font-semibold text-sm my-2">{error}</p>
-          )}
-          <div className="flex flex-col gap-3">
-            <TextInput
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={values.email}
-              handleChange={handleChange}
-              error={errors.email}
-              touched={touched.email}
-            />
-            <TextInput
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={values.password}
-              handleChange={handleChange}
-              error={errors.password}
-              touched={touched.password}
-            />
-            <div className="sm:col-span-2">
-              <Link
-                to="/forgot-password"
-                className="text-sm text-primary hover:underline block w-fit ml-auto"
-              >
-                Forgot Password?
-              </Link>
-            </div>
-            <button className="px-5 py-2 text-sm rounded-md text-white bg-primary w-fit ">
-              {isSubmitting ? "Please Wait..." : "Login"}
-            </button>
-          </div>
-        </form>
+  const handleSocialLogin = (provider: string) => {
+    console.log(`Login with ${provider}`);
+    // Implement social login logic
+  };
 
-        <div className="py-6 grid gap-4 max-w-lg mx-auto">
-          <span className=" flex items-center gap-4">
-            <span className="p-[0.2px] grow bg-primary block" />
-            <p>Or Login with</p>
-            <span className="p-[0.2px] grow bg-primary block" />
-          </span>
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            <button className="py-2 px-10 flex items-center gap-2 rounded-xl border border-gray-400 dark:border-gray-200">
-              <img
-                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg"
-                className="w-6"
-                loading="lazy"
-              />
-              Google
-            </button>
-            <button className="py-2 px-10 flex items-center gap-2 rounded-xl border border-gray-400 dark:border-gray-200">
-              <img
-                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
-                className="w-6"
-                loading="lazy"
-              />
-              GitHub
-            </button>
+  if (isLoggedIn) {
+    return <Navigate to="/feed" />;
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-blue-50 to-purple-50 dark:from-stone-900 dark:via-stone-800 dark:to-stone-900 flex items-center justify-center p-4">
+      <Helmet>
+        <title>Toucan - Welcome Back</title>
+        <meta name="description" content="Sign in to your Toucan account" />
+      </Helmet>
+
+      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        {/* Left Side - Branding */}
+        <div className="hidden lg:flex flex-col justify-center space-y-8">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <img
+                  src="/placeholder.svg?height=32&width=32"
+                  alt="Toucan"
+                  className="w-8 h-8"
+                />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100">
+                  Toucan
+                </h1>
+                <p className="text-stone-600 dark:text-stone-400">
+                  Social Network
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h2 className="text-4xl font-bold text-stone-900 dark:text-stone-100 leading-tight">
+                Welcome back to your
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  {" "}
+                  social world
+                </span>
+              </h2>
+              <p className="text-xl text-stone-600 dark:text-stone-400 leading-relaxed">
+                Connect with friends, share your thoughts, and discover amazing
+                content from people around the world.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white dark:bg-stone-800 p-6 rounded-2xl border border-stone-200 dark:border-stone-700">
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
+                  <Sparkles className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">
+                  Smart Feed
+                </h3>
+                <p className="text-stone-600 dark:text-stone-400 text-sm">
+                  Personalized content just for you
+                </p>
+              </div>
+              <div className="bg-white dark:bg-stone-800 p-6 rounded-2xl border border-stone-200 dark:border-stone-700">
+                <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-4">
+                  <Eye className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">
+                  Privacy First
+                </h3>
+                <p className="text-stone-600 dark:text-stone-400 text-sm">
+                  Your data, your control
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side - Login Form */}
+        <div className="flex items-center justify-center">
+          <div className="w-full max-w-md">
+            <div className="bg-white dark:bg-stone-800 rounded-3xl shadow-2xl border border-stone-200 dark:border-stone-700 p-8">
+              {/* Mobile Logo */}
+              <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <img
+                    src="/placeholder.svg?height=24&width=24"
+                    alt="Toucan"
+                    className="w-6 h-6"
+                  />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+                    Toucan
+                  </h1>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="text-center lg:text-left">
+                  <h2 className="text-3xl font-bold text-stone-900 dark:text-stone-100 mb-2">
+                    Welcome back
+                  </h2>
+                  <p className="text-stone-600 dark:text-stone-400">
+                    Don't have an account?{" "}
+                    <Link
+                      to="/register"
+                      className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                    >
+                      Sign up
+                    </Link>
+                  </p>
+                </div>
+
+                {error && (
+                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                    <p className="text-red-600 dark:text-red-400 text-sm font-medium">
+                      {error}
+                    </p>
+                  </div>
+                )}
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setSubmitting(true);
+                    submitForm().finally(() => setSubmitting(false));
+                  }}
+                  className="space-y-6"
+                >
+                  <TextInput
+                    type="email"
+                    name="email"
+                    label="Email address"
+                    placeholder="Enter your email"
+                    value={values.email}
+                    handleChange={handleChange}
+                    error={errors.email}
+                    touched={touched.email}
+                  />
+
+                  <TextInput
+                    type="password"
+                    name="password"
+                    label="Password"
+                    placeholder="Enter your password"
+                    value={values.password}
+                    handleChange={handleChange}
+                    error={errors.password}
+                    touched={touched.password}
+                  />
+
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 text-blue-600 bg-stone-100 border-stone-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-stone-800 focus:ring-2 dark:bg-stone-700 dark:border-stone-600"
+                      />
+                      <span className="text-sm text-stone-600 dark:text-stone-400">
+                        Remember me
+                      </span>
+                    </label>
+                    <Link
+                      to="/forgot-password"
+                      className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || isLoading}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  >
+                    {isSubmitting || isLoading ? (
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <span>Sign in</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-stone-200 dark:border-stone-700" />
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-4 bg-white dark:bg-stone-800 text-stone-500 dark:text-stone-400">
+                      Or continue with
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    onClick={() => handleSocialLogin("google")}
+                    className="flex items-center justify-center gap-3 px-4 py-3 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-600 transition-all duration-200 hover:scale-105 active:scale-95"
+                  >
+                    <Chrome className="w-5 h-5 text-stone-600 dark:text-stone-400" />
+                    <span className="font-medium text-stone-700 dark:text-stone-300">
+                      Google
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => handleSocialLogin("github")}
+                    className="flex items-center justify-center gap-3 px-4 py-3 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-600 transition-all duration-200 hover:scale-105 active:scale-95"
+                  >
+                    <Github className="w-5 h-5 text-stone-600 dark:text-stone-400" />
+                    <span className="font-medium text-stone-700 dark:text-stone-300">
+                      GitHub
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

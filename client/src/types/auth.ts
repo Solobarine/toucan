@@ -2,7 +2,7 @@ export interface RegisterInterface {
   first_name: string;
   last_name: string;
   email: string;
-  password: string;
+  password_hash: string;
   tos: boolean;
 }
 
@@ -16,6 +16,7 @@ export interface User
   id: number;
   username: string;
   bio: string;
+  inserted_at: string;
 }
 
 export interface UserProfile {

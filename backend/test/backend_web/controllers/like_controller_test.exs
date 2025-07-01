@@ -46,10 +46,10 @@ defmodule BackendWeb.LikeControllerTest do
   describe "delete like" do
     test "deletes chosen like", %{conn: conn, user: user, token: token} do
       like = user_like_fixture(user.id)
-      IO.puts("USer ID: #{user.id}")
+      IO.puts("User ID: #{user.id}")
       IO.puts("Like User ID: #{like.user_id}")
       conn = conn |> put_req_header("authorization", "Bearer #{token}")
-      conn = delete(conn, ~p"/api/likes/#{like}")
+      conn = delete(conn, ~p"/api/likes/#{like.content_id}")
       assert response(conn, 204)
     end
   end

@@ -8,7 +8,6 @@ import { createReply } from "../../../features/thunks/comments";
 
 const NewComment = ({
   comment_id,
-  post_id,
 }: {
   comment_id: number | undefined;
   post_id: number | undefined;
@@ -16,8 +15,7 @@ const NewComment = ({
   const dispatch: AppDispatch = useDispatch();
   const { values, errors, touched, handleChange, submitForm } = useFormik({
     initialValues: {
-      post_id,
-      content_id: comment_id,
+      content_id: comment_id as number,
       text: "",
     },
     validationSchema: CommentSchema,

@@ -70,8 +70,15 @@ defmodule BackendWeb.AuthController do
     end
   end
 
-  def profile(conn, _) do
-    user = Guardian.Plug.current_resource(conn)
+  def profile(conn, _params) do
+    id = conn.params["user_id"]
+
+    user =
+      if id do
+        Accounts.get_user!(id)
+      else
+        Guardian.Plug.current_resource(conn)
+      end
 
     render(conn, :index, user: user)
   end

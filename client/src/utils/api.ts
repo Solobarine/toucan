@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 
 export const getRequest = async (
@@ -13,10 +14,8 @@ export const getRequest = async (
         "Content-Type": "application/json",
       },
     });
-    console.log(response);
     return response;
   } catch (error) {
-    console.log(error);
     if (axios.isAxiosError(error) && error.response) {
       return rejectWithValue({
         error: error.response.data,

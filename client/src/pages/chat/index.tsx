@@ -59,15 +59,40 @@ const Chat = () => {
   }, [user?.id, dispatch]); // Add dispatch to dependencies
 
   return (
-    <section className="chats sm:flex h-screen">
-      <Recents />
-      <div
-        className={`grow ${
-          location.pathname === "/chats" ? "hidden sm:block" : ""
-        } h-full`}
-      >
+    <section className="chats flex h-screen bg-stone-50 dark:bg-stone-900 overflow-hidden">
+      {/* Sidebar - Recents */}
+      <div className="flex-shrink-0 relative">
+        <Recents />
+      </div>
+      {/* Content Area */}
+      <div className="flex-1 flex flex-col h-full">
         <Outlet />
       </div>
+
+      {/* Mobile Back Button Overlay */}
+      {location.pathname.replace(/\/+$/, "") !== "/chats" && (
+        <div className="sm:hidden absolute top-4 left-4 z-20">
+          <button
+            onClick={() => window.history.back()}
+            className="p-2 bg-white/90 dark:bg-stone-900/90 backdrop-blur-sm text-stone-700 dark:text-stone-300 rounded-full shadow-lg hover:bg-white dark:hover:bg-stone-900 transition-all duration-200 hover:scale-110 active:scale-95"
+            aria-label="Go back to chat list"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
     </section>
   );
 };

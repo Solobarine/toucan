@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { Ellipsis, Heart, MessageCircle, Share } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Ellipsis, Heart, MessageCircle, Share, Repeat2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { Post } from "../../../types/post";
+import { Repost } from "../../../types/post";
 import { capitalizeText } from "../../../utils";
 import { AppDispatch } from "../../../features/store";
 import {
@@ -11,29 +10,36 @@ import {
   decrementLikeCount,
 } from "../../../features/slices/posts";
 import { likeContent, unlikeContent } from "../../../features/thunks/likes";
-import CreateRepostModal from "../create/repost";
 
-const Card = ({ post }: { post: Post }) => {
+const RepostCard = ({ repost }: { repost: Repost }) => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
 
-  const goToPost = () => {
-    navigate(`/posts/${post.id}`);
+  const goToOriginalPost = () => {
+    navigate(`/posts/${repost.original_post.id}`);
   };
 
   const handleLike = () => {
-    if (post.is_liked_by_user) {
-      dispatch(unlikeContent(post.id as number)).finally(() =>
+    if (repost.original_post.is_liked_by_user) {
+      dispatch(unlikeContent(repost.original_post_id as number)).finally(() =>
         dispatch(
-          decrementLikeCount({ post_id: post.id as number, context: "posts" })
+          decrementLikeCount({
+            post_id: repost.original_post.id as number,
+            context: "posts",
+          })
         )
       );
     } else {
-      const data = { content_id: post.id as number, content_type: "post" };
+      const data = {
+        content_id: repost.original_post_id as number,
+        content_type: "post",
+      };
       dispatch(likeContent(data)).finally(() =>
         dispatch(
-          incrementLikeCount({ post_id: post.id as number, context: "posts" })
+          incrementLikeCount({
+            post_id: repost.original_post.id as number,
+            context: "posts",
+          })
         )
       );
     }
@@ -43,59 +49,108 @@ const Card = ({ post }: { post: Post }) => {
     <>
       <div className="bg-white dark:bg-stone-700 rounded-xl max-w-xl w-full mx-auto shadow-lg transition-all duration-300 hover:shadow-xl">
         <div className="p-4">
+          {/* Repost Header */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                {post.user.username ? (
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-teal-600 flex items-center justify-center">
+                {repost.user.username ? (
                   <img
                     src="/placeholder.svg"
                     alt={
-                      capitalizeText(post.user.first_name) +
+                      capitalizeText(repost.user?.first_name) +
                       " " +
-                      capitalizeText(post.user.last_name)
+                      capitalizeText(repost.user?.last_name)
                     }
                     className="w-full h-full rounded-full object-cover"
                   />
                 ) : (
-                  post.user && (
+                  repost.user && (
                     <span className="text-white font-semibold text-lg">
-                      {post.user.first_name.charAt(0).toUpperCase()}
+                      {repost.user?.first_name.charAt(0).toUpperCase()}
                     </span>
                   )
                 )}
               </div>
               <div>
-                <Link
-                  to={`/u/${post.user_id}`}
-                  className="font-semibold text-neutral-900 dark:text-white"
-                >
-                  {post.user.first_name + " " + post.user.last_name}
-                </Link>
-                <p className="text-xs text-neutral-400 dark:text-neutral-500">
-                  {formatDistanceToNow(post.inserted_at, { addSuffix: true })}
-                </p>
+                <div className="flex items-center gap-2">
+                  <Repeat2 className="w-4 h-4 text-green-600" />
+                  <span className="text-sm text-green-600 font-medium">
+                    Reposted
+                  </span>
+                </div>
+                <h3 className="font-semibold text-neutral-900 dark:text-white">
+                  {repost.user?.first_name + " " + repost.user?.last_name}
+                </h3>
+                {repost.inserted_at && (
+                  <p className="text-xs text-neutral-400 dark:text-neutral-500">
+                    {formatDistanceToNow(repost.inserted_at, {
+                      addSuffix: true,
+                    })}
+                  </p>
+                )}
               </div>
             </div>
             <button className="p-2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors">
               <Ellipsis className="w-5 h-5" />
             </button>
           </div>
-          <div className="mb-4">
+
+          {/* Repost Comment (if any) */}
+          {repost.body && (
             <div className="mb-4">
               <p className="text-neutral-900 dark:text-white leading-relaxed">
-                {post.body}
+                {repost.body}
               </p>
             </div>
-            {post.user.username && (
-              <div className="mb-4 rounded-lg overflow-hidden">
-                <img
-                  src="/placeholder.svg"
-                  alt="Post content"
-                  className="w-full h-auto object-cover"
-                />
+          )}
+
+          {/* Original Post */}
+          <div className="border border-neutral-200 dark:border-neutral-600 rounded-lg p-4 mb-4 bg-neutral-50 dark:bg-stone-800">
+            <div className="flex items-center space-x-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                {repost.user.username ? (
+                  <img
+                    src="/placeholder.svg"
+                    alt={
+                      capitalizeText(repost.original_post.user?.first_name) +
+                      " " +
+                      capitalizeText(repost.original_post.user?.last_name)
+                    }
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : (
+                  repost.original_post.user && (
+                    <span className="text-white font-semibold text-sm">
+                      {repost.original_post.user?.first_name
+                        .charAt(0)
+                        .toUpperCase()}
+                    </span>
+                  )
+                )}
               </div>
-            )}
+              <div>
+                <h4 className="font-medium text-neutral-900 dark:text-white text-sm">
+                  {repost.original_post.user?.first_name +
+                    " " +
+                    repost.original_post.user?.last_name}
+                </h4>
+                {repost.original_post.inserted_at && (
+                  <p className="text-xs text-neutral-400 dark:text-neutral-500">
+                    {formatDistanceToNow(repost.original_post.inserted_at, {
+                      addSuffix: true,
+                    })}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="cursor-pointer" onClick={goToOriginalPost}>
+              <p className="text-neutral-800 dark:text-neutral-200 leading-relaxed text-sm">
+                {repost.original_post.body}
+              </p>
+            </div>
           </div>
+
+          {/* Engagement Stats */}
           <div className="flex items-center justify-between text-sm text-neutral-500 dark:text-neutral-400 mb-4">
             <div className="flex items-center gap-2">
               <span className="flex gap-1">
@@ -132,26 +187,30 @@ const Card = ({ post }: { post: Post }) => {
                   <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" />
                 </svg>
               </span>
-              {post.likes_count}
+              {repost.original_post.likes_count}
             </div>
             <p>
-              {post.comments_count}{" "}
-              {post.comments_count !== 1 ? "comments" : "comment"} &bull;{" "}
-              {post.reposts_count}{" "}
-              {post.reposts_count !== 1 ? "reposts" : "repost"}
+              {repost.original_post.comments_count}{" "}
+              {repost.original_post.comments_count !== 1
+                ? "comments"
+                : "comment"}{" "}
+              • {repost.original_post.reposts_count}{" "}
+              {repost.original_post.reposts_count !== 1 ? "reposts" : "repost"}
             </p>
           </div>
         </div>
+
+        {/* Action Buttons */}
         <div className="flex items-center justify-between pb-4 px-4">
           <button
             className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-              post.is_liked_by_user
+              repost.original_post.is_liked_by_user
                 ? "text-red-500"
                 : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800"
             }`}
             onClick={handleLike}
           >
-            {post.is_liked_by_user ? (
+            {repost.original_post.is_liked_by_user ? (
               <>
                 <Heart
                   fill="full"
@@ -170,28 +229,23 @@ const Card = ({ post }: { post: Post }) => {
 
           <button
             className="flex items-center space-x-2 px-4 py-2 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg transition-colors"
-            onClick={goToPost}
+            onClick={goToOriginalPost}
           >
             <MessageCircle className="w-5 h-5" />
             <span className="text-sm font-medium">Comment</span>
           </button>
 
           <button
-            className="flex items-center space-x-2 px-4 py-2 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg transition-colors"
-            onClick={() => setIsOpen(true)}
+            className="flex items-center space-x-2 px-4 py-2 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg transition-colors cursor-not-allowed"
+            disabled
           >
             <Share className="w-5 h-5" />
             <span className="text-sm font-medium">Share</span>
           </button>
         </div>
       </div>
-      <CreateRepostModal
-        originalPost={post}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      />
     </>
   );
 };
 
-export default Card;
+export default RepostCard;

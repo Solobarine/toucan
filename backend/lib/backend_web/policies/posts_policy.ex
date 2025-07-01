@@ -4,10 +4,21 @@ defmodule BackendWeb.Policies.PostsPolicy do
 
   def update(conn, post) do
     current_user = Guardian.Plug.current_resource(conn)
+
     if current_user.id == post.user_id do
       conn
     else
       raise ErrorResponse.Forbidden
+    end
+  end
+
+  def repost(conn, post) do
+    current_user = Guardian.Plug.current_resource(conn)
+
+    if current_user.id == post.user_id do
+      raise ErrorResponse.Forbidden
+    else
+      conn
     end
   end
 
