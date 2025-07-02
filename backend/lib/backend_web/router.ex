@@ -42,6 +42,10 @@ defmodule BackendWeb.Router do
     get "/friendships/requests", FriendshipController, :friend_requests
     delete "/friendships/:id", FriendshipController, :delete
     get "/friends", FriendshipController, :index
+
+    resources "/followerships", FollowershipController, only: [:index, :create, :delete]
+    get "/followerships/followers", FollowershipController, :followers
+    get "/followerships/following", FollowershipController, :following
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
