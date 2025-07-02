@@ -35,6 +35,13 @@ defmodule BackendWeb.Router do
     post "/replies", CommentController, :create_reply
     resources "/chats", ChatController, except: [:new, :edit]
     resources "/likes", LikeController, only: [:create, :delete]
+
+    post "/friendships/request", FriendshipController, :create
+    put "/friendships/:id/accept", FriendshipController, :accept_friend_request
+    put "/friendships/:id/block", FriendshipController, :reject_friend_request
+    get "/friendships/requests", FriendshipController, :friend_requests
+    delete "/friendships/:id", FriendshipController, :delete
+    get "/friends", FriendshipController, :index
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

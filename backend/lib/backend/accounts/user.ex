@@ -2,6 +2,8 @@ defmodule Backend.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Backend.Friendships.Friendship
+
   @derive {Jason.Encoder, only: [:id, :username, :first_name, :last_name, :email]}
   schema "users" do
     field :username, :string
@@ -10,6 +12,10 @@ defmodule Backend.Accounts.User do
     field :email, :string
     field :password_hash, :string
     field :tos, :boolean
+
+    has_many :sent_friend_requests, Friendship, foreign_key: :user_id
+
+    has_many :received_friend_requests, Friendship, foreign_key: :friend_id
 
     timestamps(type: :utc_datetime)
   end
