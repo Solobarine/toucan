@@ -10,6 +10,14 @@ defmodule BackendWeb.Policies.FriendshipsPolicy do
     end
   end
 
+  def cancel_friend_request(conn, %Friendship{} = friendship, user_id) do
+    if user_id == friendship.user_id do
+      conn
+    else
+      raise ErrorResponse.BadRequest
+    end
+  end
+
   def accept_request(conn, %Friendship{} = friendship, user_id) do
     if user_id == friendship.friend_id do
       conn

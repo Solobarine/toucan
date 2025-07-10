@@ -387,7 +387,7 @@ const post = createSlice({
     });
     builder.addCase(likeContent.fulfilled, (state) => {
       state.like.status = "idle";
-      toast("Content liked successfully");
+      toast.success("Content liked successfully");
     });
     builder.addCase(likeContent.rejected, (state, action) => {
       state.like = {
@@ -395,7 +395,7 @@ const post = createSlice({
         status: "failed",
         error: (action.payload as { error: string | undefined }).error,
       };
-      toast("Unable to like Content");
+      toast.error("Unable to like Content");
     });
 
     /** UNLIKE CONTENT **/
@@ -404,7 +404,7 @@ const post = createSlice({
     });
     builder.addCase(unlikeContent.fulfilled, (state) => {
       state.unlike.status = "idle";
-      toast("Content unliked successfully");
+      toast.success("Content unliked successfully");
     });
     builder.addCase(unlikeContent.rejected, (state, action) => {
       state.unlike = {
@@ -412,7 +412,7 @@ const post = createSlice({
         status: "failed",
         error: (action.payload as { error: string | undefined }).error,
       };
-      toast("Something went wrong");
+      toast.error("Something went wrong");
     });
 
     /** USER POSTS **/
@@ -438,12 +438,12 @@ const post = createSlice({
 
     builder.addCase(repostPost.fulfilled, (state) => {
       state.repost.status = "idle";
-      toast("Repost successful");
+      toast.success("Repost successful");
     });
 
     builder.addCase(repostPost.rejected, (state) => {
       state.repost.status = "failed";
-      toast("Repost failed");
+      toast.error("Repost failed");
     });
   },
 });

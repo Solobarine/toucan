@@ -85,11 +85,11 @@ defmodule Backend.Followerships do
   [%Followership{}]
   """
   def followers(%User{} = user) do
-    from(f in Followership,
-      where: f.followee_id == ^user.id,
-      join: u in assoc(f, :follower),
-      preload: [follower: u],
-      select: f
+    from(u in User,
+    join: f in Followership,
+      on: f.followee_id == ^user.id,
+      where: u.id != ^user.id and u.id == f.follower_id,
+      select: u
     )
     |> Repo.all()
   end
@@ -102,11 +102,11 @@ defmodule Backend.Followerships do
   [%Followership{}]
   """
   def following(%User{} = user) do
-    from(f in Followership,
-      where: f.follower_id == ^user.id,
-      join: u in assoc(f, :followee),
-      preload: [followee: u],
-      select: f
+    from(u in User,
+    join: f in Followership,
+      on: f.follower_id == ^user.id,
+      where: u.id !=^user.id and u.id == f.followee_id,
+      select: u
     )
     |> Repo.all()
   end

@@ -34,10 +34,20 @@
 }
 
 .chats {
-  height: calc(100vh - 49px);
+  height: calc(100vh - 65px);
 }
 
 .messages {
   @apply h-full grid sticky top-0;
   grid-template-rows: auto 1fr auto;
+}
+
+.settings {
+  @apply grid grid-cols-1;
+}
+
+@media screen and (min-width: 768px) {
+  .settings {
+    grid-template-columns: 14em 1fr;
+  }
 }

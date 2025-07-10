@@ -1,5 +1,4 @@
 defmodule BackendWeb.ChatJSON do
-  alias BackendWeb.UserJSON
   alias Backend.Accounts
   alias Backend.Chats.Chat
 
@@ -18,7 +17,7 @@ defmodule BackendWeb.ChatJSON do
   Renders a single chat.
   """
   def show(%{chat: chat}) do
-    %{chat: data(chat)}
+    %{chat: data_with_user(chat)}
   end
 
   def data_with_user(%Chat{} = chat) do

@@ -2,6 +2,8 @@ defmodule Backend.Chats.Chat do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Backend.Accounts.User
+
   schema "chats" do
     field :name, :string
     belongs_to :sender, User, foreign_key: :sender_id

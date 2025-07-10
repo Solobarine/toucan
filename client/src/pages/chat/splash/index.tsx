@@ -1,6 +1,12 @@
+import { useDispatch } from "react-redux";
+import { toggleChatSidebar } from "../../../features/slices/settings";
+import { AppDispatch } from "../../../features/store";
+
 const Splash = () => {
+  const dispatch: AppDispatch = useDispatch();
+
   return (
-    <div className="hidden sm:flex flex-1 items-center justify-center p-8">
+    <div className="flex flex-1 items-center justify-center p-8">
       <div className="text-center max-w-md">
         <div className="w-24 h-24 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center mb-8 mx-auto shadow-lg">
           <div className="w-20 h-20 bg-white dark:bg-stone-900 rounded-full flex items-center justify-center">
@@ -29,8 +35,11 @@ const Splash = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95">
-            Start New Chat
+          <button
+            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95"
+            onClick={() => dispatch(toggleChatSidebar(true))}
+          >
+            Chats
           </button>
           <button className="px-6 py-3 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 font-medium rounded-xl hover:bg-stone-200 dark:hover:bg-stone-700 transition-all duration-200 hover:scale-105 active:scale-95">
             Browse Contacts

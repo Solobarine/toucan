@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Chat } from "../../../../../types/chat";
 import { RootState } from "../../../../../features/store";
-import { formatDistanceToNow } from "date-fns";
+import { formatTimestamp } from "../../../../../utils";
 
 const ChatCard = ({ chat }: { chat: Chat }) => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -16,7 +16,7 @@ const ChatCard = ({ chat }: { chat: Chat }) => {
     >
       <p className="grow">{chat.message}</p>
       <span className="grid gap-1">
-        <small>{formatDistanceToNow(chat?.inserted_at as string)}</small>
+        <small>{formatTimestamp(chat.inserted_at)}</small>
       </span>
     </div>
   );

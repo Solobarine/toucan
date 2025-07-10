@@ -1,6 +1,7 @@
 defmodule BackendWeb.FriendshipController do
   use BackendWeb, :controller
 
+  alias Backend.Accounts
   alias BackendWeb.Policies.FriendshipsPolicy
   alias Backend.Friendships
   alias Backend.Friendships.Friendship
@@ -12,9 +13,10 @@ defmodule BackendWeb.FriendshipController do
 
     page = Map.get(params, "page", "1") |> String.to_integer()
     per = Map.get(params, "per", "20") |> String.to_integer()
+    user_id = Map.get(params, "user_id", current_user.id)
 
-    friends = Friendships.friends(current_user.id, page: page, per: per)
-    render(conn, :index, friendships: friends)
+    friends = Friendships.friends(user_id, page: page, per: per)
+    json(conn, %{data: friends})
   end
 
   def create(conn, %{"friendship" => %{"friend_id" => fid}}) do
@@ -38,7 +40,8 @@ defmodule BackendWeb.FriendshipController do
 
   def accept_friend_request(conn, %{"id" => id}) do
     current_user = Guardian.Plug.current_resource(conn)
-    friendship = Friendships.get_friendship!(String.to_integer(id))
+    id = id |> String.to_integer()
+    friendship = Friendships.get_pending_friendship!(id, current_user.id)
 
     FriendshipsPolicy.accept_request(conn, friendship, current_user.id)
 
@@ -50,13 +53,25 @@ defmodule BackendWeb.FriendshipController do
 
   def reject_friend_request(conn, %{"id" => id}) do
     current_user = Guardian.Plug.current_resource(conn)
-    friendship = Friendships.get_friendship!(String.to_integer(id))
+    id = id |> String.to_integer()
+    friendship = Friendships.get_pending_friendship!(id, current_user.id)
 
     FriendshipsPolicy.reject_request(conn, friendship, current_user.id)
 
     with {:ok, %Friendship{} = friendship} <-
-           Friendships.decline_friend_request(friendship) do
+           Friendships.delete_friendship(friendship) do
       render(conn, :show, friendship: friendship)
+    end
+  end
+
+  def cancel_friend_request(conn, %{"id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+    friendship = Friendships.get_pending_friendship!(id, current_user.id)
+
+    FriendshipsPolicy.cancel_friend_request(conn, friendship, current_user.id)
+
+    with {:ok, %Friendship{}} <- Friendships.delete_friendship(friendship) do
+      send_resp(conn, :no_content, "")
     end
   end
 
@@ -74,6 +89,13 @@ defmodule BackendWeb.FriendshipController do
       end
 
     render(conn, :index, friendships: requests)
+  end
+
+  def friends_suggestions(conn, %{"id" => id, "limit" => limit}) do
+    user = Accounts.get_user!(id |> String.to_integer())
+
+    suggestions = Friendships.friends_suggestions(user.id, limit |> String.to_integer())
+    json(conn, suggestions)
   end
 
   def delete(conn, %{"id" => id}) do

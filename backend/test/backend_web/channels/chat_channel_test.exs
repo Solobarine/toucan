@@ -25,13 +25,9 @@ defmodule BackendWeb.ChatChannelTest do
     user = AccountsFixtures.user_fixture()
     {:ok, token, _claims} = Guardian.encode_and_sign(user)
     user2 = AccountsFixtures.user_fixture()
-    # IO.inspect(user.id, label: "User ID from Setup")
 
     {:ok, socket} =
       connect(UserSocket, %{token: token}, connect_info: %{})
-
-    # IO.inspect(socket, label: "Socket")
-    # IO.inspect(socket.assigns[:user_id], label: "User from Socket")
 
     %{socket: socket, user: user, user2: user2, token: token}
   end
@@ -42,12 +38,10 @@ defmodule BackendWeb.ChatChannelTest do
       user: user,
       user2: user2
     } do
-      {:ok, _, socket} =
+      {:ok, socket} =
         subscribe_and_join(
           socket,
-          "chat:" <>
-            Integer.to_string(min(user.id, user2.id)) <>
-            "," <> Integer.to_string(max(user.id, user2.id)),
+          "chat:#{Integer.to_string(min(user.id, user2.id))},#{Integer.to_string(max(user.id, user2.id))}",
           %{"user_id" => user2.id}
         )
 
@@ -55,12 +49,12 @@ defmodule BackendWeb.ChatChannelTest do
     end
 
     test "denies joining when unauthorized", %{socket: socket} do
-      assert {:error, %{reason: "Unauthorized"}} =
+      assert {:error, %{reason: "Unauthorized connection"}} =
                subscribe_and_join(socket, "chat:3,4", %{})
     end
 
     test "joins recent chats successfully when authorized", %{socket: socket, user: user} do
-      {:ok, _, socket} =
+      {:ok, _chats, socket} =
         subscribe_and_join(socket, "chat:recents:" <> Integer.to_string(user.id), %{
           user_id: Integer.to_string(user.id)
         })
@@ -76,7 +70,7 @@ defmodule BackendWeb.ChatChannelTest do
 
   describe "handle_in/3" do
     test "replies with ok for ping event", %{socket: socket, user: user, user2: user2} do
-      {:ok, _, socket} =
+      {:ok, socket} =
         subscribe_and_join(
           socket,
           "chat:" <>
