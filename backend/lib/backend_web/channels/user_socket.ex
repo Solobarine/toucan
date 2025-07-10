@@ -10,6 +10,7 @@ defmodule BackendWeb.UserSocket do
   ## Channels
 
   channel "chat:*", BackendWeb.ChatChannel
+  channel "notifications:*", BackendWeb.NotificationsChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
