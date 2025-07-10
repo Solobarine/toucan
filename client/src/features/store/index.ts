@@ -3,6 +3,8 @@ import settings from "../slices/settings";
 import auth from "../slices/auth";
 import posts from "../slices/posts";
 import chats from "../slices/chats";
+import users from "../slices/users";
+import notifications from "../slices/notifications";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +12,8 @@ const store = configureStore({
     auth,
     posts,
     chats,
+    users,
+    notifications,
   },
 });
 

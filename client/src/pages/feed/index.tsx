@@ -1,26 +1,34 @@
-import { useEffect, useState } from "react";
-import Card from "../../components/posts/card";
-import Create from "../../components/posts/create";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { Image, Video, Calendar, Users } from "lucide-react";
+import Card from "../../components/posts/card";
 import { AppDispatch, RootState } from "../../features/store";
 import { useDispatch, useSelector } from "react-redux";
 import { getPostsFeed } from "../../features/thunks/posts";
-import { AnimatePresence } from "framer-motion";
 import NetworkError from "../errors/networkError";
-import { Image, TrendingUp, Video, Calendar, Users } from "lucide-react";
 import RepostCard from "../../components/posts/card/repost";
+import PostsLoader from "../../components/posts/loading";
+import { getFriendSuggestions } from "../../features/thunks/connections";
+import { UserSuggestionLoader } from "../../components/networks/loaders";
+import { togglePostModal } from "../../features/slices/settings";
 
 const Feed = () => {
-  const [isCreatePost, setIsCreatePost] = useState(false);
+  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
 
+  const { user } = useSelector((state: RootState) => state.auth);
+  const { friendSuggestions } = useSelector((state: RootState) => state.users);
   const {
     posts: { data, error, status },
   } = useSelector((state: RootState) => state.posts);
 
   useEffect(() => {
     dispatch(getPostsFeed());
-  }, [dispatch]);
+    if (user?.id) {
+      dispatch(getFriendSuggestions({ id: user?.id as number, limit: 3 }));
+    }
+  }, [dispatch, user]);
 
   if (error) return <NetworkError message="Something went wrong" />;
   return (
@@ -44,62 +52,35 @@ const Feed = () => {
                     Welcome back!
                   </h3>
                   <p className="text-sm text-stone-500 dark:text-stone-400">
-                    Stay connected with your network
+                    Here’s what you’ve been up to 👇
                   </p>
                 </div>
+
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-stone-600 dark:text-stone-400">
-                      Profile views
+                      Conversations Started
                     </span>
                     <span className="font-semibold text-blue-600 dark:text-blue-400">
-                      127
+                      13
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-stone-600 dark:text-stone-400">
-                      Post impressions
+                      Friends Replied to You
                     </span>
                     <span className="font-semibold text-blue-600 dark:text-blue-400">
-                      1,234
+                      8
                     </span>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Trending Topics */}
-            <div className="mt-6 bg-white dark:bg-stone-700 rounded-xl shadow-sm border border-stone-200 dark:border-stone-700 p-4">
-              <div className="flex items-center space-x-2 mb-4">
-                <TrendingUp className="w-5 h-5 text-green-500" />
-                <h3 className="font-semibold text-stone-900 dark:text-white">
-                  Trending
-                </h3>
-              </div>
-              <div className="space-y-3">
-                <div className="cursor-pointer hover:bg-stone-50 dark:hover:bg-stone-700 p-2 rounded-lg transition-colors">
-                  <p className="text-sm font-medium text-stone-900 dark:text-white">
-                    #TechInnovation
-                  </p>
-                  <p className="text-xs text-stone-500 dark:text-stone-400">
-                    12.5K posts
-                  </p>
-                </div>
-                <div className="cursor-pointer hover:bg-stone-50 dark:hover:bg-stone-700 p-2 rounded-lg transition-colors">
-                  <p className="text-sm font-medium text-stone-900 dark:text-white">
-                    #RemoteWork
-                  </p>
-                  <p className="text-xs text-stone-500 dark:text-stone-400">
-                    8.2K posts
-                  </p>
-                </div>
-                <div className="cursor-pointer hover:bg-stone-50 dark:hover:bg-stone-700 p-2 rounded-lg transition-colors">
-                  <p className="text-sm font-medium text-stone-900 dark:text-white">
-                    #Sustainability
-                  </p>
-                  <p className="text-xs text-stone-500 dark:text-stone-400">
-                    5.7K posts
-                  </p>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-stone-600 dark:text-stone-400">
+                      Communities Shared In
+                    </span>
+                    <span className="font-semibold text-blue-600 dark:text-blue-400">
+                      5
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -111,11 +92,13 @@ const Feed = () => {
             <div className="bg-white dark:bg-stone-700 rounded-xl shadow-sm p-4 mb-6">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                  <span className="text-white font-semibold text-lg">U</span>
+                  <span className="text-white font-semibold text-lg">
+                    {user!.first_name.charAt(0).toUpperCase()}
+                  </span>
                 </div>
                 <button
                   className="flex-1 text-left px-4 py-3 bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-900 rounded-full text-stone-500 dark:text-stone-400 transition-colors"
-                  onClick={() => setIsCreatePost(true)}
+                  onClick={() => dispatch(togglePostModal(true))}
                 >
                   What's on your mind?
                 </button>
@@ -138,7 +121,7 @@ const Feed = () => {
 
             {/* Posts Feed */}
             {status === "pending" ? (
-              <div>Loading...</div>
+              <PostsLoader />
             ) : (
               <div className="space-y-6">
                 {data.map((post, index) =>
@@ -169,24 +152,38 @@ const Feed = () => {
                   People you may know
                 </h3>
               </div>
-              <div className="space-y-4">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-stone-900 dark:text-white">
-                        User {i}
-                      </p>
-                      <p className="text-xs text-stone-500 dark:text-stone-400">
-                        Software Engineer
-                      </p>
+              {friendSuggestions.state === "pending" ? (
+                <UserSuggestionLoader count={3} />
+              ) : (
+                <div className="space-y-4">
+                  {friendSuggestions.data.map((user, i) => (
+                    <div key={i} className="flex items-center space-x-3">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                        <span className="text-white font-semibold text-lg">
+                          {user.first_name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-stone-900 dark:text-white">
+                          {user.first_name + " " + user.last_name}
+                        </p>
+                        {user.username && (
+                          <p className="text-xs text-stone-500 dark:text-stone-400">
+                            @{user.username}
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        className="px-3 py-1 text-xs font-medium text-purple-600 dark:text-purple-400 border border-purple-600 dark:border-purple-400 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+                        onClick={() => navigate(`/u/${user.id}`)}
+                      >
+                        View Profile
+                      </button>
                     </div>
-                    <button className="px-3 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
-                      Connect
-                    </button>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Recent Activity */}
@@ -231,9 +228,6 @@ const Feed = () => {
           </aside>
         </div>
       </div>
-      <AnimatePresence>
-        {isCreatePost && <Create closeModal={() => setIsCreatePost(false)} />}
-      </AnimatePresence>
     </>
   );
 };

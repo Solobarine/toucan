@@ -4,6 +4,8 @@ defmodule Backend.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias Backend.Followerships.Followership
+  alias Backend.Friendships.Friendship
   alias Backend.Repo
   alias Backend.Accounts.User
   alias Backend.Guardian
@@ -37,6 +39,64 @@ defmodule Backend.Accounts do
 
   """
   def get_user!(id), do: Repo.get!(User, id)
+
+  def get_full_user_details(id, current_user_id \\ -1) do
+    from(
+      u in User,
+      where: u.id == ^id,
+      left_join: fr in Friendship,
+      on:
+        (fr.user_id == ^current_user_id and fr.friend_id == ^id) or
+          (fr.friend_id == ^current_user_id and fr.user_id == ^id),
+      left_join: fo in Followership,
+      on: fo.follower_id == ^id and fo.followee_id == ^id,
+      left_join: fe in Followership,
+      on: fe.followee_id == ^id and fe.follower_id == ^current_user_id,
+      select: %{
+        id: u.id,
+        first_name: u.first_name,
+        last_name: u.last_name,
+        username: u.username,
+        inserted_at: u.inserted_at,
+        friend_request_sent:
+          type(
+            fragment(
+              "COALESCE((? = 'pending' AND ? = ?), false)",
+              fr.status,
+              fr.user_id,
+              ^current_user_id
+            ),
+            :boolean
+          ),
+        friend_request_received:
+          type(
+            fragment(
+              "COALESCE((? = 'pending' AND ? = ?), false)",
+              fr.status,
+              fr.friend_id,
+              ^current_user_id
+            ),
+            :boolean
+          ),
+        is_friend:
+          type(
+            fragment("COALESCE((? = 'accepted'), false)", fr.status),
+            :boolean
+          ),
+        is_follower:
+          type(
+            fragment("COALESCE((? = ?), false)", fo.follower_id, ^id),
+            :boolean
+          ),
+        is_following:
+          type(
+            fragment("COALESCE((? = ?), false)", fe.followee_id, ^current_user_id),
+            :boolean
+          )
+      }
+    )
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a user.
@@ -117,6 +177,7 @@ defmodule Backend.Accounts do
   """
   def authenticate(email, password) do
     user = Repo.get_by(User, email: email)
+
     if user && Bcrypt.verify_pass(password, user.password_hash) do
       {:ok, user}
     else

@@ -56,7 +56,7 @@ const Header = () => {
             <div className="relative">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-200">
                 <img
-                  src="/placeholder.svg?height=24&width=24"
+                  src="/favicon-32x32.png"
                   alt="Toucan Logo"
                   className="w-6 h-6"
                 />

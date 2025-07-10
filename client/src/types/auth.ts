@@ -17,6 +17,11 @@ export interface User
   username: string;
   bio: string;
   inserted_at: string;
+  friend_request_received?: boolean;
+  friend_request_sent?: boolean;
+  is_follower?: boolean;
+  is_following?: boolean;
+  is_friend?: boolean;
 }
 
 export interface UserProfile {
@@ -24,4 +29,14 @@ export interface UserProfile {
   following: number;
   posts_count: number;
   activity: [];
+}
+
+export interface Metrics {
+  user_id: number;
+  friends_count: number;
+  followers_count: number;
+  following_count: number;
+  posts_count: number;
+  reposts_count: number;
+  total_posts: number;
 }

@@ -9,3 +9,11 @@ export const getUser = createAsyncThunk(
     return getRequest(url, { rejectWithValue });
   }
 );
+
+export const getUserMetrics = createAsyncThunk(
+  "USER/GET_METRICS",
+  async (id: number, { rejectWithValue }) => {
+    const url = `${API_URL}/api/users/${id}/metrics`;
+    return getRequest(url, { rejectWithValue });
+  }
+);

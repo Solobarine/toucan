@@ -10,6 +10,12 @@ import { AxiosResponse } from "axios";
 import { User } from "../../types/auth";
 import { serverError } from "../../utils";
 import { toast } from "react-toastify";
+import {
+  acceptFriendRequest,
+  cancelFriendRequest,
+  rejectFriendRequest,
+  sendFriendRequest,
+} from "../thunks/connections";
 
 interface InitialState {
   isLoggedIn: boolean;
@@ -177,6 +183,40 @@ const authSlice = createSlice({
     });
     builder.addCase(logoutUser.rejected, () => {
       toast("Unable to Logout");
+    });
+
+    /** Send Friend Request **/
+    builder.addCase(sendFriendRequest.fulfilled, (state) => {
+      state.profile.data = {
+        ...(state.profile.data as User),
+        friend_request_sent: true,
+      };
+    });
+
+    /** Cancel Friend Request **/
+    builder.addCase(cancelFriendRequest.fulfilled, (state) => {
+      state.profile.data = {
+        ...(state.profile.data as User),
+        friend_request_sent: false,
+      };
+    });
+
+    /** Accept Friend Request **/
+    builder.addCase(acceptFriendRequest.fulfilled, (state) => {
+      state.profile.data = {
+        ...(state.profile.data as User),
+        friend_request_received: false,
+        is_friend: true,
+      };
+    });
+
+    /** Reject Friend Request **/
+    builder.addCase(rejectFriendRequest.fulfilled, (state) => {
+      state.profile.data = {
+        ...(state.profile.data as User),
+        friend_request_received: false,
+        is_friend: false,
+      };
     });
   },
 });

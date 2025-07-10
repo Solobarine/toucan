@@ -21,7 +21,11 @@ import {
   Hash,
 } from "lucide-react";
 import type { RootState } from "../../features/store";
-import { toggleSideBar, toggleTheme } from "../../features/slices/settings";
+import {
+  togglePostModal,
+  toggleSideBar,
+  toggleTheme,
+} from "../../features/slices/settings";
 import { capitalizeText } from "../../utils";
 
 interface Notification {
@@ -214,19 +218,6 @@ const Navigation = () => {
           >
             Home
           </button>
-          <button
-            onClick={() => navigate("/explore")}
-            className="px-4 py-2 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all duration-200 font-medium"
-          >
-            Explore
-          </button>
-          <button
-            onClick={() => navigate("/trending")}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all duration-200 font-medium"
-          >
-            <TrendingUp className="w-4 h-4" />
-            Trending
-          </button>
         </nav>
       </div>
 
@@ -300,7 +291,7 @@ const Navigation = () => {
         <div className="relative" ref={createRef}>
           <button
             onClick={() => setShowCreateMenu(!showCreateMenu)}
-            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 hover:scale-105 active:scale-95 font-medium"
+            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-200 hover:scale-105 active:scale-95 font-medium"
           >
             <PlusCircle className="w-4 h-4" />
             Create
@@ -310,7 +301,7 @@ const Navigation = () => {
           {showCreateMenu && (
             <div className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-stone-800 rounded-xl shadow-2xl border border-stone-200 dark:border-stone-700 overflow-hidden z-50">
               <button
-                onClick={() => navigate("/create/post")}
+                onClick={() => dispatch(togglePostModal(true))}
                 className="w-full flex items-center gap-3 p-3 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors duration-200"
               >
                 <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
@@ -320,10 +311,7 @@ const Navigation = () => {
                   New Post
                 </span>
               </button>
-              <button
-                onClick={() => navigate("/create/story")}
-                className="w-full flex items-center gap-3 p-3 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors duration-200"
-              >
+              <button className="w-full flex items-center gap-3 p-3 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors duration-200">
                 <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
                   <span className="text-purple-600 dark:text-purple-400 text-sm font-bold">
                     S

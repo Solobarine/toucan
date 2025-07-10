@@ -3,20 +3,31 @@ import SideBar from "../components/sideBar";
 import { AppDispatch, RootState } from "../features/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
-import { setSideBarState } from "../features/slices/settings";
+import { setSideBarState, togglePostModal } from "../features/slices/settings";
 import { me } from "../features/thunks/auth";
 import Loading from "../components/loading";
 import NetworkError from "../pages/errors/networkError";
 import { ToastContainer } from "react-toastify";
 import Navigation from "../components/navigation";
 
+import "react-toastify/dist/ReactToastify.min.css";
+import { getSocket, initSocket } from "../socket";
+import { Socket } from "phoenix";
+import { AnimatePresence } from "framer-motion";
+import Create from "../components/posts/create";
+
 const Main = () => {
-  const { isDarkTheme } = useSelector((state: RootState) => state.settings);
+  const { isDarkTheme, isPostModalOpen } = useSelector(
+    (state: RootState) => state.settings
+  );
   const {
+    user,
     isLoggedIn,
     me: { status, error, statusCode },
   } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
+
+  const socketRef = useRef<Socket | null>(getSocket());
 
   // Set Theme
   useEffect(() => {
@@ -30,6 +41,29 @@ const Main = () => {
   useEffect(() => {
     dispatch(me());
   }, [dispatch]);
+
+  // Subscribe to Notifications Channel
+  useEffect(() => {
+    if (socketRef.current == null) {
+      const token = localStorage.getItem("auth_token");
+      socketRef.current = initSocket(token!);
+    }
+
+    if (!socketRef.current || !user!.id) return;
+
+    const notificationsChannel = socketRef.current!.channel(
+      `notifications:${user!.id}`
+    );
+
+    notificationsChannel
+      .join()
+      .receive("ok", (res) => {
+        console.log(res);
+      })
+      .receive("error", (res) => {
+        console.log(res);
+      });
+  }, [user]);
 
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
@@ -72,7 +106,7 @@ const Main = () => {
   if (statusCode == 401) return <Navigate to="/login" />;
 
   return (
-    <section className="main font-itim bg-light dark:bg-dark text-gray-800 dark:text-gray-100">
+    <section className="main font-itim bg-neutral-200 dark:bg-dark text-gray-800 dark:text-gray-100">
       <div className="flex items-start min-h-svh">
         <SideBar />
         <section
@@ -82,11 +116,23 @@ const Main = () => {
           onTouchEnd={handleTouchEnd}
         >
           <ToastContainer
-            className="fixed top-20 bg-white dark:bg-dark px-4 py-1 rounded-md right-2"
             autoClose={3000}
+            limit={5}
+            theme={isDarkTheme ? "dark" : "light"}
           />
           <Navigation />
-          {!isLoggedIn && error ? <NetworkError message={error} /> : <Outlet />}
+          {!isLoggedIn && error ? (
+            <NetworkError message={error} />
+          ) : (
+            <>
+              <AnimatePresence>
+                {isPostModalOpen && (
+                  <Create closeModal={() => dispatch(togglePostModal(false))} />
+                )}
+              </AnimatePresence>
+              <Outlet />
+            </>
+          )}
         </section>
       </div>
       {/** <Footer /> **/}

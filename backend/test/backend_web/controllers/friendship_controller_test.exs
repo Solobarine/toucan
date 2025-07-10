@@ -74,31 +74,31 @@ defmodule BackendWeb.FriendshipControllerTest do
     test "returns 200 and marks friendship as accepted", %{conn: conn, user: user, token: token} do
       user3 = AccountsFixtures.user_fixture()
 
-      %{friendship: friendship} =
+      %{friendship: _friendship} =
         create_friendship(%{user_id: user3.id, friend_id: user.id, status: :pending})
 
       conn =
         conn
         |> put_req_header("authorization", "Bearer #{token}")
-        |> put("/api/friendships/#{friendship.id}/accept")
+        |> put("/api/friendships/#{user3.id}/accept")
 
       assert json_response(conn, 200)
     end
 
-    test "returns 403 when non participant tries to accept request", %{
+    test "returns 404 when non participant tries to accept request", %{
       conn: conn,
       user2: user2,
       token: token
     } do
       participant = AccountsFixtures.user_fixture()
 
-      %{friendship: friendship} =
+      %{friendship: _friendship} =
         create_friendship(%{user_id: user2.id, friend_id: participant.id, status: :pending})
 
-      assert_error_sent 403, fn ->
+      assert_error_sent 404, fn ->
         conn
         |> put_req_header("authorization", "Bearer #{token}")
-        |> put("/api/friendships/#{friendship.id}/accept")
+        |> put("/api/friendships/#{participant.id}/accept")
       end
     end
 
@@ -108,13 +108,13 @@ defmodule BackendWeb.FriendshipControllerTest do
       user2: user2,
       token: token
     } do
-      %{friendship: friendship} =
+      %{friendship: _friendship} =
         create_friendship(%{user_id: user.id, friend_id: user2.id, status: :pending})
 
       assert_error_sent 403, fn ->
         conn
         |> put_req_header("authorization", "Bearer #{token}")
-        |> put("/api/friendships/#{friendship.id}/accept")
+        |> put("/api/friendships/#{user2.id}/accept")
       end
     end
   end
@@ -123,18 +123,18 @@ defmodule BackendWeb.FriendshipControllerTest do
     test "returns 200 and blocks the request", %{conn: conn, user: user, token: token} do
       user3 = AccountsFixtures.user_fixture()
 
-      %{friendship: friendship} =
+      %{friendship: _friendship} =
         create_friendship(%{user_id: user3.id, friend_id: user.id, status: :pending})
 
       conn =
         conn
         |> put_req_header("authorization", "Bearer #{token}")
-        |> put("/api/friendships/#{friendship.id}/block")
+        |> put("/api/friendships/#{user3.id}/block")
 
       assert json_response(conn, 200)
     end
 
-    test "returns 403 when non participant tries to block the friendship", %{
+    test "returns 404 when non participant tries to block the friendship", %{
       conn: conn,
       user: user,
       user2: user2,
@@ -142,13 +142,13 @@ defmodule BackendWeb.FriendshipControllerTest do
     } do
       participant = AccountsFixtures.user_fixture()
 
-      %{friendship: friendship} =
+      %{friendship: _friendship} =
         create_friendship(%{user_id: user2.id, friend_id: participant.id, status: :pending})
 
-      assert_error_sent 403, fn ->
+      assert_error_sent 404, fn ->
         conn
         |> put_req_header("authorization", "Bearer #{token}")
-        |> put("/api/friendships/#{friendship.id}/block")
+        |> put("/api/friendships/#{participant.id}/block")
       end
     end
   end

@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import Card from "../../components/posts/card";
@@ -7,11 +5,19 @@ import Card from "../../components/posts/card";
 import {
   Calendar,
   Camera,
+  Check,
+  CircleCheck,
+  CircleX,
   Ellipsis,
-  Link,
+  Fan,
+  Flag,
   MapPin,
   MessageCircleMore,
-  User,
+  UserRound,
+  UserRoundCheck,
+  UserRoundMinus,
+  UserRoundX,
+  X,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../features/store";
@@ -20,34 +26,65 @@ import { format } from "date-fns";
 import { getUserPosts } from "../../features/thunks/posts";
 import { useParams } from "react-router-dom";
 import { getProfile } from "../../features/thunks/auth";
+import {
+  getFriends,
+  sendFriendRequest as handleSendFriendRequest,
+  cancelFriendRequest as handleCancelFriendRequest,
+  acceptFriendRequest as handleAcceptFriendRequest,
+  rejectFriendRequest as handleRejectFriendRequest,
+} from "../../features/thunks/connections";
+import { getUserMetrics } from "../../features/thunks/user";
 
 export default function Profile() {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("posts");
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const dispatch: AppDispatch = useDispatch();
 
-  const { profile } = useSelector((state: RootState) => state.auth);
+  const { profile, user } = useSelector((state: RootState) => state.auth);
   const { userPosts } = useSelector((state: RootState) => state.posts);
+  const {
+    metrics,
+    sendFriendRequest,
+    cancelFriendRequest,
+    acceptFriendRequest,
+    rejectFriendRequest,
+  } = useSelector((state: RootState) => state.users);
 
   const tabs = [
-    { id: "posts", label: "Posts", count: 42 },
-    { id: "photos", label: "Photos", count: 128 },
-    { id: "connections", label: "Connections", count: 1234 },
+    { id: "posts", label: "Posts", count: metrics.data.total_posts },
+    { id: "photos", label: "Photos", count: 0 },
+    {
+      id: "friends",
+      label: "Friends",
+      count: metrics.data.followers_count + metrics.data.friends_count,
+    },
   ];
 
   useEffect(() => {
     Promise.all([
       dispatch(getProfile(id as string)),
       dispatch(getUserPosts(id as string)),
+      dispatch(getUserMetrics(parseInt(id as string))),
     ]);
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    dispatch(getFriends({ id: parseInt(id as string), page: 1, per: 20 }));
   }, [dispatch, id]);
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
       <Helmet>
-        <title>Sarah Johnson - Toucan</title>
-        <meta name="description" content="Sarah Johnson's Profile" />
+        <title>
+          {profile.data?.first_name + " " + profile.data?.last_name}'s Profile
+        </title>
+        <meta
+          name="description"
+          content={`Toucan Profile of ${
+            profile.data?.first_name + " " + profile.data?.last_name
+          }`}
+        />
       </Helmet>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -86,9 +123,11 @@ export default function Profile() {
                   " " +
                   capitalizeText(profile.data?.last_name)}
               </h1>
-              <p className="text-lg text-neutral-600 dark:text-neutral-400 mt-1">
-                @sarajohnson
-              </p>
+              {profile.data?.username && (
+                <p className="text-lg text-neutral-600 dark:text-neutral-400 mt-1">
+                  @{profile.data.username}
+                </p>
+              )}
 
               <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-neutral-500 dark:text-neutral-400">
                 <div className="flex items-center space-x-1">
@@ -103,29 +142,20 @@ export default function Profile() {
                     </span>
                   )}
                 </div>
-                <div className="flex items-center space-x-1">
-                  <Link className="w-4 h-4" />
-                  <a
-                    href="#"
-                    className="text-blue-600 dark:text-blue-400 hover:underline"
-                  >
-                    sarahjohnson.dev
-                  </a>
-                </div>
               </div>
 
               <div className="flex items-center space-x-6 mt-4">
                 <div className="text-center">
                   <div className="text-xl font-bold text-neutral-900 dark:text-white">
-                    1,234
+                    {metrics.data.friends_count}
                   </div>
                   <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                    Connections
+                    Friends
                   </div>
                 </div>
                 <div className="text-center">
                   <div className="text-xl font-bold text-neutral-900 dark:text-white">
-                    567
+                    {metrics.data.following_count}
                   </div>
                   <div className="text-sm text-neutral-500 dark:text-neutral-400">
                     Following
@@ -133,7 +163,7 @@ export default function Profile() {
                 </div>
                 <div className="text-center">
                   <div className="text-xl font-bold text-neutral-900 dark:text-white">
-                    89
+                    {metrics.data.total_posts}
                   </div>
                   <div className="text-sm text-neutral-500 dark:text-neutral-400">
                     Posts
@@ -142,26 +172,150 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 mt-6 md:mt-0">
-              <button
-                onClick={() => setIsFollowing(!isFollowing)}
-                className={`flex items-center space-x-2 px-6 py-2 font-medium rounded-lg transition-colors ${
-                  isFollowing
-                    ? "bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-300 dark:hover:bg-neutral-600"
-                    : "bg-blue-600 hover:bg-blue-700 text-white"
-                }`}
-              >
-                <User className="w-4 h-4" />
-                <span>{isFollowing ? "Following" : "Connect"}</span>
-              </button>
-              <button className="flex items-center space-x-2 px-6 py-2 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-300 dark:hover:bg-neutral-600 font-medium rounded-lg transition-colors">
-                <MessageCircleMore className="w-4 h-4" />
-                <span>Message</span>
-              </button>
-              <button className="p-2 text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
-                <Ellipsis className="w-5 h-5" />
-              </button>
-            </div>
+            {profile.data?.id !== user?.id && (
+              <div className="relative flex items-center space-x-3 mt-6 md:mt-0">
+                {profile.data?.friend_request_sent && (
+                  <>
+                    <button
+                      onClick={() =>
+                        dispatch(
+                          handleCancelFriendRequest(profile.data?.id as number)
+                        )
+                      }
+                      className="flex items-center space-x-2 px-6 py-2 font-medium rounded-lg transition-colors border border-red-500 text-red-500"
+                    >
+                      {cancelFriendRequest.state == "pending" ? (
+                        <>
+                          <Fan />
+                          <span>Cancelling</span>
+                        </>
+                      ) : (
+                        <>
+                          <X className="w-6 h-6" />
+                          <span>Cancel Friend Request</span>
+                        </>
+                      )}
+                    </button>
+                  </>
+                )}
+                {profile.data?.friend_request_received && (
+                  <>
+                    <button
+                      className="flex items-center space-x-2 px-6 py-2 font-medium rounded-lg transition-colors border border-purple-500 text-purple-500"
+                      onClick={() =>
+                        dispatch(
+                          handleAcceptFriendRequest(profile.data?.id as number)
+                        )
+                      }
+                    >
+                      {acceptFriendRequest.state == "pending" ? (
+                        <Fan className="w-4 h-4" />
+                      ) : (
+                        <CircleCheck className="w-4 h-4" />
+                      )}
+                      <span>
+                        {acceptFriendRequest.state == "pending"
+                          ? "Accepting..."
+                          : "Accept Request"}
+                      </span>
+                    </button>
+                    <button
+                      className="flex items-center space-x-2 px-6 py-2 font-medium rounded-lg transition-colors border border-red-500 text-red-500"
+                      onClick={() =>
+                        dispatch(
+                          handleRejectFriendRequest(profile.data?.id as number)
+                        )
+                      }
+                    >
+                      {rejectFriendRequest.state == "pending" ? (
+                        <Fan className="w-4 h-4" />
+                      ) : (
+                        <CircleX className="w-4 h-4" />
+                      )}
+                      <span>
+                        {rejectFriendRequest.state == "pending"
+                          ? "Rejecting..."
+                          : "Reject Request"}
+                      </span>
+                    </button>
+                  </>
+                )}
+                {!profile.data?.is_friend &&
+                  !profile.data?.friend_request_received &&
+                  !profile.data?.friend_request_sent && (
+                    <button
+                      className="flex items-center gap-2 px-6 py-2 font-medium rounded-lg transition-colors bg-purple-600 hover:bg-purple-700 text-white"
+                      onClick={() =>
+                        dispatch(
+                          handleSendFriendRequest(parseInt(id as string))
+                        )
+                      }
+                    >
+                      {sendFriendRequest.state == "pending" ? (
+                        <>
+                          <Fan className="w-4 h-4 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <UserRound className="w-4 h-4" />
+                          <span>Connect</span>
+                        </>
+                      )}
+                    </button>
+                  )}
+                {profile.data?.is_friend && (
+                  <button className="flex items-center space-x-2 px-6 py-2 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-300 dark:hover:bg-neutral-600 font-medium rounded-lg transition-colors">
+                    <MessageCircleMore className="w-4 h-4" />
+                    <span>Message</span>
+                  </button>
+                )}
+                <button
+                  className="p-2 text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors"
+                  onClick={() => setShowMore(!showMore)}
+                >
+                  <Ellipsis className="w-5 h-5" />
+                </button>
+                <div
+                  className={`bg-white dark:bg-neutral-700 shadow-lg absolute w-60 right-0 top-12 flex flex-col gap-3 p-4 rounded-md ${
+                    showMore ? "z-20" : "-z-20"
+                  } transition-all duration-700`}
+                >
+                  {profile.data?.is_friend && (
+                    <button className="flex items-center gap-3">
+                      <UserRoundMinus /> Unfriend
+                    </button>
+                  )}
+                  {profile.data?.friend_request_sent && (
+                    <button className="flex items-center gap-3">
+                      <UserRoundX /> Cancel Friend Request
+                    </button>
+                  )}
+                  {profile.data?.friend_request_received && (
+                    <button className="flex items-center gap-3">
+                      <UserRoundCheck /> Accept Friend Request
+                    </button>
+                  )}
+                  {profile.data?.friend_request_received && (
+                    <button className="flex items-center gap-3">
+                      <CircleX /> Reject Friend Request
+                    </button>
+                  )}
+                  {profile.data?.is_following ? (
+                    <button className="flex items-center gap-3">
+                      <X /> Unfollow
+                    </button>
+                  ) : (
+                    <button className="flex items-center gap-3">
+                      <Check /> Follow
+                    </button>
+                  )}
+                  <button className="flex gap-3">
+                    <Flag /> Report / Block
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -179,11 +333,10 @@ export default function Profile() {
                 }`}
               >
                 {tab.label}
-                {tab.count && (
-                  <span className="ml-2 px-2 py-1 text-xs bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400 rounded-full">
-                    {tab.count}
-                  </span>
-                )}
+
+                <span className="ml-2 px-2 py-1 text-xs bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400 rounded-full">
+                  {tab.count}
+                </span>
               </button>
             ))}
           </nav>
@@ -192,7 +345,7 @@ export default function Profile() {
         {/* Tab Content */}
         <div className="py-6">
           {activeTab === "posts" && (
-            <div className="">
+            <div className="space-y-5">
               {userPosts.data.map((post, index) => (
                 <div key={index} className="rounded-xl overflow-hidden">
                   <Card post={post} />
@@ -214,7 +367,7 @@ export default function Profile() {
             </div>
           )}
 
-          {activeTab === "connections" && (
+          {activeTab === "friends" && (
             <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-700 p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Array.from({ length: 9 }).map((_, index) => (

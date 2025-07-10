@@ -4,6 +4,7 @@ defmodule Backend.Friendships do
   """
 
   import Ecto.Query, warn: false
+  alias Backend.Followerships.Followership
   alias Backend.Repo
   alias Backend.Accounts.User
   alias Backend.Friendships.Friendship
@@ -36,6 +37,29 @@ defmodule Backend.Friendships do
 
   """
   def get_friendship!(id), do: Repo.get!(Friendship, id)
+
+  @doc """
+  Delete a Friendship
+
+  ## Examples
+  iex> get_pending_friendship!(user_id, current_user_id)
+  %Friendship{}
+
+  iex> get_pending_friendship!(user_id, current_user_id)
+  ** (Ecto.NoResultsError)
+  """
+  def get_pending_friendship!(user_id, current_user_id) do
+    Friendship
+    |> where(
+      [f],
+      f.user_id == ^current_user_id and f.friend_id == ^user_id and f.status == ^:pending
+    )
+    |> or_where(
+      [f],
+      f.friend_id == ^current_user_id and f.user_id == ^user_id and f.status == ^:pending
+    )
+    |> Repo.one!()
+  end
 
   @doc """
   Create a Friendship
@@ -137,6 +161,71 @@ defmodule Backend.Friendships do
     do: Repo.all(paginate(friends_query(user_id), opts))
 
   @doc """
+  Retrieve User Friends Suggestions
+  """
+  def friends_suggestions(user_id, limit \\ 20) do
+    # Step 1: Get direct friend IDs
+    friend_ids_query =
+      from(f in Friendship,
+        where: f.status == ^:accepted and (f.user_id == ^user_id or f.friend_id == ^user_id),
+        select:
+          fragment(
+            "case when ? = ? then ? else ? end",
+            f.user_id,
+            ^user_id,
+            f.friend_id,
+            f.user_id
+          )
+      )
+
+    # Step 2: Get Friends of Friends
+    friends_of_friends_query =
+      from(u in User,
+        join: f in Friendship,
+        on: f.status == ^:accepted and (f.user_id == u.id or f.friend_id == u.id),
+        where:
+          u.id != ^user_id and
+            u.id not in subquery(friend_ids_query) and
+            (f.user_id in subquery(friend_ids_query) or f.friend_id in subquery(friend_ids_query)),
+        select: u
+      )
+
+    # Step 3: Get Users Followed by Friends
+    followed_by_friends_query =
+      from(u in User,
+        join: f in Followership,
+        on: f.followee_id == u.id,
+        where:
+          u.id != ^user_id and
+            u.id not in subquery(friend_ids_query) and
+            f.follower_id in subquery(friend_ids_query),
+        select: u
+      )
+
+    # Step 4: Union both, deduplicate, and randomize
+    friends_of_friends_query
+    |> union_all(^followed_by_friends_query)
+    |> subquery()
+    |> distinct(true)
+    # |> order_by(fragment("RANDOM()"))
+    |> limit(^limit)
+    |> Repo.all()
+  end
+
+  @doc """
+  Delete a Friendship
+
+  ## Examples
+  iex> delete_friendship!(friendship)
+  {:ok, %Friendship{}}
+
+  iex> delete_friendship!(friendship)
+  {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_friendship(friendship), do: Repo.delete(friendship)
+
+  @doc """
   Returns an `%Ecto.Changeset{}` for tracking friendship changes.
 
   ## Examples
@@ -155,8 +244,7 @@ defmodule Backend.Friendships do
       on:
         (f.user_id == ^user_id and f.friend_id == u.id) or
           (f.friend_id == ^user_id and f.user_id == u.id),
-      where: f.status == ^:accepted,
-      preload: [:user, :friend]
+      where: f.status == ^:accepted
   end
 
   defp paginate(query, opts) do

@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import type { Chat } from "../../../../../types/chat";
 import type { RootState } from "../../../../../features/store";
-import { capitalizeText } from "../../../../../utils";
+import { capitalizeText, formatTimestamp } from "../../../../../utils";
 import { NavLink } from "react-router-dom";
 
 const RecentCard = ({ chat }: { chat: Chat }) => {
@@ -39,7 +39,7 @@ const RecentCard = ({ chat }: { chat: Chat }) => {
                 )}`}
           </h3>
           <span className="text-xs font-medium text-stone-500 dark:text-stone-400 whitespace-nowrap ml-2">
-            09:10
+            {formatTimestamp(chat.inserted_at)}
           </span>
         </div>
 
@@ -50,29 +50,12 @@ const RecentCard = ({ chat }: { chat: Chat }) => {
           </p>
 
           {/* Unread count badge */}
-          <div className="flex-shrink-0">
+          <div className="hidden flex-shrink-0">
             <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-full shadow-sm">
               10
             </span>
           </div>
         </div>
-      </div>
-
-      {/* Subtle arrow indicator */}
-      <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <svg
-          className="w-4 h-4 text-stone-400 dark:text-stone-500"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
       </div>
     </NavLink>
   );

@@ -29,23 +29,33 @@ defmodule BackendWeb.Router do
     get "/profile", AuthController, :profile
     get "/user-posts", PostController, :user_posts
     get "/user/:id", UserController, :show
+    get "/users/:user_id/metrics", MetricsController, :show
+
     resources "/posts", PostController, except: [:new, :edit]
     post "/posts/repost", PostController, :repost
+
     resources "/comments", CommentController, only: [:index, :create, :show, :update, :delete]
     post "/replies", CommentController, :create_reply
+
     resources "/chats", ChatController, except: [:new, :edit]
+
     resources "/likes", LikeController, only: [:create, :delete]
 
     post "/friendships/request", FriendshipController, :create
     put "/friendships/:id/accept", FriendshipController, :accept_friend_request
     put "/friendships/:id/block", FriendshipController, :reject_friend_request
+    put "/friendships/request/cancel", FriendshipController, :cancel_friend_request
     get "/friendships/requests", FriendshipController, :friend_requests
     delete "/friendships/:id", FriendshipController, :delete
     get "/friends", FriendshipController, :index
+    get "/friends/suggestions", FriendshipController, :friends_suggestions
 
     resources "/followerships", FollowershipController, only: [:index, :create, :delete]
     get "/followerships/followers", FollowershipController, :followers
     get "/followerships/following", FollowershipController, :following
+
+    resources "/notifications", NotificationController, only: [:index, :delete]
+    put  "/notifications/:id",  NotificationController, :mark_read
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

@@ -7,10 +7,7 @@ import {
   Menu,
   MessageSquareDot,
   Moon,
-  Phone,
   Sun,
-  Telescope,
-  TrendingUp,
   User,
   UsersRound,
 } from "lucide-react";
@@ -35,24 +32,9 @@ const topLinks = [
     name: "Chats",
   },
   {
-    to: "/calls",
-    icon: Phone,
-    name: "Calls",
-  },
-  {
     to: "/network",
     icon: UsersRound,
     name: "My Network",
-  },
-  {
-    to: "/explore",
-    icon: Telescope,
-    name: "Explore",
-  },
-  {
-    to: "/trending",
-    icon: TrendingUp,
-    name: "Trending",
   },
   {
     to: "/notifications",

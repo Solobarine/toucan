@@ -50,9 +50,13 @@ defmodule Backend.Chats do
 
   """
   def create_chat(attrs \\ %{}) do
-    %Chat{}
-    |> Chat.changeset(attrs)
-    |> Repo.insert()
+    case Repo.insert(Chat.changeset(%Chat{}, attrs)) do
+      {:ok, chat} ->
+        {:ok, Repo.preload(chat, [:sender, :receiver])}
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   @doc """

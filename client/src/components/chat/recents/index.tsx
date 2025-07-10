@@ -1,24 +1,20 @@
-import { useSelector } from "react-redux";
-import { Search, MessageCirclePlus } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { Search, MessageCirclePlus, ChevronLeft } from "lucide-react";
 import RecentCard from "../components/cards/recents";
-import type { RootState } from "../../../features/store";
-import { useLocation } from "react-router-dom";
+import type { RootState, AppDispatch } from "../../../features/store";
+import { toggleChatSidebar } from "../../../features/slices/settings";
 
 const Recents = () => {
-  const location = useLocation();
   const { chats } = useSelector((state: RootState) => state.chats.recents);
+  const dispatch: AppDispatch = useDispatch();
 
   return (
     <div
-      className={`flex flex-col bg-white dark:bg-stone-950 border-r border-stone-200 dark:border-stone-800 transition-all duration-300 ease-in-out ${
-        location.pathname.replace(/\/+$/, "") === "/chats"
-          ? "w-full grow sm:grow-0 sm:w-80"
-          : "absolute"
-      } h-full`}
+      className={`flex flex-col bg-white dark:bg-stone-800 border-r border-stone-200 dark:border-stone-800 transition-all duration-300 ease-in-out h-full`}
     >
       {/* Header */}
-      <div className="flex-shrink-0 p-6 pb-4 border-b border-stone-100 dark:border-stone-800">
-        <div className="flex items-center justify-between mb-6">
+      <div className="flex-shrink-0 p-3 border-b border-stone-100 dark:border-stone-800">
+        <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 tracking-tight">
               Messages
@@ -27,11 +23,18 @@ const Recents = () => {
               {chats.length} conversation{chats.length !== 1 ? "s" : ""}
             </p>
           </div>
-          <button className="group relative p-2.5 text-stone-600 dark:text-stone-400 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 rounded-xl transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95">
-            <MessageCirclePlus className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
+          <button
+            onClick={() => dispatch(toggleChatSidebar(false))}
+            className="p-2 w-fit ml-auto bg-white/90 dark:bg-neutral-700/90 backdrop-blur-sm text-neutral-700 dark:text-neutral-300 rounded-full shadow-lg hover:bg-red-500 dark:hover:bg-red-500 transition-all duration-200 active:scale-95 md:hidden"
+            aria-label="Hide Chat List"
+          >
+            <ChevronLeft />
           </button>
         </div>
+        <button className="relative p-2.5 my-4 flex items-center justify-center gap-3 bg-primary text-stone-200 hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-600 hover:text-white rounded-xl transition-all duration-200 hover:shadow-lg active:scale-95 w-full">
+          <span>New Chat</span>
+          <MessageCirclePlus className="w-5 h-5" />
+        </button>
 
         {/* Search Input */}
         <div className="relative">
@@ -43,7 +46,7 @@ const Recents = () => {
             name="search"
             id="search"
             placeholder="Search conversations..."
-            className="w-full pl-11 pr-4 py-3 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 rounded-xl border border-stone-200 dark:border-stone-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:bg-stone-100 dark:hover:bg-stone-800"
+            className="w-full pl-11 pr-4 py-3 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 rounded-xl border border-stone-200 dark:border-stone-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 hover:bg-stone-100 dark:hover:bg-stone-800"
           />
         </div>
       </div>
@@ -69,7 +72,7 @@ const Recents = () => {
                 Start a new conversation to connect with your friends and
                 colleagues.
               </p>
-              <button className="mt-4 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 hover:shadow-md">
+              <button className="mt-4 px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white text-sm font-medium rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 hover:shadow-md">
                 Start Chatting
               </button>
             </div>

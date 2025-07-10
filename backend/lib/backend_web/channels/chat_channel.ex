@@ -3,6 +3,7 @@ defmodule BackendWeb.ChatChannel do
   alias BackendWeb.ChatJSON
   alias Backend.Chats
 
+  # Join recent chats channel
   @impl true
   def join("chat:recents:" <> user_id, _payload, socket) do
     if user_authorized?(user_id, socket.assigns[:user_id]) do
@@ -13,6 +14,7 @@ defmodule BackendWeb.ChatChannel do
     end
   end
 
+  # Join chat channel e.g chat:3_5
   def join("chat:" <> user_ids, payload, socket) do
     if authorized?(user_ids, socket.assigns[:user_id], payload["user_id"]) do
       chats = Chats.chat_history(socket.assigns[:user_id], payload["user_id"])

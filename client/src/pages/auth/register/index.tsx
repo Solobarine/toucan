@@ -77,7 +77,7 @@ const Register = () => {
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
                 <img
-                  src="/placeholder.svg?height=32&width=32"
+                  src="/favicon-32x32.png"
                   alt="Toucan"
                   className="w-8 h-8"
                 />
@@ -158,7 +158,7 @@ const Register = () => {
               <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
                 <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
                   <img
-                    src="/placeholder.svg?height=24&width=24"
+                    src="/favicon-32x32.png"
                     alt="Toucan"
                     className="w-6 h-6"
                   />
