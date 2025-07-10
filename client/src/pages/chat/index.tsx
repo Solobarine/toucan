@@ -24,7 +24,7 @@ const Chat = () => {
 
   console.log(location.pathname.replace(/\/+$/, ""));
 
-  let isOnChats = location.pathname.replace(/\/+$/, "") == "/chats";
+  const isOnChats = location.pathname.replace(/\/+$/, "") == "/chats";
 
   useEffect(() => {
     if (isOnChats) {
@@ -32,7 +32,7 @@ const Chat = () => {
     } else {
       dispatch(toggleChatSidebar(false));
     }
-  }, [isOnChats]);
+  }, [isOnChats, dispatch]);
 
   useEffect(() => {
     // Only create the socket once

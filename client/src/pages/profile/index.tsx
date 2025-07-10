@@ -11,7 +11,6 @@ import {
   Ellipsis,
   Fan,
   Flag,
-  Link,
   MapPin,
   MessageCircleMore,
   UserRound,
@@ -45,7 +44,6 @@ export default function Profile() {
   const { profile, user } = useSelector((state: RootState) => state.auth);
   const { userPosts } = useSelector((state: RootState) => state.posts);
   const {
-    friends,
     metrics,
     sendFriendRequest,
     cancelFriendRequest,

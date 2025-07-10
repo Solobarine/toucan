@@ -7,7 +7,6 @@ import { type Channel, Socket } from "phoenix";
 import { useEffect, useRef, useState } from "react";
 import {
   appendPrivateChat,
-  appendRecents,
   populatePrivateChat,
 } from "../../../features/slices/chats";
 import { getUser } from "../../../features/thunks/user";

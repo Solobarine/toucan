@@ -28,7 +28,7 @@ const Feed = () => {
     if (user?.id) {
       dispatch(getFriendSuggestions({ id: user?.id as number, limit: 3 }));
     }
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   if (error) return <NetworkError message="Something went wrong" />;
   return (

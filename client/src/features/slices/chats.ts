@@ -67,7 +67,9 @@ const chats = createSlice({
         ...state.recents,
         chats: [
           action.payload,
-          state.recents.chats.filter((chat) => chat.id === action.payload.id),
+          ...state.recents.chats.filter(
+            (chat) => chat.name !== action.payload.name
+          ),
         ],
       };
     },

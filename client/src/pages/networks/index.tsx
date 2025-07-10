@@ -51,6 +51,7 @@ const Network = () => {
     if (category == "friends") {
       dispatch(getFriends({ id: user?.id as number, page: 1, per: 20 }));
     } else if (category == "groups") {
+      console.log("Groups");
     } else if (category == "followers") {
       dispatch(getFollowers());
     } else if (category == "following") {
@@ -58,7 +59,7 @@ const Network = () => {
     } else {
       navigate("/network?category=friends");
     }
-  }, [dispatch, category]);
+  }, [dispatch, category, navigate, user]);
 
   const tabs = [
     { id: "friends", label: "Friends", count: metrics.data.friends_count },
@@ -103,6 +104,7 @@ const Network = () => {
     },
   ];
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mockGroups: any[] = [
     {
       id: "1",
