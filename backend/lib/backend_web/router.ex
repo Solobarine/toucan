@@ -30,6 +30,7 @@ defmodule BackendWeb.Router do
     get "/user-posts", PostController, :user_posts
     get "/user/:id", UserController, :show
     get "/users/:user_id/metrics", MetricsController, :show
+    put "/users/avatar", UserController, :update_avatar
 
     resources "/posts", PostController, except: [:new, :edit]
     post "/posts/repost", PostController, :repost
@@ -55,7 +56,7 @@ defmodule BackendWeb.Router do
     get "/followerships/following", FollowershipController, :following
 
     resources "/notifications", NotificationController, only: [:index, :delete]
-    put  "/notifications/:id",  NotificationController, :mark_read
+    put "/notifications/:id", NotificationController, :mark_read
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

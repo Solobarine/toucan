@@ -1,4 +1,5 @@
 defmodule BackendWeb.FollowershipJSON do
+  alias Backend.Accounts.User
   alias BackendWeb.UserJSON
   alias Backend.Followerships.Followership
 
@@ -6,7 +7,7 @@ defmodule BackendWeb.FollowershipJSON do
   Renders a list of followerships.
   """
   def index(%{followerships: followerships, assoc: assoc}) do
-    %{data: for(followership <- followerships, do: assoc_data(followership, assoc))}
+    %{followerships: for(followership <- followerships, do: assoc_data(followership, assoc))}
   end
 
   @doc """
@@ -24,25 +25,13 @@ defmodule BackendWeb.FollowershipJSON do
     }
   end
 
-  defp assoc_data(%Followership{} = followership, assoc) do
+  defp assoc_data(%User{} = followership, assoc) do
     case assoc do
       :followers ->
-        %{
-          id: followership.id,
-          follower_id: followership.follower_id,
-          follower: UserJSON.show(%{user: followership.follower}).user,
-          followee_id: followership.followee_id,
-          inserted_at: followership.inserted_at
-        }
+        UserJSON.show(%{user: followership}).user
 
       :following ->
-        %{
-          id: followership.id,
-          follower_id: followership.follower_id,
-          followee_id: followership.followee_id,
-          followee: UserJSON.show(%{user: followership.followee}).user,
-          inserted_at: followership.inserted_at
-        }
+        UserJSON.show(%{user: followership}).user
 
       nil ->
         data(followership)

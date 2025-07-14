@@ -86,7 +86,7 @@ defmodule Backend.Followerships do
   """
   def followers(%User{} = user) do
     from(u in User,
-    join: f in Followership,
+      join: f in Followership,
       on: f.followee_id == ^user.id,
       where: u.id != ^user.id and u.id == f.follower_id,
       select: u
@@ -103,9 +103,9 @@ defmodule Backend.Followerships do
   """
   def following(%User{} = user) do
     from(u in User,
-    join: f in Followership,
+      join: f in Followership,
       on: f.follower_id == ^user.id,
-      where: u.id !=^user.id and u.id == f.followee_id,
+      where: u.id != ^user.id and u.id == f.followee_id,
       select: u
     )
     |> Repo.all()

@@ -9,8 +9,10 @@ import {
 } from "../thunks/posts";
 import { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { createComment, createReply } from "../thunks/comments";
+import { createComment, createReply, getComments } from "../thunks/comments";
 import { likeContent, unlikeContent } from "../thunks/likes";
+import { LoadingInterface } from "../../types/loading";
+import { Comment } from "../../types/comment";
 // import { appendComment } from "../../utils";
 
 type FeedItem = Post | Repost;
@@ -18,60 +20,64 @@ type FeedItem = Post | Repost;
 interface InitialState {
   posts: {
     statusCode: number | undefined;
-    status: "idle" | "pending" | "failed";
+    status: LoadingInterface;
     data: [] | FeedItem[];
     error: string | undefined;
   };
   post: {
     statusCode: number | undefined;
-    status: "idle" | "pending" | "failed";
+    status: LoadingInterface;
     data: Post | undefined;
+    comments: [] | Comment[];
     error: string | undefined;
   };
   create: {
     statusCode: number | undefined;
-    status: "idle" | "pending" | "failed";
+    status: LoadingInterface;
     message: string | undefined;
     error: string | undefined;
   };
   update: {
     statusCode: number | undefined;
-    status: "idle" | "pending" | "failed";
+    status: LoadingInterface;
     message: string | undefined;
     error: string | undefined;
   };
   delete: {
     statusCode: number | undefined;
     message: string | undefined;
-    status: "idle" | "pending" | "failed";
+    status: LoadingInterface;
     error: string | undefined;
+  };
+  getComments: {
+    status: LoadingInterface;
   };
   createComment: {
     statusCode: number | undefined;
-    status: "idle" | "pending" | "failed";
+    status: LoadingInterface;
     message: string | undefined;
     error: string | undefined;
   };
   createReply: {
     statusCode: number | undefined;
-    status: "idle" | "pending" | "failed";
+    status: LoadingInterface;
     message: string | undefined;
     error: string | undefined;
   };
   like: {
-    status: "idle" | "pending" | "failed";
+    status: LoadingInterface;
     error: string | undefined;
   };
   unlike: {
-    status: "idle" | "pending" | "failed";
+    status: LoadingInterface;
     error: string | undefined;
   };
   userPosts: {
-    status: "idle" | "pending" | "failed";
+    status: LoadingInterface;
     data: Post[] | [];
     error: string | undefined;
   };
-  repost: { status: "idle" | "pending" | "failed" };
+  repost: { status: LoadingInterface };
 }
 
 const initialState: InitialState = {
@@ -84,6 +90,7 @@ const initialState: InitialState = {
   post: {
     statusCode: undefined,
     data: undefined,
+    comments: [],
     status: "idle",
     error: undefined,
   },
@@ -104,6 +111,9 @@ const initialState: InitialState = {
     status: "idle",
     message: undefined,
     error: undefined,
+  },
+  getComments: {
+    status: "idle",
   },
   createComment: {
     statusCode: undefined,
@@ -277,18 +287,17 @@ const post = createSlice({
       state.create.status = "pending";
       state.create.error = undefined;
     });
-    builder.addCase(createPost.fulfilled, (state, action) => {
+    builder.addCase(createPost.fulfilled, (state) => {
       state.create.status = "idle";
       state.create.message = "Post created successfully";
-      toast(state.create.message, {});
-      state.posts.data = [action.payload.data.post, ...state.posts.data];
+      toast.success(state.create.message, {});
     });
     builder.addCase(createPost.rejected, (state, action) => {
       state.create.statusCode = (
         action.payload as { statusCode: number | undefined }
       ).statusCode;
       state.create.message = "Post failed to create";
-      toast(state.create.message, {});
+      toast.error(state.create.message, {});
       state.create.status = "failed";
       state.create.error = (
         action.payload as { error: string | undefined }
@@ -320,6 +329,22 @@ const post = createSlice({
       };
     });
 
+    /** GET COMMENTS **/
+    builder.addCase(getComments.pending, (state) => {
+      state.getComments = { status: "pending" };
+      state.post.comments = [];
+    });
+
+    builder.addCase(getComments.fulfilled, (state, action) => {
+      state.getComments = { status: "idle" };
+      state.post.comments = action.payload.data.comments;
+    });
+
+    builder.addCase(getComments.rejected, (state) => {
+      state.getComments = { status: "failed" };
+      toast.error("Unable to Load Comments");
+    });
+
     /** CREATE COMMENT **/
     builder.addCase(createComment.pending, (state) => {
       state.createComment.statusCode = undefined;
@@ -334,9 +359,9 @@ const post = createSlice({
       // Increment comment count for post
       if (state.post.data) {
         state.post.data.comments_count += 1;
-        state.post.data.comments = [
+        state.post.comments = [
           action.payload.data.comment,
-          ...state.post.data.comments,
+          ...state.post.comments,
         ];
       }
     });

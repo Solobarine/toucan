@@ -82,9 +82,6 @@ defmodule BackendWeb.ChatChannel do
   end
 
   defp authorized?(user_ids, user_id, payload_user_id) do
-    IO.puts("User IDs: #{user_ids}")
-    IO.puts("user id: #{user_id}")
-
     split_ids =
       user_ids
       |> String.split(",")

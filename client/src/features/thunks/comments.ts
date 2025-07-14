@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { postRequest } from "../../utils/api";
+import { getRequest, postRequest } from "../../utils/api";
 import { API_URL } from "../../constants";
 import { Comment } from "../../types/comment";
 
@@ -22,5 +22,16 @@ export const createReply = createAsyncThunk(
   ) => {
     const url = `${API_URL}/api/replies`;
     return postRequest(url, data, { rejectWithValue });
+  }
+);
+
+export const getComments = createAsyncThunk(
+  "COMMENTS/GET_COMMENTS",
+  async (
+    { id, content_type }: { id: number; content_type: string },
+    { rejectWithValue }
+  ) => {
+    const url = `${API_URL}/api/comments?content_type=${content_type}&id=${id}`;
+    return getRequest(url, { rejectWithValue });
   }
 );

@@ -35,6 +35,8 @@ defmodule Backend.MixProject do
       {:phoenix, "~> 1.7.14"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
+      {:elixir_uuid, "~> 1.2"},
+      {:oban, "~> 2.17"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:swoosh, "~> 1.5"},
@@ -48,7 +50,13 @@ defmodule Backend.MixProject do
       {:guardian, "~> 2.3"},
       {:bcrypt_elixir, "~> 3.2.0"},
       {:faker_elixir_octopus, "> 0.0.0"},
-      {:cors_plug, "~> 3.0"}
+      {:cors_plug, "~> 3.0"},
+      {:waffle, "~> 1.1"},
+      {:waffle_ecto, "~> 0.0.11"},
+      {:ex_aws, "~> 2.1.2"},
+      {:ex_aws_s3, "~> 2.0"},
+      {:hackney, "~> 1.9"},
+      {:sweet_xml, "~> 0.6"}
     ]
   end
 

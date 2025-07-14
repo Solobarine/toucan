@@ -1,7 +1,7 @@
 defmodule BackendWeb.PostJSON do
-  alias Backend.Posts.Post
-  alias BackendWeb.CommentJSON
   alias BackendWeb.PostJSON
+  alias BackendWeb.UserJSON
+  alias Backend.Posts.Post
   alias Backend.{Accounts, Comments, Likes, Posts}
 
   @doc """
@@ -24,7 +24,7 @@ defmodule BackendWeb.PostJSON do
       title: post.title,
       body: post.body,
       inserted_at: post.inserted_at,
-      user: post.user,
+      user: UserJSON.show(%{user: post.user}).user,
       likes_count: post.likes_count,
       comments_count: post.comments_count,
       reposts_count: post.reposts_count,
@@ -40,7 +40,7 @@ defmodule BackendWeb.PostJSON do
       item_type: post.item_type,
       body: post.body,
       inserted_at: post.inserted_at,
-      user: post.user,
+      user: UserJSON.show(%{user: post.user}).user,
       user_id: post.user.id,
       likes_count: post.likes_count,
       comments_count: post.comments_count,
@@ -58,7 +58,7 @@ defmodule BackendWeb.PostJSON do
       id: repost.id,
       body: repost.body,
       inserted_at: repost.inserted_at,
-      user: repost.user,
+      user: UserJSON.show(%{user: repost.user}).user,
       likes_count: repost.likes_count,
       comments_count: repost.comments_count,
       reposts_count: 0,
@@ -85,7 +85,7 @@ defmodule BackendWeb.PostJSON do
       is_owner: Posts.is_post_owner(post.user_id, user_id),
       is_liked_by_user: Likes.is_liked_by_user(user_id, post.id, "post"),
       reposts_count: 0,
-      comments: CommentJSON.index(%{comments: Comments.list_post_comments(post.id)}).comments
+      comments: []
     }
   end
 end

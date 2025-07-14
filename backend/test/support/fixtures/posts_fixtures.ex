@@ -12,13 +12,15 @@ defmodule Backend.PostsFixtures do
   """
   def post_fixture() do
     user = user_fixture()
+
     {:ok, post} =
       %{
-        body: FakerElixir.Lorem.word,
-        title: FakerElixir.Lorem.sentence,
+        body: FakerElixir.Lorem.word(),
+        title: FakerElixir.Lorem.sentence(),
         user_id: user.id
       }
       |> Backend.Posts.create_post()
+
     post
   end
 end

@@ -9,9 +9,11 @@ defmodule BackendWeb.NotificationsChannelTest do
     user = AccountsFixtures.user_fixture()
     user2 = AccountsFixtures.user_fixture()
     {:ok, token, _claims} = encode_and_sign(user)
+
     {:ok, socket} =
       BackendWeb.UserSocket
       |> connect(%{token: token}, connect_info: %{})
+
     %{socket: socket, user: user, user2: user2}
   end
 

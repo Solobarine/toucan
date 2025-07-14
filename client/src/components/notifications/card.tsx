@@ -10,13 +10,15 @@ import {
   X,
 } from "lucide-react";
 import { Notification } from "../../types/notifications";
-import { formatTimestamp } from "../../utils";
+import { capitalizeText, formatTimestamp } from "../../utils";
 
-const getNotificationIcon = (type: string) => {
-  switch (type) {
+const getNotificationIcon = (verb: string) => {
+  switch (verb) {
     case "like":
       return <Heart className="w-5 h-5 text-red-500 fill-current" />;
     case "comment":
+      return <MessageCircle className="w-5 h-5 text-blue-500" />;
+    case "reply":
       return <MessageCircle className="w-5 h-5 text-blue-500" />;
     case "follow":
       return <UserPlus className="w-5 h-5 text-green-500" />;
@@ -27,7 +29,75 @@ const getNotificationIcon = (type: string) => {
     case "event":
       return <Calendar className="w-5 h-5 text-orange-500" />;
     default:
-      return <Bell className="w-5 h-5 text-stone-500" />;
+      return <Bell className="w-5 h-5 text-neutral-500" />;
+  }
+};
+
+const constructNotification = (notification: Notification) => {
+  switch (notification.verb) {
+    case "like":
+      return (
+        <>
+          <p>
+            Liked your{" "}
+            {capitalizeText(notification.object.content_type as string)}
+          </p>
+          <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-3 mb-3">
+            <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+              {notification.object.preview}
+            </p>
+          </div>
+        </>
+      );
+    case "post":
+      return (
+        <>
+          <p>Created a Post</p>
+          <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-3 mb-3">
+            <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+              {notification.object.body}
+            </p>
+          </div>
+        </>
+      );
+    case "repost":
+      return (
+        <>
+          <p>
+            Commented on your{" "}
+            {capitalizeText(notification.object.content_type as string)}
+          </p>
+          <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-3 mb-3">
+            <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+              {notification.object.body}
+            </p>
+          </div>
+        </>
+      );
+    case "comment":
+      return (
+        <>
+          <p>Commented on your Post</p>
+          <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-3 mb-3">
+            <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+              {notification.object.body}
+            </p>
+          </div>
+        </>
+      );
+    case "reply":
+      return (
+        <>
+          <p>Replied a comment</p>
+          <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-3 mb-3">
+            <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+              {notification.object.text}
+            </p>
+          </div>
+        </>
+      );
+    default:
+      return <div></div>;
   }
 };
 
@@ -41,9 +111,9 @@ const deleteNotification = (id: number) => {
 
 const NotificationCard = ({ notification }: { notification: Notification }) => (
   <div
-    className={`p-6 border-b border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 transition-all duration-200 ${
+    className={`p-6 border-b border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-200 ${
       !notification.read_at
-        ? "bg-blue-50 dark:bg-blue-900/10 border-l-4 border-l-blue-500"
+        ? "bg-purple-50 dark:bg-purple-700/20 border-l-4 border-l-purple-500"
         : ""
     }`}
   >
@@ -56,7 +126,7 @@ const NotificationCard = ({ notification }: { notification: Notification }) => (
           }
           className="w-12 h-12 rounded-full object-cover"
         />
-        <div className="absolute -bottom-1 -right-1 bg-white dark:bg-stone-900 rounded-full p-1">
+        <div className="absolute -bottom-1 -right-1 bg-white dark:bg-neutral-900 rounded-full p-1">
           {getNotificationIcon(notification.verb)}
         </div>
       </div>
@@ -64,7 +134,7 @@ const NotificationCard = ({ notification }: { notification: Notification }) => (
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between mb-2">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-stone-900 dark:text-stone-100">
+            <span className="font-semibold text-neutral-900 dark:text-neutral-100">
               {notification.actor.first_name +
                 " " +
                 notification.actor.last_name}
@@ -74,12 +144,12 @@ const NotificationCard = ({ notification }: { notification: Notification }) => (
                 <span className="text-white text-xs">✓</span>
               </div>
             )}
-            <span className="text-stone-500 dark:text-stone-400">
-              @{notification.user.username}
+            <span className="text-neutral-500 dark:text-neutral-400">
+              @{notification.actor.username}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-stone-500 dark:text-stone-400 text-sm whitespace-nowrap">
+            <span className="text-neutral-500 dark:text-neutral-400 text-sm whitespace-nowrap">
               {formatTimestamp(notification.inserted_at)}
             </span>
             {!notification.read_at && (
@@ -93,7 +163,7 @@ const NotificationCard = ({ notification }: { notification: Notification }) => (
             )}
             <button
               onClick={() => deleteNotification(notification.id)}
-              className="p-1 rounded-full text-stone-400 hover:text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors duration-200"
+              className="p-1 rounded-full text-neutral-400 hover:text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors duration-200"
               title="Delete notification"
             >
               <X className="w-4 h-4" />
@@ -101,24 +171,14 @@ const NotificationCard = ({ notification }: { notification: Notification }) => (
           </div>
         </div>
 
-        <p className="text-stone-700 dark:text-stone-300 mb-3">
-          Notification Here
-        </p>
-
-        {notification.verb == "post" && (
-          <div className="bg-stone-100 dark:bg-stone-800 rounded-lg p-3 mb-3">
-            <p className="text-stone-600 dark:text-stone-400 text-sm">
-              {notification.object.preview}
-            </p>
-          </div>
-        )}
+        {constructNotification(notification)}
 
         {notification.verb === "follow" && (
           <div className="flex items-center gap-2">
             <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200">
               Follow Back
             </button>
-            <button className="px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors duration-200">
+            <button className="px-4 py-2 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors duration-200">
               View Profile
             </button>
           </div>

@@ -1,6 +1,5 @@
 defmodule BackendWeb.CommentJSON do
-  alias Backend.Comments
-  alias Backend.Accounts
+  alias BackendWeb.UserJSON
   alias Backend.Comments.Comment
 
   @doc """
@@ -23,8 +22,9 @@ defmodule BackendWeb.CommentJSON do
       content_id: comment.content_id,
       user_id: comment.user_id,
       text: comment.text,
-      user: Accounts.get_user!(comment.user_id),
-      replies: index(%{comments: Comments.list_comment_replies(comment.id)}).comments,
+      user: UserJSON.show(%{user: comment.user}).user,
+      # replies: index(%{comments: Comments.list_comment_replies(comment.id)}).comments,
+      replies: [],
       inserted_at: comment.inserted_at
     }
   end

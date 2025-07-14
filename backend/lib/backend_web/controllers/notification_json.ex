@@ -18,10 +18,14 @@ defmodule BackendWeb.NotificationJSON do
   defp data(%Notification{} = notification) do
     %{
       id: notification.id,
+      user_id: notification.user_id,
+      actor_id: notification.actor_id,
+      actor: notification.actor,
       verb: notification.verb,
       object: notification.object,
       metadata: notification.metadata,
-      read_at: notification.read_at
+      read_at: notification.read_at,
+      inserted_at: notification.inserted_at
     }
   end
 end

@@ -8,7 +8,7 @@ defmodule Backend.NotificationsTest do
 
     import Backend.NotificationsFixtures
 
-    @invalid_attrs %{metadata: nil, verb: nil, object: nil, read_at: nil} 
+    @invalid_attrs %{metadata: nil, verb: nil, object: nil, read_at: nil}
 
     test "get_notification!/1 returns the notification with given id" do
       notification = notification_fixture()

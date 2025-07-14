@@ -1,6 +1,7 @@
 defmodule BackendWeb.LikeController do
   use BackendWeb, :controller
 
+  alias Backend.Workers.NotificationWorker
   alias BackendWeb.Policies.LikesPolicy
   alias Backend.Likes
   alias Backend.Likes.Like
@@ -21,6 +22,34 @@ defmodule BackendWeb.LikeController do
     params = Map.merge(like_params, %{"user_id" => current_user.id})
 
     with {:ok, %Like{} = like} <- Likes.create_like(params) do
+      # Send Notification to Content Owner
+      user_notification_params = %{
+        action: "single",
+        user_id: like.user_id,
+        actor_id: current_user.id,
+        verb: "like",
+        object: %{id: like.content_id, content_type: like.content_type, content_owner: true}
+      }
+
+      user_notification_params
+      |> NotificationWorker.new()
+      |> Oban.insert()
+
+      # Send Notification to close connections
+      object = %{id: like.content_id, content_type: like.content_type, content_owner: false}
+
+      %{
+        action: "multiple",
+        user_id: current_user.id,
+        content_owner_id: like.user_id,
+        verb: "like",
+        object: object,
+        metadata: %{}
+      }
+      |> NotificationWorker.new()
+      |> Oban.insert()
+
+      # Return response
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/likes/#{like}")

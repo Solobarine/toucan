@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { API_URL } from "../../constants";
 import { deleteRequest, getRequest, postRequest } from "../../utils/api";
 import { LoginInterface, RegisterInterface } from "../../types/auth";
+import axios from "axios";
 
 export const loginUser = createAsyncThunk(
   "USER/LOGIN",
@@ -40,5 +41,35 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const url = `${API_URL}/api/logout`;
     return deleteRequest(url, { rejectWithValue });
+  }
+);
+
+export const updateAvatar = createAsyncThunk(
+  "USER/UPDATE_AVATAR",
+  async (data: FormData, { rejectWithValue }) => {
+    const token = localStorage.getItem("auth_token");
+    console.log(data);
+    try {
+      const url = `${API_URL}/api/users/avatar`;
+
+      const response = axios.putForm(url, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return rejectWithValue({
+          ...error.response.data,
+          statusCode: error.status,
+        });
+      }
+      return rejectWithValue({
+        error: "Network Error. Check your connection and try again",
+        statusCode: 0,
+      });
+    }
   }
 );

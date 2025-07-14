@@ -14,11 +14,11 @@ import {
   Menu,
   X,
   TrendingUp,
-  Bookmark,
   Moon,
   Sun,
   ChevronDown,
   Hash,
+  UsersRound,
 } from "lucide-react";
 import type { RootState } from "../../features/store";
 import {
@@ -26,7 +26,7 @@ import {
   toggleSideBar,
   toggleTheme,
 } from "../../features/slices/settings";
-import { capitalizeText } from "../../utils";
+import { capitalizeText, formatTimestamp } from "../../utils";
 
 interface Notification {
   id: string;
@@ -56,6 +56,9 @@ const Navigation = () => {
     (state: RootState) => state.settings
   );
   const { user } = useSelector((state: RootState) => state.auth);
+  const {
+    notifications: { data },
+  } = useSelector((state: RootState) => state.notifications);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -67,14 +70,6 @@ const Navigation = () => {
   const notificationsRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const createRef = useRef<HTMLDivElement>(null);
-
-  // Mock data
-  const currentUser = {
-    name: "John Doe",
-    username: "johndoe",
-    avatar: "/placeholder.svg?height=40&width=40",
-    verified: true,
-  };
 
   const notifications: Notification[] = [
     {
@@ -358,31 +353,39 @@ const Navigation = () => {
                 </h3>
               </div>
               <div className="max-h-96 overflow-y-auto">
-                {notifications.map((notification) => (
+                {data.map((notification) => (
                   <div
                     key={notification.id}
                     className={`flex items-start gap-3 p-4 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors duration-200 ${
-                      !notification.read ? "bg-blue-50 dark:bg-blue-900/10" : ""
+                      !notification.read_at
+                        ? "bg-blue-50 dark:bg-blue-900/10"
+                        : ""
                     }`}
                   >
                     <img
-                      src={notification.user.avatar || "/placeholder.svg"}
-                      alt={notification.user.name}
+                      src={notification.actor.avatar || "/placeholder.svg"}
+                      alt={
+                        notification.actor.first_name +
+                        " " +
+                        notification.actor.last_name
+                      }
                       className="w-10 h-10 rounded-full object-cover"
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-stone-900 dark:text-stone-100">
                         <span className="font-semibold">
-                          {notification.user.name}
+                          {notification.actor.first_name +
+                            " " +
+                            notification.actor.last_name}
                         </span>{" "}
-                        {notification.content}
+                        {notification.verb}
                       </p>
                       <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
-                        {notification.timestamp}
+                        {formatTimestamp(notification.inserted_at)}
                       </p>
                     </div>
                     <span className="text-lg">
-                      {getNotificationIcon(notification.type)}
+                      {getNotificationIcon(notification.verb)}
                     </span>
                   </div>
                 ))}
@@ -403,7 +406,7 @@ const Navigation = () => {
             className="flex items-center gap-2 p-1 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-all duration-200"
           >
             <img
-              src={currentUser.avatar || "/placeholder.svg"}
+              src={user?.avatar}
               alt={user?.first_name}
               className="w-8 h-8 rounded-full object-cover border-2 border-stone-200 dark:border-stone-700"
             />
@@ -416,8 +419,8 @@ const Navigation = () => {
               <div className="p-4 border-b border-stone-200 dark:border-stone-700">
                 <div className="flex items-center gap-3">
                   <img
-                    src={currentUser.avatar || "/placeholder.svg"}
-                    alt={currentUser.name}
+                    src={user?.avatar}
+                    alt={user?.first_name + " " + user?.last_name}
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div>
@@ -444,12 +447,12 @@ const Navigation = () => {
                   </span>
                 </button>
                 <button
-                  onClick={() => navigate("/bookmarks")}
+                  onClick={() => navigate("/network")}
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors duration-200"
                 >
-                  <Bookmark className="w-5 h-5 text-stone-500 dark:text-stone-400" />
+                  <UsersRound className="w-5 h-5 text-stone-500 dark:text-stone-400" />
                   <span className="text-stone-900 dark:text-stone-100">
-                    Bookmarks
+                    Networks
                   </span>
                 </button>
                 <button

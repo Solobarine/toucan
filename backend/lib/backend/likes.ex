@@ -127,7 +127,10 @@ defmodule Backend.Likes do
   def is_liked_by_user(user_id, content_id, content_type) do
     like =
       Like
-      |> where([l], l.user_id == ^user_id and l.content_id == ^content_id and l.content_type == ^content_type)
+      |> where(
+        [l],
+        l.user_id == ^user_id and l.content_id == ^content_id and l.content_type == ^content_type
+      )
       |> Repo.one()
 
     if is_nil(like) do

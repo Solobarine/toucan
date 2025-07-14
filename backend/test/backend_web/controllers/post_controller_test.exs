@@ -121,7 +121,7 @@ defmodule BackendWeb.PostControllerTest do
 
       conn = post(conn, ~p"/api/posts/repost", repost: data)
 
-      assert response(conn, 401)
+      assert response(conn, 409)
     end
   end
 end

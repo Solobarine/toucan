@@ -16,7 +16,7 @@ defmodule BackendWeb.Policies.PostsPolicy do
     current_user = Guardian.Plug.current_resource(conn)
 
     if current_user.id == post.user_id do
-      raise ErrorResponse.Forbidden
+      raise ErrorResponse.Conflict
     else
       conn
     end
