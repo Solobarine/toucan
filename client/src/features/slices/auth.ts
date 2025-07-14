@@ -55,6 +55,7 @@ const initialState: InitialState = {
   isLoggedIn: false,
   user: {
     id: 0,
+    avatar: "",
     first_name: "",
     last_name: "",
     username: "",
