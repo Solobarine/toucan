@@ -35,6 +35,7 @@ Toucan aims to serve as a foundation for a privacy-respecting, feature-rich soci
 - [Ecto](https://hexdocs.pm/ecto/) for data layer
 - [Guardian](https://hexdocs.pm/guardian/) for JWT authentication
 - [Waffle](https://hexdocs.pm/waffle/) for media uploads (local + S3)
+- [Oban](https://hexdocs.pm/oban) for background jobs
 - PostgreSQL database
 
 ## ✨ Features
@@ -66,6 +67,7 @@ Toucan aims to serve as a foundation for a privacy-respecting, feature-rich soci
 
 - Real-time in-app notifications when users are liked, followed, or mentioned
 - Phoenix PubSub-based channel broadcasting for notification delivery
+- Notifications creation via background jobs
 
 ### 🧑‍🤝‍🧑 Groups (Upcoming)
 
@@ -80,7 +82,7 @@ Toucan aims to serve as a foundation for a privacy-respecting, feature-rich soci
 ### 📷 Media Uploads
 
 - Upload and associate images with posts and profiles using Waffle
-- Support for local uploads in development, S3 in production
+- Support for local uploads in development, S3 in production (upcoming)
 
 ### 🔍 Search (Planned)
 

@@ -68,7 +68,7 @@ const Main = () => {
     notificationsChannel.on("new_notification", (response) => {
       dispatch(appendNotifications(response));
     });
-  }, [user]);
+  }, [dispatch, user]);
 
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);

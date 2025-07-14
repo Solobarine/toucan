@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Heart, MessageCircle, MoreHorizontal, Reply } from "lucide-react";
+import { useState } from "react";
+import { Heart, MoreHorizontal, Reply } from "lucide-react";
 import NewComment from "./new";
 import { Comment as CommentInterface } from "../../types/comment";
 import { capitalizeText } from "../../utils";
@@ -84,10 +84,7 @@ const Comment = ({ comment }: { comment: CommentInterface }) => {
           {/* Reply Form */}
           {replyState && (
             <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
-              <NewComment
-                comment_id={comment.id}
-                post_id={comment.content_id as number}
-              />
+              <NewComment comment_id={comment.id} />
             </div>
           )}
 

@@ -6,13 +6,7 @@ import { AppDispatch } from "../../../features/store";
 import { useDispatch } from "react-redux";
 import { createReply } from "../../../features/thunks/comments";
 
-const NewComment = ({
-  comment_id,
-  post_id,
-}: {
-  comment_id: number | undefined;
-  post_id: number | undefined;
-}) => {
+const NewComment = ({ comment_id }: { comment_id: number | undefined }) => {
   const dispatch: AppDispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
 

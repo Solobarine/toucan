@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
-import EmojiPicker, { Theme } from "emoji-picker-react";
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import { Link, Smile, Send, X, Loader2 } from "lucide-react";
 import { createComment } from "../../../features/thunks/comments";
 import { AppDispatch } from "../../../features/store";
@@ -40,7 +40,7 @@ const Create: React.FC<CreateProps> = ({ content_id }) => {
     },
   });
 
-  const handleEmojiClick = (emojiData: any) => {
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
     setValues((prev) => ({
       ...prev,
       text: prev.text + emojiData.emoji,

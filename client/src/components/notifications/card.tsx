@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { Notification } from "../../types/notifications";
 import { capitalizeText, formatTimestamp } from "../../utils";
-import { User } from "../../types/auth";
 
 const getNotificationIcon = (verb: string) => {
   switch (verb) {
@@ -34,7 +33,7 @@ const getNotificationIcon = (verb: string) => {
   }
 };
 
-const constructNotification = (notification: Notification, user: User) => {
+const constructNotification = (notification: Notification) => {
   switch (notification.verb) {
     case "like":
       return (
@@ -110,13 +109,7 @@ const deleteNotification = (id: number) => {
   console.log("Hi " + id);
 };
 
-const NotificationCard = ({
-  notification,
-  user,
-}: {
-  notification: Notification;
-  user: User;
-}) => (
+const NotificationCard = ({ notification }: { notification: Notification }) => (
   <div
     className={`p-6 border-b border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-200 ${
       !notification.read_at
@@ -178,7 +171,7 @@ const NotificationCard = ({
           </div>
         </div>
 
-        {constructNotification(notification, user)}
+        {constructNotification(notification)}
 
         {notification.verb === "follow" && (
           <div className="flex items-center gap-2">

@@ -6,7 +6,6 @@ import { getNotifications } from "../../features/thunks/notifications";
 import NotificationCard from "../../components/notifications/card";
 
 const Notifications = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
   const { notifications } = useSelector(
     (state: RootState) => state.notifications
   );
@@ -106,7 +105,6 @@ const Notifications = () => {
               <NotificationCard
                 key={notification.id}
                 notification={notification}
-                user={user!}
               />
             ))
           ) : (

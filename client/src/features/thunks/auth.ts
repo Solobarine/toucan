@@ -1,11 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { API_URL } from "../../constants";
-import {
-  deleteRequest,
-  getRequest,
-  postRequest,
-  putRequest,
-} from "../../utils/api";
+import { deleteRequest, getRequest, postRequest } from "../../utils/api";
 import { LoginInterface, RegisterInterface } from "../../types/auth";
 import axios from "axios";
 
@@ -56,13 +51,7 @@ export const updateAvatar = createAsyncThunk(
     console.log(data);
     try {
       const url = `${API_URL}/api/users/avatar`;
-      /**
-      const response = axios.put(url, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-**/
+
       const response = axios.putForm(url, data, {
         headers: {
           Authorization: `Bearer ${token}`,
