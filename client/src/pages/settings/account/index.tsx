@@ -1,14 +1,22 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../../../features/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../features/store";
 import { Helmet } from "react-helmet";
 import { useFormik } from "formik";
 import { Camera, Disc } from "lucide-react";
 import TextInput from "../../../components/form/inputs";
 import PrimaryButton from "../../../components/primaryButton";
-import { FormEvent } from "react";
+import { FormEvent, useRef, useState } from "react";
+import { updateAvatar } from "../../../features/thunks/auth";
 
 const Account = () => {
   const { user } = useSelector((state: RootState) => state.auth);
+
+  const avatarRef = useRef<HTMLInputElement>(null);
+
+  const [avatar, setAvatar] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const dispatch: AppDispatch = useDispatch();
 
   const {
     values,
@@ -40,6 +48,41 @@ const Account = () => {
     submitForm().finally(() => setSubmitting(false));
   };
 
+  const handleAvatarUpload = () => {
+    if (avatarRef.current) {
+      avatarRef.current.click();
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setAvatar(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    event.target.value = "";
+  };
+
+  const clearFiles = () => {
+    setAvatar(null);
+    setPreview(null);
+  };
+
+  const uploadAvatar = () => {
+    console.log(avatar);
+    if (!avatar) return;
+    const formData = new FormData();
+
+    formData.append("avatar", avatar);
+
+    dispatch(updateAvatar(formData));
+  };
+
   return (
     <section className="min-h-screen px-4 sm:px-20 py-10">
       <Helmet>
@@ -67,7 +110,7 @@ const Account = () => {
           <div className="flex items-center gap-6">
             <div className="relative">
               <img
-                src="https://images.pexels.com/photos/3777943/pexels-photo-3777943.jpeg?auto=compress&cs=tinysrgb&w=400"
+                src={preview ? preview : ""}
                 alt="Profile"
                 className="w-24 h-24 rounded-full object-cover bg-stone-200 dark:bg-stone-800"
               />
@@ -80,10 +123,34 @@ const Account = () => {
                 Upload a new user picture. Recommended size: 400x400px
               </p>
               <div className="flex gap-3">
-                <button className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors">
-                  Upload New
-                </button>
-                <button className="px-4 py-2 bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-900 transition-colors">
+                <input
+                  ref={avatarRef}
+                  type="file"
+                  name="avatar"
+                  id="avatar"
+                  hidden
+                  onChange={handleFileChange}
+                />
+                {avatar ? (
+                  <button
+                    className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors"
+                    onClick={uploadAvatar}
+                  >
+                    Save
+                  </button>
+                ) : (
+                  <button
+                    className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors"
+                    onClick={handleAvatarUpload}
+                  >
+                    Upload New
+                  </button>
+                )}
+
+                <button
+                  className="px-4 py-2 bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-900 transition-colors"
+                  onClick={clearFiles}
+                >
                   Remove
                 </button>
               </div>

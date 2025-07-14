@@ -30,8 +30,8 @@ defmodule BackendWeb.FollowershipController do
     current_user = Guardian.Plug.current_resource(conn)
 
     followers = Followerships.followers(current_user)
-    # render(conn, :index, followerships: followers, assoc: :followers)
-    json(conn, %{followers: followers})
+    render(conn, :index, followerships: followers, assoc: :followers)
+    # json(conn, %{followers: followers})
   end
 
   def following(conn, _params) do
@@ -39,8 +39,8 @@ defmodule BackendWeb.FollowershipController do
 
     users_following = Followerships.following(current_user)
 
-    # render(conn, :index, followerships: users_following, assoc: :following)
-    json(conn, %{following: users_following})
+    render(conn, :index, followerships: users_following, assoc: :following)
+    # json(conn, %{following: users_following})
   end
 
   def delete(conn, %{"id" => id}) do

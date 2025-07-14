@@ -86,7 +86,8 @@ defmodule Backend.Posts do
     posts = Repo.all(base_posts |> order_by(desc: :inserted_at))
     reposts = Repo.all(base_reposts |> order_by(desc: :inserted_at))
 
-    feed = (posts ++ reposts)
+    feed =
+      (posts ++ reposts)
       |> Enum.sort_by(
         fn item ->
           case item.inserted_at do
@@ -174,9 +175,15 @@ defmodule Backend.Posts do
 
   """
   def create_post(attrs \\ %{}) do
-    %Post{}
-    |> Post.changeset(attrs)
-    |> Repo.insert()
+    result =
+      %Post{}
+      |> Post.changeset(attrs)
+      |> Repo.insert()
+
+    case result do
+      {:ok, post} -> {:ok, Repo.preload(post, [:user])}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   @doc """

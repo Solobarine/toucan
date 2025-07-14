@@ -14,6 +14,7 @@ export interface LoginInterface {
 export interface User
   extends Pick<RegisterInterface, "first_name" | "last_name" | "email"> {
   id: number;
+  avatar: string;
   username: string;
   bio: string;
   inserted_at: string;

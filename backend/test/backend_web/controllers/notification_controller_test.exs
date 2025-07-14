@@ -16,16 +16,23 @@ defmodule BackendWeb.NotificationControllerTest do
 
   describe "index" do
     test "lists all notifications", %{conn: conn, token: token} do
-      conn = conn |> put_req_header("authorization", "Bearer #{token}") |> get(~p"/api/notifications")
+      conn =
+        conn |> put_req_header("authorization", "Bearer #{token}") |> get(~p"/api/notifications")
+
       assert json_response(conn, 200)["data"] == []
     end
-  end 
+  end
 
   describe "delete notification" do
     test "deletes chosen notification", %{conn: conn, user: user, token: token, user2: user2} do
       notification = notification_fixture(%{user_id: user.id, actor_id: user2.id})
-      conn = conn |> put_req_header("authorization", "Bearer #{token}") |> delete(~p"/api/notifications/#{notification}")
-      assert response(conn, 204) 
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> delete(~p"/api/notifications/#{notification}")
+
+      assert response(conn, 204)
     end
   end
 end

@@ -10,13 +10,13 @@ defmodule Backend.NotificationsFixtures do
   def notification_fixture(attrs \\ %{}) do
     defaults = %{
       metadata: %{},
-      object:   %{},
-      verb:     "some verb",
-      read_at:  nil
+      object: %{},
+      verb: "some verb",
+      read_at: nil
     }
 
     params = Map.merge(defaults, attrs)
-      
+
     {:ok, notification} = params |> Backend.Notifications.notify_user()
 
     notification

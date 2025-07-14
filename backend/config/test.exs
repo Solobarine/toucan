@@ -37,3 +37,5 @@ config :phoenix, :plug_init_mode, :runtime
 config :backend, Backend.Guardian,
   issuer: "backend",
   secret_key: "secret_key"
+
+config :backend, Oban, testing: :inline

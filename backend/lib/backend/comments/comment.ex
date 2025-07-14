@@ -2,10 +2,25 @@ defmodule Backend.Comments.Comment do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Backend.Accounts.User
+  alias Backend.Posts.Post
+
+  @derive {Jason.Encoder,
+           only: [
+             :id,
+             :user_id,
+             :text,
+             :content_type,
+             :content_id,
+             :inserted_at,
+             :updated_at,
+             :user
+           ]}
   schema "comments" do
+    belongs_to :user, User
+    belongs_to :post, Post, foreign_key: :content_id, where: [content_type: "post"]
+
     field :text, :string
-    field :user_id, :id
-    field :content_id, :integer
     field :content_type, :string
     field :content, :map, virtual: true
 

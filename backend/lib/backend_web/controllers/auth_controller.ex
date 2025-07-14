@@ -5,6 +5,7 @@ defmodule BackendWeb.AuthController do
   use BackendWeb, :controller
   alias Backend.Guardian
   alias Backend.Accounts
+  alias Backend.Users
 
   @doc """
   Register User
@@ -19,6 +20,7 @@ defmodule BackendWeb.AuthController do
     case Accounts.register(%{
            "first_name" => first_name,
            "last_name" => last_name,
+           "username" => Users.generate_unique_username(),
            "email" => email,
            "password_hash" => password,
            "tos" => tos

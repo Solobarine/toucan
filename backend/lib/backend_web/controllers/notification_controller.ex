@@ -8,8 +8,8 @@ defmodule BackendWeb.NotificationController do
 
   def index(conn, params) do
     current_user = Guardian.Plug.current_resource(conn)
-    per  = Map.get(params, "per", "25") |> String.to_integer()
-    page = Map.get(params, "page", "1")  |> String.to_integer()
+    per = Map.get(params, "per", "25") |> String.to_integer()
+    page = Map.get(params, "page", "1") |> String.to_integer()
 
     notifications = Notifications.list(current_user.id, per: per, page: page)
     render(conn, :index, notifications: notifications)

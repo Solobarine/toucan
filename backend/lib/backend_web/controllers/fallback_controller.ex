@@ -19,6 +19,5 @@ defmodule BackendWeb.FallbackController do
     conn
     |> put_status(:not_found)
     |> put_view(json: BackendWeb.ErrorJSON)
-    |> render(:error, "Resource not found")
   end
 end

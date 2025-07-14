@@ -158,7 +158,7 @@ const usersSlice = createSlice({
       state.followers = {
         ...state.followers,
         state: "idle",
-        data: action.payload.data.followers,
+        data: action.payload.data.followerships,
       };
     });
     builder.addCase(getFollowers.rejected, (state) => {
@@ -181,7 +181,7 @@ const usersSlice = createSlice({
       state.following = {
         ...state.following,
         state: "idle",
-        data: action.payload.data.following,
+        data: action.payload.data.followerships,
       };
     });
     builder.addCase(getFollowing.rejected, (state) => {

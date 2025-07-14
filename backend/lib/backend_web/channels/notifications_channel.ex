@@ -1,10 +1,12 @@
 defmodule BackendWeb.NotificationsChannel do
   use BackendWeb, :channel
 
+  alias Backend.Notifications.Notification
+  alias BackendWeb.UserJSON
   alias Backend.Notifications
 
   @impl true
-  def join("notifications:"<> user_id, _payload, socket) do
+  def join("notifications:" <> user_id, _payload, socket) do
     if authorized?(user_id, socket.assigns[:user_id]) do
       {:ok, socket}
     else
@@ -29,26 +31,27 @@ defmodule BackendWeb.NotificationsChannel do
 
   # Mark Notification as Read
   def handle_in("mark_read", %{"id" => id}, socket) do
-  IO.inspect("Called")
     {:ok, _} = Notifications.mark_read(id)
-    IO.inspect("Answered")
     {:no_reply, socket}
   end
 
   @impl true
-  def handle_info({:new_notification, notification}, socket) do
-  push(socket, "new_notification", %{
-    id: notification.id,
-    user_id: notification.user_id,
-    actor_id: notification.actor_id,
-    verb: notification.verb,
-    metadata: notification.metadata,
-    read_at: notification.read_at,
-    inserted_at: notification.inserted_at
-  })
+  def handle_info({:new_notification, %Notification{} = notification}, socket) do
+    push(socket, "new_notification", %{
+      id: notification.id,
+      user_id: notification.user_id,
+      actor_id: notification.actor_id,
+      actor: UserJSON.show(%{user: notification.actor}).user,
+      object: notification.object,
+      verb: notification.verb,
+      metadata: notification.metadata,
+      read_at: notification.read_at,
+      inserted_at: notification.inserted_at
+    })
 
-  {:noreply, socket}
-end
+    {:noreply, socket}
+  end
+
   # Add authorization logic here as required.
   defp authorized?(user_id, socket_user_id) do
     user_id == socket_user_id

@@ -66,8 +66,9 @@ if config_env() == :prod do
     secret_key_base: secret_key_base
 
   # Configure Guardian
-  guardian_secret = System.get_env("GUARDIAN_SECRET") ||
-    raise """
+  guardian_secret =
+    System.get_env("GUARDIAN_SECRET") ||
+      raise """
       environment variable GUARDIAN_SECRET is missing.
       You can generate one by calling: mix phx.gen.secret
       """

@@ -4,7 +4,7 @@ defmodule BackendWeb.Policies.LikesPolicy do
 
   def create(conn, like) do
     if like do
-      raise ErrorResponse.Forbidden
+      raise ErrorResponse.Conflict
     else
       conn
     end

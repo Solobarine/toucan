@@ -15,6 +15,7 @@ import { getSocket, initSocket } from "../socket";
 import { Socket } from "phoenix";
 import { AnimatePresence } from "framer-motion";
 import Create from "../components/posts/create";
+import { appendNotifications } from "../features/slices/notifications";
 
 const Main = () => {
   const { isDarkTheme, isPostModalOpen } = useSelector(
@@ -57,12 +58,16 @@ const Main = () => {
 
     notificationsChannel
       .join()
-      .receive("ok", (res) => {
-        console.log(res);
+      .receive("ok", () => {
+        console.log("connected to notifications channel");
       })
-      .receive("error", (res) => {
-        console.log(res);
+      .receive("error", () => {
+        console.log("unable to connect");
       });
+
+    notificationsChannel.on("new_notification", (response) => {
+      dispatch(appendNotifications(response));
+    });
   }, [user]);
 
   const touchStartX = useRef<number | null>(null);

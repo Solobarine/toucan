@@ -2,6 +2,9 @@ defmodule BackendWeb.PostController do
   use BackendWeb, :controller
 
   require Logger
+  alias Backend.Posts.Repost
+  alias Backend.Workers.NotificationWorker
+  alias Backend.Notifications
   alias BackendWeb.RepostJSON
   alias BackendWeb.Policies.PostsPolicy
   alias Backend.Posts
@@ -23,6 +26,19 @@ defmodule BackendWeb.PostController do
     merged_params = Map.merge(post_params, %{"user_id" => current_user.id})
 
     with {:ok, %Post{} = post} <- Posts.create_post(merged_params) do
+      object = %{id: post.id, body: post.body, post_owner: post.user_id}
+
+      %{
+        action: "multiple",
+        user_id: current_user.id,
+        content_owner_id: nil,
+        verb: "post",
+        object: object,
+        metadata: %{}
+      }
+      |> NotificationWorker.new()
+      |> Oban.insert()
+
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/posts/#{post}")
@@ -66,12 +82,18 @@ defmodule BackendWeb.PostController do
 
     PostsPolicy.repost(conn, post)
 
-    with {:ok, repost} <- Posts.create_repost(params) do
+    with {:ok, %Repost{} = repost} <- Posts.create_repost(params) do
+      object = %{id: repost.id, body: repost.body, repost_owner: repost.user_id}
+
+      Notifications.notify_users(current_user.id, repost.user_id,
+        verb: "repost",
+        object: object,
+        metadata: %{}
+      )
+
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/posts/repost")
-      |> put_view(RepostJSON)
-      |> render(:show, repost: repost)
+      |> json(%{message: "Repost created"})
     end
   end
 

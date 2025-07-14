@@ -125,10 +125,10 @@ const Feed = () => {
             ) : (
               <div className="space-y-6">
                 {data.map((post, index) =>
-                  post.item_type === "post" ? (
-                    <Card key={index} post={post} />
-                  ) : (
+                  post.item_type === "repost" ? (
                     <RepostCard key={index} repost={post} />
+                  ) : (
+                    <Card key={index} post={post} />
                   )
                 )}
               </div>

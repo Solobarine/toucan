@@ -53,9 +53,9 @@ const RepostCard = ({ repost }: { repost: Repost }) => {
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-teal-600 flex items-center justify-center">
-                {repost.user.username ? (
+                {repost.user.avatar ? (
                   <img
-                    src="/placeholder.svg"
+                    src={repost.user.avatar}
                     alt={
                       capitalizeText(repost.user?.first_name) +
                       " " +

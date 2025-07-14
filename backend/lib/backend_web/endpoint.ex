@@ -26,8 +26,14 @@ defmodule BackendWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :backend,
-    gzip: false,
-    only: BackendWeb.static_paths()
+    gzip: false
+
+  # only: BackendWeb.static_paths()
+  #
+  plug Plug.Static,
+    at: "/uploads",
+    from: Path.expand("./uploads"),
+    gzip: false
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -47,7 +53,7 @@ defmodule BackendWeb.Endpoint do
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
-  
+
   plug CORSPlug, origins: ["*"]
   plug Plug.MethodOverride
   plug Plug.Head

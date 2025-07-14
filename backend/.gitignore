@@ -32,3 +32,4 @@ backend-*.tar
 
 /config/secrets.exs
 
+/uploads

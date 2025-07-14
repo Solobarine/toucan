@@ -20,6 +20,6 @@ defmodule Backend.Notifications.Notification do
   def changeset(notification, attrs) do
     notification
     |> cast(attrs, [:user_id, :actor_id, :verb, :object, :metadata, :read_at])
-    |> validate_required([:user_id, :actor_id,:verb])
+    |> validate_required([:user_id, :actor_id, :verb])
   end
 end

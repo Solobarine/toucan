@@ -5,6 +5,7 @@ import {
   me,
   getProfile,
   registerUser,
+  updateAvatar,
 } from "../thunks/auth";
 import { AxiosResponse } from "axios";
 import { User } from "../../types/auth";
@@ -16,6 +17,7 @@ import {
   rejectFriendRequest,
   sendFriendRequest,
 } from "../thunks/connections";
+import { LoadingInterface } from "../../types/loading";
 
 interface InitialState {
   isLoggedIn: boolean;
@@ -43,6 +45,9 @@ interface InitialState {
     status: "idle" | "pending" | "failed";
     error: string | null;
     data: User | null;
+  };
+  updateAvatar: {
+    status: LoadingInterface;
   };
 }
 
@@ -80,6 +85,9 @@ const initialState: InitialState = {
     status: "idle",
     error: null,
     data: null,
+  },
+  updateAvatar: {
+    status: "idle",
   },
 };
 
@@ -217,6 +225,18 @@ const authSlice = createSlice({
         friend_request_received: false,
         is_friend: false,
       };
+    });
+
+    builder.addCase(updateAvatar.pending, (state) => {
+      state.updateAvatar = { status: "pending" };
+    });
+    builder.addCase(updateAvatar.fulfilled, (state) => {
+      state.updateAvatar = { status: "idle" };
+      toast.success("Avatar updated successfully");
+    });
+    builder.addCase(updateAvatar.rejected, (state) => {
+      state.updateAvatar = { status: "failed" };
+      toast.error("Unable to upload avatar");
     });
   },
 });

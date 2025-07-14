@@ -32,6 +32,12 @@ config :backend, Backend.Guardian,
   secret_key: "siaw4MIJQGC7NJm+TViJZrZooFwq/2A2SlO9nCEq7gscZAZActn6k9bBYT5avt1B",
   ttl: {3, :days}
 
+# Configure Oban for Background Jobs
+config :backend, Oban,
+  repo: Backend.Repo,
+  plugins: [Oban.Plugins.Pruner],
+  queues: [notifications: 20]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

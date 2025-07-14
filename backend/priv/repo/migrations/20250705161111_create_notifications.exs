@@ -5,8 +5,8 @@ defmodule Backend.Repo.Migrations.CreateNotifications do
     create table(:notifications) do
       add :user_id, references(:users, on_delete: :delete_all), null: false
       add :actor_id, references(:users, on_delete: :nilify_all)
-      add :verb, :string, null: false 
-      add :object, :map, null: false 
+      add :verb, :string, null: false
+      add :object, :map, null: false
       add :metadata, :map, null: false, default: %{}
       add :read_at, :utc_datetime
 
