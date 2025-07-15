@@ -10,7 +10,7 @@ interface InitialState {
   };
   privateChat: {
     status: "idle" | "pending" | "failed";
-    user: Pick<User, "id" | "first_name" | "last_name" | "username">;
+    user: Pick<User, "id" | "avatar" | "first_name" | "last_name" | "username">;
     chats: [] | Chat[];
     error: string | null;
   };
@@ -34,7 +34,7 @@ const initialState: InitialState = {
   },
   privateChat: {
     status: "idle",
-    user: { id: 0, first_name: "", last_name: "", username: "" },
+    user: { id: 0, avatar: "", first_name: "", last_name: "", username: "" },
     chats: [],
     error: null,
   },
