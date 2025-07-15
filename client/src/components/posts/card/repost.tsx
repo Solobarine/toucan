@@ -10,6 +10,7 @@ import {
   decrementLikeCount,
 } from "../../../features/slices/posts";
 import { likeContent, unlikeContent } from "../../../features/thunks/likes";
+import SmallAvatar from "../../avatar/small";
 
 const RepostCard = ({ repost }: { repost: Repost }) => {
   const navigate = useNavigate();
@@ -107,30 +108,14 @@ const RepostCard = ({ repost }: { repost: Repost }) => {
           {/* Original Post */}
           <div className="border border-neutral-200 dark:border-neutral-600 rounded-lg p-4 mb-4 bg-neutral-50 dark:bg-stone-800">
             <div className="flex items-center space-x-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                {repost.user.username ? (
-                  <img
-                    src="/placeholder.svg"
-                    alt={
-                      capitalizeText(repost.original_post.user?.first_name) +
-                      " " +
-                      capitalizeText(repost.original_post.user?.last_name)
-                    }
-                    className="w-full h-full rounded-full object-cover"
-                  />
-                ) : (
-                  repost.original_post.user && (
-                    <span className="text-white font-semibold text-sm">
-                      {repost.original_post.user?.first_name
-                        .charAt(0)
-                        .toUpperCase()}
-                    </span>
-                  )
-                )}
-              </div>
+              <SmallAvatar
+                avatar={repost.original_post.user.avatar}
+                first_name={repost.original_post.user.first_name}
+                last_name={repost.original_post.user.last_name}
+              />
               <div>
                 <h4 className="font-medium text-neutral-900 dark:text-white text-sm">
-                  {repost.original_post.user?.first_name +
+                  {repost.original_post.user.first_name +
                     " " +
                     repost.original_post.user?.last_name}
                 </h4>

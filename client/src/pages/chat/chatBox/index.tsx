@@ -24,6 +24,7 @@ import {
 import { toggleChatSidebar } from "../../../features/slices/settings";
 import ChatLoading from "../../../components/chat/loader";
 import { getSocket, initSocket } from "../../../socket";
+import LargeAvatar from "../../../components/avatar/large";
 
 const ChatBox = () => {
   const { id } = useParams();
@@ -133,10 +134,10 @@ const ChatBox = () => {
       <header className="flex-shrink-0 p-4 flex items-center justify-between sticky top-0 shadow-sm z-10 border-b border-neutral-200 dark:border-neutral-800 backdrop-blur-sm bg-white/85 dark:bg-neutral-800/85">
         <div className="flex items-center gap-4">
           <div className="relative">
-            <img
-              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces"
-              alt="Chat Avatar"
-              className="w-12 h-12 rounded-full object-cover border-2 border-neutral-200 dark:border-neutral-700 shadow-sm"
+            <LargeAvatar
+              avatar={user2.avatar}
+              first_name={user2.first_name}
+              last_name={user2.last_name}
             />
             <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-neutral-950 rounded-full shadow-sm"></span>
           </div>

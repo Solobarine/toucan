@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import { Link, Smile, Send, X, Loader2 } from "lucide-react";
 import { createComment } from "../../../features/thunks/comments";
-import { AppDispatch } from "../../../features/store";
+import { AppDispatch, RootState } from "../../../features/store";
+import SmallAvatar from "../../avatar/small";
 
 interface CreateProps {
   content_id: number;
@@ -13,6 +14,7 @@ interface CreateProps {
 const Create: React.FC<CreateProps> = ({ content_id }) => {
   const dispatch: AppDispatch = useDispatch();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const {
     values,
@@ -64,10 +66,11 @@ const Create: React.FC<CreateProps> = ({ content_id }) => {
   return (
     <div className="bg-white dark:bg-neutral-800 rounded-xl p-4 border border-neutral-200 dark:border-neutral-700">
       <div className="flex items-start gap-4">
-        {/* User Avatar */}
-        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-          <span className="text-white font-semibold text-sm">U</span>
-        </div>
+        <SmallAvatar
+          avatar={user!.avatar}
+          first_name={user!.first_name}
+          last_name={user!.last_name}
+        />
 
         {/* Input and Actions */}
         <div className="flex-1 space-y-3">

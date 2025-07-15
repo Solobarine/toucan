@@ -9,6 +9,7 @@ import {
 import { User } from "../../types/auth";
 import { capitalizeText } from "../../utils";
 import { NetworkCardLoader } from "./loaders";
+import LargeAvatar from "../avatar/large";
 
 interface Group {
   id: string;
@@ -75,10 +76,11 @@ const GroupCard = ({ group }: { group: Group }) => (
 const UserCard = ({ user, category }: { user: User; category: string }) => (
   <div className="bg-white dark:bg-stone-800 rounded-xl p-6 border border-stone-200 dark:border-stone-700 hover:shadow-lg transition-all duration-200">
     <div className="flex items-start gap-4">
-      <img
-        src={"/placeholder.svg"}
-        alt={user.first_name + " " + user?.last_name}
-        className="w-16 h-16 rounded-full object-cover"
+      <LargeAvatar
+        avatar={user.avatar}
+        first_name={user.first_name}
+        last_name={user.last_name}
+        size="xl"
       />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-2">
