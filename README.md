@@ -10,15 +10,35 @@
 [![Powered by React](https://img.shields.io/badge/frontend-React-blue.svg)](https://reactjs.org)
 [![Deployed on Fly.io](https://img.shields.io/badge/deployment-Fly.io-purple)](https://fly.io)
 
-**Toucan** is a modern, full-stack social media application built using **React**, **TypeScript**, and **Elixir Phoenix**. Designed to deliver real-time, highly interactive social experiences, Toucan enables users to create and engage with content, communicate privately, and personalize their experience in a seamless, scalable environment.
+**Toucan** is a modern, full-stack social media application built with React, TypeScript, and Elixir Phoenix. Designed for real-time, highly interactive communication, Toucan enables users to create and engage with posts, hold private one-on-one chats, and personalize their social experience within a seamless and scalable platform.
 
-Toucan aims to serve as a foundation for a privacy-respecting, feature-rich social media experience tailored for real-time user interaction.
+What sets Toucan apart is its intentional shift away from the aggressive engagement algorithms found in mainstream platforms. Instead of optimizing for virality and endless reach, Toucan focuses on genuine, meaningful interactions within your personal network. It prioritizes closeness over clout, helping users stay connected to their circle without the pressure to go viral or chase metrics.
+
+Toucan empowers users to:
+
+- Share and interact with content in real-time
+
+- Communicate privately through direct chat channels
+
+- Experience a non-invasive, privacy-respecting feed
+
+- Build and explore social circles in a low-noise, user-first environment
+
+By design, Toucan fosters healthier online communities by opting out of hyper-targeted feeds and shifting the focus toward quality over quantity in social interaction. It’s not about being seen by everyone — it’s about being seen by the right people.
 
 ## 📸 Screenshots
 
-| Feed View                     | Chat View                     | Post Creation                               |
-| ----------------------------- | ----------------------------- | ------------------------------------------- |
-| ![Feed](screenshots/feed.png) | ![Chat](screenshots/chat.png) | ![Create Post](screenshots/create-post.png) |
+### Feed View
+
+![Feed](https://i.postimg.cc/YSx60mb5/feed.avif)
+
+### Chat View
+
+![Chat](https://i.postimg.cc/k5CN7yFN/chats.avif)
+
+### User Profile
+
+![Profile](https://i.postimg.cc/MpVbkLRK/profile.avif)
 
 ## 🧰 Tech Stack
 
@@ -140,7 +160,7 @@ If you find Toucan inspiring or useful, feel free to star the repository to supp
 
 ## 📄 License
 
-MIT © Solomon Akpuru
+Click [here](./LICENSE) to view Toucan's License
 
 <div align=right>
 <img src="./client/public/android-chrome-192x192.png" width=80 alt="Logo" />
