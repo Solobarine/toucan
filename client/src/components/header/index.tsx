@@ -1,14 +1,5 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import {
-  Menu,
-  X,
-  Sparkles,
-  Shield,
-  Users,
-  Zap,
-  Handshake,
-  EyeOff,
-} from "lucide-react";
+import { Menu, X, Sparkles, Users, Zap, Handshake, EyeOff } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../features/store";

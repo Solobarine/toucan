@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import {
   MessageSquare,
-  Video,
   UserCircle,
   Globe,
   Shield,
