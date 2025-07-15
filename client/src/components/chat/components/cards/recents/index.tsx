@@ -3,6 +3,7 @@ import type { Chat } from "../../../../../types/chat";
 import type { RootState } from "../../../../../features/store";
 import { capitalizeText, formatTimestamp } from "../../../../../utils";
 import { NavLink } from "react-router-dom";
+import LargeAvatar from "../../../../avatar/large";
 
 const RecentCard = ({ chat }: { chat: Chat }) => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -16,10 +17,22 @@ const RecentCard = ({ chat }: { chat: Chat }) => {
     >
       {/* Avatar with online indicator */}
       <div className="relative flex-shrink-0">
-        <img
-          src="/placeholder.svg?height=48&width=48"
-          alt="Profile Avatar"
-          className="w-12 h-12 rounded-full object-cover border-2 border-stone-200 dark:border-stone-600 group-hover:border-stone-300 dark:group-hover:border-stone-500 transition-colors duration-200"
+        <LargeAvatar
+          avatar={
+            chat.receiver.id == user?.id
+              ? chat.sender.avatar
+              : chat.receiver.avatar
+          }
+          first_name={
+            chat.receiver.id == user?.id
+              ? chat.sender.first_name
+              : chat.receiver.first_name
+          }
+          last_name={
+            chat.receiver.id == user?.id
+              ? chat.sender.last_name
+              : chat.receiver.last_name
+          }
         />
         {/* Online status indicator */}
         <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-stone-900 rounded-full"></div>

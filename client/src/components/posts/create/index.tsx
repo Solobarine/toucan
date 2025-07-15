@@ -3,14 +3,16 @@ import { motion } from "framer-motion";
 import { Image, MapPin, Smile, Video, X } from "lucide-react";
 
 import TextInput from "../../form/inputs";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../../features/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../features/store";
 import { dropIn } from "../../../utils/variants";
 import { PostSchema } from "../../../schemas/post";
 import { createPost } from "../../../features/thunks/posts";
+import SmallAvatar from "../../avatar/small";
 
 const Create = ({ closeModal }: { closeModal: () => void }) => {
   const dispatch: AppDispatch = useDispatch();
+  const { user } = useSelector((state: RootState) => state.auth);
   const {
     values,
     errors,
@@ -72,9 +74,11 @@ const Create = ({ closeModal }: { closeModal: () => void }) => {
         >
           {/* User Info */}
           <div className="flex items-center space-x-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center">
-              <span className="text-white font-semibold">U</span>
-            </div>
+            <SmallAvatar
+              avatar={user!.avatar}
+              first_name={user!.first_name}
+              last_name={user!.last_name}
+            />
             <div>
               <p className="font-medium text-stone-900 dark:text-white">You</p>
               <select className="text-sm text-stone-500 dark:text-stone-400 bg-transparent border-none outline-none">

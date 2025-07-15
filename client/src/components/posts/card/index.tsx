@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Ellipsis, Heart, MessageCircle, Share } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Post } from "../../../types/post";
-import { capitalizeText } from "../../../utils";
 import { AppDispatch } from "../../../features/store";
 import {
   incrementLikeCount,
@@ -12,6 +11,7 @@ import {
 } from "../../../features/slices/posts";
 import { likeContent, unlikeContent } from "../../../features/thunks/likes";
 import CreateRepostModal from "../create/repost";
+import LargeAvatar from "../../avatar/large";
 
 const Card = ({ post }: { post: Post }) => {
   const navigate = useNavigate();
@@ -45,25 +45,11 @@ const Card = ({ post }: { post: Post }) => {
         <div className="p-4">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                {post.user.username ? (
-                  <img
-                    src="/placeholder.svg"
-                    alt={
-                      capitalizeText(post.user.first_name) +
-                      " " +
-                      capitalizeText(post.user.last_name)
-                    }
-                    className="w-full h-full rounded-full object-cover"
-                  />
-                ) : (
-                  post.user && (
-                    <span className="text-white font-semibold text-lg">
-                      {post.user.first_name.charAt(0).toUpperCase()}
-                    </span>
-                  )
-                )}
-              </div>
+              <LargeAvatar
+                avatar={post.user.avatar}
+                first_name={post.user.first_name}
+                last_name={post.user.last_name}
+              />
               <div>
                 <Link
                   to={`/u/${post.user_id}`}

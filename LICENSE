@@ -1,7 +1,31 @@
-Copyright <2024> <Solomon Akpuru>
+📄 License: Toucan Source License (TSL)
+Copyright © 2025
+Solomon Akpuru
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to view, download, and use the Software exclusively for personal, local, non-commercial use, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+1. Permitted Use
+- You may view, study, and use the Software locally on your personal machine.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+- You may make modifications or adaptations for personal, non-commercial experimentation only.
+
+- You may not use the Software in any public, commercial, or hosted environment.
+
+2. Prohibited Use
+You are strictly prohibited from:
+
+- Hosting, deploying, or making the Software accessible to others, whether publicly or privately.
+
+- Redistributing, sublicensing, publishing, or sharing any part of the Software, whether modified or unmodified.
+
+- Using the Software as part of a commercial product or service.
+
+- Using the Software in any environment intended to serve users other than yourself.
+
+- Claiming authorship or misleadingly representing ownership of the Software.
+
+3. No Warranty
+The Software is provided “as is”, without warranty of any kind, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability arising from the use of the Software.
+
+4. Termination
+Any breach of this license automatically terminates your rights under it. Upon termination, you must immediately delete all copies of the Software in your possession.

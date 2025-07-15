@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Notification } from "../../types/notifications";
 import { capitalizeText, formatTimestamp } from "../../utils";
+import LargeAvatar from "../avatar/large";
 
 const getNotificationIcon = (verb: string) => {
   switch (verb) {
@@ -119,12 +120,10 @@ const NotificationCard = ({ notification }: { notification: Notification }) => (
   >
     <div className="flex items-start gap-4">
       <div className="relative">
-        <img
-          src={"/placeholder.svg"}
-          alt={
-            notification.actor.first_name + " " + notification.actor.last_name
-          }
-          className="w-12 h-12 rounded-full object-cover"
+        <LargeAvatar
+          avatar={notification.actor.avatar}
+          first_name={notification.actor.first_name}
+          last_name={notification.actor.last_name}
         />
         <div className="absolute -bottom-1 -right-1 bg-white dark:bg-neutral-900 rounded-full p-1">
           {getNotificationIcon(notification.verb)}

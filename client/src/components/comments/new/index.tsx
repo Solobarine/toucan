@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { Send, Loader2, X } from "lucide-react";
 import { useFormik } from "formik";
 import { CommentSchema } from "../../../schemas/comment";
-import { AppDispatch } from "../../../features/store";
-import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../../../features/store";
+import { useDispatch, useSelector } from "react-redux";
 import { createReply } from "../../../features/thunks/comments";
+import SmallAvatar from "../../avatar/small";
 
 const NewComment = ({ comment_id }: { comment_id: number | undefined }) => {
   const dispatch: AppDispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const { values, errors, touched, handleChange, submitForm, resetForm } =
     useFormik({
@@ -46,9 +48,13 @@ const NewComment = ({ comment_id }: { comment_id: number | undefined }) => {
     <div className="bg-stone-50 dark:bg-stone-700 rounded-xl p-4 border border-stone-200 dark:border-stone-600">
       <div className="flex items-start gap-3">
         {/* User Avatar */}
-        <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-          <span className="text-white font-semibold text-xs">U</span>
-        </div>
+        <SmallAvatar
+          avatar={user!.avatar}
+          first_name={user!.first_name}
+          last_name={user!.last_name}
+          size="xs"
+          type="repost"
+        />
 
         {/* Reply Form */}
         <div className="flex-1">
@@ -65,7 +71,7 @@ const NewComment = ({ comment_id }: { comment_id: number | undefined }) => {
                 name="text"
                 value={values.text}
                 onChange={handleChange}
-                onKeyPress={handleKeyPress}
+                onKeyUp={handleKeyPress}
                 placeholder="Write a reply..."
                 rows={values.text ? 3 : 1}
                 className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"

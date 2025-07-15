@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import {
   MessageSquare,
-  Video,
   UserCircle,
   Globe,
   Shield,
   Zap,
+  List,
 } from "lucide-react";
 
 const features = [
@@ -16,10 +16,10 @@ const features = [
     icon: MessageSquare,
   },
   {
-    title: "Video Sharing",
+    title: "Algorithm-Free Feed",
     description:
-      "Share your moments with stunning video uploads and live streaming.",
-    icon: Video,
+      "Enjoy content chronologically—no data harvesting, no addictive algorithms.",
+    icon: List,
   },
   {
     title: "Customizable Profiles",
@@ -28,9 +28,8 @@ const features = [
     icon: UserCircle,
   },
   {
-    title: "Global Community",
-    description:
-      "Join diverse groups and connect with people from around the world.",
+    title: "Closer Communities",
+    description: "Connect in intimate spaces built for deeper conversations.",
     icon: Globe,
   },
   {

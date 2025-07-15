@@ -186,7 +186,6 @@ const authSlice = createSlice({
     /** LOGOUT REDUCERS **/
     builder.addCase(logoutUser.fulfilled, (state) => {
       state.isLoggedIn = false;
-      state.user = null;
       toast("User successfully logged out");
       localStorage.removeItem("auth_token");
     });

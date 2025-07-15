@@ -15,6 +15,7 @@ import {
   decrementLikeCount,
   incrementLikeCount,
 } from "../../../features/slices/posts";
+import LargeAvatar from "../../../components/avatar/large";
 
 const Post = () => {
   const { id } = useParams();
@@ -24,6 +25,7 @@ const Post = () => {
     post: { data, comments },
     getComments,
   } = useSelector((state: RootState) => state.posts);
+  const { user } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
 
   console.log(comments);
@@ -56,10 +58,10 @@ const Post = () => {
       <section className="bg-white dark:bg-stone-700 p-6 rounded-xl max-w-2xl mx-auto my-8 shadow-lg transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-4">
-            <img
-              src="/placeholder.svg"
-              alt=""
-              className="w-12 h-12 rounded-full object-cover bg-gray-300 dark:bg-gray-600"
+            <LargeAvatar
+              avatar={user!.avatar}
+              first_name={user!.first_name}
+              last_name={user!.last_name}
             />
             <div>
               <p className="font-semibold text-gray-800 dark:text-white">

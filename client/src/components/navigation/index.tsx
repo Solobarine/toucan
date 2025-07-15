@@ -27,6 +27,7 @@ import {
   toggleTheme,
 } from "../../features/slices/settings";
 import { capitalizeText, formatTimestamp } from "../../utils";
+import SmallAvatar from "../avatar/small";
 
 interface Notification {
   id: string;
@@ -339,7 +340,7 @@ const Navigation = () => {
             <Bell className="w-5 h-5" />
             {unreadCount > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                {unreadCount > 9 ? "9+" : unreadCount}
+                {/** unreadCount > 9 ? "9+" : unreadCount **/}!
               </span>
             )}
           </button>
@@ -362,14 +363,10 @@ const Navigation = () => {
                         : ""
                     }`}
                   >
-                    <img
-                      src={notification.actor.avatar || "/placeholder.svg"}
-                      alt={
-                        notification.actor.first_name +
-                        " " +
-                        notification.actor.last_name
-                      }
-                      className="w-10 h-10 rounded-full object-cover"
+                    <SmallAvatar
+                      avatar={notification.actor.avatar}
+                      first_name={notification.actor.first_name}
+                      last_name={notification.actor.last_name}
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-stone-900 dark:text-stone-100">
@@ -405,11 +402,13 @@ const Navigation = () => {
             onClick={() => setShowProfileMenu(!showProfileMenu)}
             className="flex items-center gap-2 p-1 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-all duration-200"
           >
-            <img
-              src={user?.avatar}
-              alt={user?.first_name}
-              className="w-8 h-8 rounded-full object-cover border-2 border-stone-200 dark:border-stone-700"
+            <SmallAvatar
+              avatar={user!.avatar}
+              first_name={user!.first_name}
+              last_name={user!.last_name}
+              size="xs"
             />
+
             <ChevronDown className="w-4 h-4 text-stone-500 dark:text-stone-400 hidden sm:block" />
           </button>
 
@@ -418,10 +417,10 @@ const Navigation = () => {
             <div className="absolute top-full right-0 mt-2 w-64 bg-white dark:bg-stone-800 rounded-xl shadow-2xl border border-stone-200 dark:border-stone-700 overflow-hidden z-50">
               <div className="p-4 border-b border-stone-200 dark:border-stone-700">
                 <div className="flex items-center gap-3">
-                  <img
-                    src={user?.avatar}
-                    alt={user?.first_name + " " + user?.last_name}
-                    className="w-12 h-12 rounded-full object-cover"
+                  <SmallAvatar
+                    avatar={user!.avatar}
+                    first_name={user!.first_name}
+                    last_name={user!.last_name}
                   />
                   <div>
                     <p className="font-semibold text-stone-900 dark:text-stone-100">
