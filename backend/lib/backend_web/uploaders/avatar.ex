@@ -20,11 +20,22 @@ defmodule Backend.Avatar do
 
   # Whitelist file extensions:
   def validate({file, _}) do
+    allowed_extensions = ~w(.jpg .jpeg .gif .png .avif .webp)
+    max_file_size = 2 * 1024 * 1024
     file_extension = file.file_name |> Path.extname() |> String.downcase()
 
-    case Enum.member?(~w(.jpg .jpeg .gif .png .avif), file_extension) do
-      true -> :ok
-      false -> {:error, "invalid file type"}
+    cond do
+      not Enum.member?(allowed_extensions, file_extension) ->
+        {:error, "invalid file type"}
+
+      match?({:error, _}, File.stat(file.path)) ->
+        {:error, "could not read file"}
+
+      File.stat!(file.path).size > max_file_size ->
+        {:error, "file size must be 2MB or less"}
+
+      true ->
+        :ok
     end
   end
 

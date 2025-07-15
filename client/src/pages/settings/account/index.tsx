@@ -7,6 +7,7 @@ import TextInput from "../../../components/form/inputs";
 import PrimaryButton from "../../../components/primaryButton";
 import { FormEvent, useRef, useState } from "react";
 import { updateAvatar } from "../../../features/thunks/auth";
+import { toast } from "react-toastify";
 
 const Account = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -55,9 +56,21 @@ const Account = () => {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileExtensions = ["jpg", "jpeg", "gif", "png", "avif", "webp"];
+    const maxFileSize = 2 * 1024 * 1024;
     const file = event.target.files?.[0];
     if (file) {
+      // Check File Size
+      if (file.size > maxFileSize)
+        return toast.error("File should be less than 2MB");
+
+      // Check File extension
+      const ext = file.name.split(".")[-1];
+
+      if (!fileExtensions.includes(ext))
+        return toast.error("Unsupported File Type");
       setAvatar(file);
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
