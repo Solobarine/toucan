@@ -50,11 +50,12 @@ export default function Perks() {
             className="lg:w-1/2"
           >
             <img
-              src="/unified-platform.png"
+              src="https://i.postimg.cc/k5CN7yFN/chats.avif"
               alt="Unified Social Media Platform"
               width={600}
               height={400}
-              className="rounded-lg shadow-2xl w-full min-w-52"
+              loading="lazy"
+              className="rounded-lg shadow-2xl w-full min-w-52 aspect-[3/2] object-cover"
             />
           </motion.div>
         </div>

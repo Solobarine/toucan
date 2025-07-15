@@ -13,11 +13,12 @@ export default function Looks() {
             className="lg:w-1/2"
           >
             <img
-              src="/app-interface.png"
+              src="https://i.postimg.cc/YSx60mb5/feed.avif"
               alt="Social Media App Interface"
+              loading="lazy"
               width={600}
               height={400}
-              className="rounded-lg shadow-2xl w-full"
+              className="rounded-lg shadow-2xl w-full aspect-[3/2] object-cover"
             />
           </motion.div>
           <motion.div
