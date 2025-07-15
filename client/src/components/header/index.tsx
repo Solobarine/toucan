@@ -1,5 +1,14 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Menu, X, Sparkles, Shield, Users, Zap } from "lucide-react";
+import {
+  Menu,
+  X,
+  Sparkles,
+  Shield,
+  Users,
+  Zap,
+  Handshake,
+  EyeOff,
+} from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../features/store";
@@ -12,22 +21,22 @@ const Header = () => {
 
   const navLinks = [
     {
-      to: "/about",
+      to: "/about-us",
       label: "About",
       icon: Users,
       description: "Learn about our mission",
     },
     {
-      to: "/features",
-      label: "Features",
-      icon: Sparkles,
-      description: "Discover what makes us special",
+      to: "/terms-and-conditions",
+      label: "Terms and Conditions",
+      icon: Handshake,
+      description: "View Our Terms and Coonditions",
     },
     {
-      to: "/security",
-      label: "Security",
-      icon: Shield,
-      description: "Your privacy matters",
+      to: "/privacy",
+      label: "Privacy",
+      icon: EyeOff,
+      description: "View Our Privacy Policy",
     },
     {
       to: "/contact-us",
@@ -45,7 +54,7 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border-b border-stone-200 dark:border-stone-800 shadow-lg">
+    <header className="sticky top-0 z-50 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -61,13 +70,13 @@ const Header = () => {
                   className="w-6 h-6"
                 />
               </div>
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-stone-900 animate-pulse"></div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-neutral-900 animate-pulse"></div>
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-stone-900 to-stone-700 dark:from-stone-100 dark:to-stone-300 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-neutral-900 to-neutral-700 dark:from-neutral-100 dark:to-neutral-300 bg-clip-text text-transparent">
                 TOUCAN
               </h1>
-              <p className="text-xs text-stone-500 dark:text-stone-400 -mt-1">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 -mt-1">
                 Social Network
               </p>
             </div>
@@ -83,7 +92,7 @@ const Header = () => {
                   `group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 ${
                     isActive
                       ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                      : "text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-100"
+                      : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100"
                   }`
                 }
               >
@@ -98,7 +107,7 @@ const Header = () => {
           <div className="hidden lg:flex items-center space-x-3">
             <button
               onClick={() => handleNavigation("/login")}
-              className="px-6 py-2 text-stone-700 dark:text-stone-300 font-medium rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-all duration-200 hover:scale-105 active:scale-95"
+              className="px-6 py-2 text-neutral-700 dark:text-neutral-300 font-medium rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 hover:scale-105 active:scale-95"
             >
               Sign In
             </button>
@@ -113,7 +122,7 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <div className="flex items-center lg:hidden">
             <button
-              className="p-2 rounded-xl text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all duration-200 hover:scale-110 active:scale-95"
+              className="p-2 rounded-xl text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 hover:scale-110 active:scale-95"
               onClick={() => dispatch(toggleMenu())}
               aria-expanded={isMenuOpen}
               aria-label="Toggle menu"
@@ -141,7 +150,7 @@ const Header = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="lg:hidden bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 shadow-xl"
+            className="lg:hidden bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 shadow-xl"
           >
             <div className="max-w-7xl mx-auto px-4 py-6">
               {/* Mobile Navigation Links */}
@@ -159,7 +168,7 @@ const Header = () => {
                         `group flex items-center gap-4 p-4 rounded-xl transition-all duration-200 ${
                           isActive
                             ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                            : "text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
+                            : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                         }`
                       }
                       onClick={() => dispatch(toggleMenu())}
@@ -172,7 +181,7 @@ const Header = () => {
                         }) =>
                           isActive
                             ? "bg-white/20"
-                            : "bg-stone-100 dark:bg-stone-800 group-hover:bg-stone-200 dark:group-hover:bg-stone-700"}`}
+                            : "bg-neutral-100 dark:bg-neutral-800 group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700"}`}
                       >
                         <link.icon className="w-5 h-5" />
                       </div>
@@ -190,11 +199,11 @@ const Header = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="space-y-3 pt-6 border-t border-stone-200 dark:border-stone-800"
+                className="space-y-3 pt-6 border-t border-neutral-200 dark:border-neutral-800"
               >
                 <button
                   onClick={() => handleNavigation("/login")}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 font-medium rounded-xl hover:bg-stone-200 dark:hover:bg-stone-700 transition-all duration-200"
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-medium rounded-xl hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-200"
                 >
                   <span>Sign In</span>
                 </button>
@@ -212,9 +221,9 @@ const Header = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="mt-6 pt-6 border-t border-stone-200 dark:border-stone-800 text-center"
+                className="mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-800 text-center"
               >
-                <p className="text-stone-500 dark:text-stone-400 text-sm">
+                <p className="text-neutral-500 dark:text-neutral-400 text-sm">
                   Join thousands of users already connected
                 </p>
                 <div className="flex items-center justify-center gap-4 mt-3">

@@ -26,6 +26,10 @@ import FollowersPage from "../pages/networks/followers";
 import FollowingPage from "../pages/networks/following";
 import GroupsPage from "../pages/networks/groups";
 import NotFound from "../pages/404";
+import TermsAndConditions from "../pages/termsAndConditions";
+import ContactUs from "../pages/contactUs";
+import AboutUs from "../pages/aboutUs";
+import PrivacyPolicy from "../pages/privacy";
 
 const router = createBrowserRouter([
   {
@@ -56,6 +60,13 @@ const router = createBrowserRouter([
         path: "/reset-password",
         Component: ResetPassword,
       },
+      {
+        path: "/terms-and-conditions",
+        Component: TermsAndConditions,
+      },
+      { path: "/contact-us", Component: ContactUs },
+      { path: "/about-us", Component: AboutUs },
+      { path: "/privacy", Component: PrivacyPolicy },
     ],
   },
   {
