@@ -50,7 +50,7 @@ const Main = () => {
       socketRef.current = initSocket(token!);
     }
 
-    if (!socketRef.current || !user!.id) return;
+    if (!socketRef.current || !user) return;
 
     const notificationsChannel = socketRef.current!.channel(
       `notifications:${user!.id}`
