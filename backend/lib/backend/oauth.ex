@@ -5,11 +5,6 @@ defmodule Backend.Oauth do
   alias Backend.Accounts.User
   alias Backend.Repo
 
-  @github_client_id System.get_env("GITHUB_CLIENT_ID")
-  @github_client_secret System.get_env("GITHUB_CLIENT_SECRET")
-  @google_client_id System.get_env("GOOGLE_CLIENT_ID")
-  @google_client_secret System.get_env("GOOGLE_CLIENT_SECRET")
-
   def google_oauth(code, provider) do
     google_token_url = "https://oauth2.googleapis.com/token"
     google_user_url = "https://www.googleapis.com/oauth2/v3/userinfo"
@@ -17,8 +12,8 @@ defmodule Backend.Oauth do
     body =
       URI.encode_query(%{
         code: code,
-        client_id: @google_client_id,
-        client_secret: @google_client_secret,
+        client_id: Application.fetch_env!(:backend, :google_client_id),
+        client_secret: Application.fetch_env!(:backend, :google_client_secret),
         grant_type: "authorization_code",
         redirect_uri: "#{Endpoint.url()}/api/oauth/google"
       })
@@ -52,8 +47,8 @@ defmodule Backend.Oauth do
     body =
       URI.encode_query(%{
         code: code,
-        client_id: @github_client_id,
-        client_secret: @github_client_secret
+        client_id: Application.fetch_env!(:backend, :github_client_id),
+        client_secret: Application.fetch_env!(:backend, :github_client_secret)
       })
 
     headers = [

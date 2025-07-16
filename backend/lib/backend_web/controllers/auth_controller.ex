@@ -2,9 +2,6 @@ defmodule BackendWeb.AuthController do
   @moduledoc """
   Authentication Controller
   """
-
-  @client_uri System.get_env("CLIENT_URI")
-
   use BackendWeb, :controller
   alias Backend.Oauth
   alias BackendWeb.ErrorResponse
@@ -105,26 +102,25 @@ defmodule BackendWeb.AuthController do
   def oauth(conn, params) do
     provider = params["provider"]
     code = params["code"]
+    uri = client_uri()
 
     case provider do
       "google" ->
         case Oauth.google_oauth(code, provider) do
           {:ok, token} ->
-            IO.inspect(token, label: "Token")
-            IO.inspect(@client_uri, label: "Client Uri")
-            redirect(conn, external: "#{@client_uri}/callback?token=#{token}")
+            redirect(conn, external: "#{uri}/callback?token=#{token}")
 
           {:error, _reason} ->
-            redirect(conn, external: "#{@client_uri}/login?error=Unable to authenticate user")
+            redirect(conn, external: "#{uri}/login?error=Unable to authenticate user")
         end
 
       "github" ->
         case Oauth.github_oauth(code, provider) do
           {:ok, token} ->
-            redirect(conn, external: "#{@client_uri}/callback?token=#{token}")
+            redirect(conn, external: "#{uri}/callback?token=#{token}")
 
-          {:error, _reason} ->
-            redirect(conn, external: "#{@client_uri}/login?error=Unable to authenticate user")
+          {:error, reason} ->
+            redirect(conn, external: "#{uri}/login?error=#{reason}")
         end
 
       _ ->
@@ -132,5 +128,9 @@ defmodule BackendWeb.AuthController do
     end
 
     # json(conn, %{code: code, provider: provider})
+  end
+
+  defp client_uri do
+    Application.fetch_env!(:backend, :client_uri)
   end
 end
