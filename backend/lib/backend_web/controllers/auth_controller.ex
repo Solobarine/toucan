@@ -3,7 +3,7 @@ defmodule BackendWeb.AuthController do
   Authentication Controller
   """
 
-  @client_uri Application.compile_env!(:backend, :client_uri)
+  @client_uri System.get_env("CLIENT_URI")
 
   use BackendWeb, :controller
   alias Backend.Oauth
