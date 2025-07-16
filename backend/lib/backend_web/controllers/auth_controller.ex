@@ -2,7 +2,12 @@ defmodule BackendWeb.AuthController do
   @moduledoc """
   Authentication Controller
   """
+
+  @client_uri Application.compile_env!(:backend, :client_uri)
+
   use BackendWeb, :controller
+  alias Backend.Oauth
+  alias BackendWeb.ErrorResponse
   alias Backend.Guardian
   alias Backend.Accounts
   alias Backend.Users
@@ -92,5 +97,40 @@ defmodule BackendWeb.AuthController do
     conn
     |> Guardian.Plug.sign_out()
     |> json(%{message: "Logged Out Successfully"})
+  end
+
+  @doc """
+  Oauth Authentication
+  """
+  def oauth(conn, params) do
+    provider = params["provider"]
+    code = params["code"]
+
+    case provider do
+      "google" ->
+        case Oauth.google_oauth(code, provider) do
+          {:ok, token} ->
+            IO.inspect(token, label: "Token")
+            IO.inspect(@client_uri, label: "Client Uri")
+            redirect(conn, external: "#{@client_uri}/callback?token=#{token}")
+
+          {:error, _reason} ->
+            redirect(conn, external: "#{@client_uri}/login?error=Unable to authenticate user")
+        end
+
+      "github" ->
+        case Oauth.github_oauth(code, provider) do
+          {:ok, token} ->
+            redirect(conn, external: "#{@client_uri}/callback?token=#{token}")
+
+          {:error, _reason} ->
+            redirect(conn, external: "#{@client_uri}/login?error=Unable to authenticate user")
+        end
+
+      _ ->
+        raise ErrorResponse.BadRequest
+    end
+
+    # json(conn, %{code: code, provider: provider})
   end
 end

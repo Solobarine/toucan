@@ -40,6 +40,14 @@ defmodule Backend.Accounts.User do
     |> unique_constraint(:username)
   end
 
+  def oauth_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:first_name, :last_name, :username, :avatar, :email, :password_hash, :tos])
+    |> cast_attachments(attrs, [:avatar])
+    |> validate_required([:first_name, :email, :password_hash, :tos])
+    |> unique_constraint([:username, :email])
+  end
+
   defp put_password_hash(changeset) do
     if password = get_change(changeset, :password_hash) do
       changeset

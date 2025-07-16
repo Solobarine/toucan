@@ -45,6 +45,7 @@ defmodule Backend.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
+      {:joken, "~> 2.6"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:guardian, "~> 2.3"},
@@ -56,7 +57,9 @@ defmodule Backend.MixProject do
       {:ex_aws, "~> 2.1.2"},
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.9"},
-      {:sweet_xml, "~> 0.6"}
+      {:sweet_xml, "~> 0.6"},
+      {:cachex, "~> 4.1"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 

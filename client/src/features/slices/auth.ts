@@ -188,6 +188,7 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       toast("User successfully logged out");
       localStorage.removeItem("auth_token");
+      window.location.href = "/login";
     });
     builder.addCase(logoutUser.rejected, () => {
       toast("Unable to Logout");

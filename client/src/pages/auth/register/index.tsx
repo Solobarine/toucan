@@ -8,6 +8,7 @@ import { RegisterSchema } from "../../../schemas/auth";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../../features/store";
 import { registerUser } from "../../../features/thunks/auth";
+import OAuth from "../../../components/oauth";
 
 const Register = () => {
   const {
@@ -185,7 +186,6 @@ const Register = () => {
                     </Link>
                   </p>
                 </div>
-
                 {error && (
                   <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
                     <p className="text-red-600 dark:text-red-400 text-sm font-medium">
@@ -193,7 +193,6 @@ const Register = () => {
                     </p>
                   </div>
                 )}
-
                 {registerErrors && (
                   <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 space-y-2">
                     {Object.keys(registerErrors).map((key, index) => (
@@ -213,7 +212,6 @@ const Register = () => {
                     ))}
                   </div>
                 )}
-
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -317,7 +315,6 @@ const Register = () => {
                     )}
                   </button>
                 </form>
-
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-stone-200 dark:border-stone-700" />
@@ -328,27 +325,7 @@ const Register = () => {
                     </span>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    onClick={() => handleSocialLogin("google")}
-                    className="flex items-center justify-center gap-3 px-4 py-3 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-600 transition-all duration-200 hover:scale-105 active:scale-95"
-                  >
-                    <Chrome className="w-5 h-5 text-stone-600 dark:text-stone-400" />
-                    <span className="font-medium text-stone-700 dark:text-stone-300">
-                      Google
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => handleSocialLogin("github")}
-                    className="flex items-center justify-center gap-3 px-4 py-3 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-600 transition-all duration-200 hover:scale-105 active:scale-95"
-                  >
-                    <Github className="w-5 h-5 text-stone-600 dark:text-stone-400" />
-                    <span className="font-medium text-stone-700 dark:text-stone-300">
-                      GitHub
-                    </span>
-                  </button>
-                </div>
+                <OAuth />
               </div>
             </div>
           </div>
