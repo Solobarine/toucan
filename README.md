@@ -64,7 +64,7 @@ By design, Toucan fosters healthier online communities by opting out of hyper-ta
 
 - Sign up, login, and JWT-based token management
 - Auto-generated usernames for user convenience
-- OAuth integration in progress (Google, Apple)
+- OAuth integration in progress (Google, GitHub)
 
 ### 📝 Posts
 

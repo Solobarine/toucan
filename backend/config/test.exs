@@ -36,6 +36,6 @@ config :phoenix, :plug_init_mode, :runtime
 # Configure Guardian
 config :backend, Backend.Guardian,
   issuer: "backend",
-  secret_key: "secret_key"
+  secret_key: System.get_env("GUARDIAN_SECRET")
 
 config :backend, Oban, testing: :inline

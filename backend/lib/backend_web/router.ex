@@ -22,6 +22,7 @@ defmodule BackendWeb.Router do
     post "/register", AuthController, :register
     post "/login", AuthController, :login
     delete "/logout", AuthController, :logout
+    get "/oauth/:provider", AuthController, :oauth
 
     pipe_through [:auth]
 

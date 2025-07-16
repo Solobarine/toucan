@@ -30,6 +30,7 @@ import TermsAndConditions from "../pages/termsAndConditions";
 import ContactUs from "../pages/contactUs";
 import AboutUs from "../pages/aboutUs";
 import PrivacyPolicy from "../pages/privacy";
+import AuthCallback from "../pages/auth/callback";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +68,7 @@ const router = createBrowserRouter([
       { path: "/contact-us", Component: ContactUs },
       { path: "/about-us", Component: AboutUs },
       { path: "/privacy", Component: PrivacyPolicy },
+      { path: "/callback", Component: AuthCallback },
     ],
   },
   {

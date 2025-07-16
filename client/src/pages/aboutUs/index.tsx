@@ -69,38 +69,7 @@ const AboutUs = () => {
       social: {
         linkedin: "https://linkedin.com/in/solomon-akpuru",
         twitter: "https://twitter.com/solomonakpuru",
-      },
-    },
-    {
-      name: "Michael Chen",
-      role: "CTO & Co-Founder",
-      image:
-        "https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=400",
-      bio: "Former Senior Engineer at Google, expert in scalable systems and user privacy.",
-      social: {
-        linkedin: "https://linkedin.com/in/michaelchen",
-        github: "https://github.com/michaelchen",
-      },
-    },
-    {
-      name: "Emma Rodriguez",
-      role: "Head of Design",
-      image:
-        "https://images.pexels.com/photos/3763152/pexels-photo-3763152.jpeg?auto=compress&cs=tinysrgb&w=400",
-      bio: "Award-winning designer focused on creating intuitive and accessible user experiences.",
-      social: {
-        linkedin: "https://linkedin.com/in/emmarodriguez",
-        twitter: "https://twitter.com/emmarodriguez",
-      },
-    },
-    {
-      name: "David Kim",
-      role: "Head of Safety",
-      image:
-        "https://images.pexels.com/photos/3777943/pexels-photo-3777943.jpeg?auto=compress&cs=tinysrgb&w=400",
-      bio: "Former Trust & Safety lead at Twitter, dedicated to creating safe online communities.",
-      social: {
-        linkedin: "https://linkedin.com/in/davidkim",
+        github: "https://github.com/solobarine",
       },
     },
   ];
