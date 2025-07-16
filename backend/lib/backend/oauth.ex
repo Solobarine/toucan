@@ -5,10 +5,10 @@ defmodule Backend.Oauth do
   alias Backend.Accounts.User
   alias Backend.Repo
 
-  @github_client_id Application.compile_env!(:backend, :github_client_id)
-  @github_client_secret Application.compile_env!(:backend, :github_client_secret)
-  @google_client_id Application.compile_env!(:backend, :google_client_id)
-  @google_client_secret Application.compile_env!(:backend, :google_client_secret)
+  @github_client_id System.get_env("GITHUB_CLIENT_ID")
+  @github_client_secret System.get_env("GITHUB_CLIENT_SECRET")
+  @google_client_id System.get_env("GOOGLE_CLIENT_ID")
+  @google_client_secret System.get_env("GOOGLE_CLIENT_SECRET")
 
   def google_oauth(code, provider) do
     google_token_url = "https://oauth2.googleapis.com/token"
@@ -31,18 +31,18 @@ defmodule Backend.Oauth do
     case HTTPoison.post(google_token_url, body, headers) do
       {:ok, response} ->
         {:ok, decoded_body} = Jason.decode(response.body)
-        IO.inspect(decoded_body, label: "Decoded Body")
-        get_user(decoded_body, provider, google_user_url)
+
+        case decoded_body do
+          %{"access_token" => _access_token, "scope" => _scope, "token_type" => _token_type} ->
+            get_user(decoded_body, provider, google_user_url)
+
+          %{"error" => error} ->
+            {:error, error}
+        end
 
       {:error, reason} ->
         {:error, reason}
     end
-  end
-
-  def gtoken do
-    IO.inspect(@github_client_id, label: "Gith cl id")
-    IO.inspect(@github_client_secret, label: "gti cli secret")
-    %{id: @github_client_id, secret: @github_client_secret}
   end
 
   def github_oauth(code, provider) do
@@ -64,7 +64,14 @@ defmodule Backend.Oauth do
     case HTTPoison.post(github_token_url, body, headers) do
       {:ok, response} ->
         {:ok, body} = Jason.decode(response.body)
-        get_user(body, provider, github_user_url)
+
+        case body do
+          %{"access_token" => _access_token, "scope" => _scope, "token_type" => _token_type} ->
+            get_user(body, provider, github_user_url)
+
+          %{"error" => error} ->
+            {:error, error}
+        end
 
       {:error, reason} ->
         {:error, reason}
@@ -81,7 +88,6 @@ defmodule Backend.Oauth do
              ]) do
           {:ok, response} ->
             {:ok, decoded_body} = Jason.decode(response.body)
-            {:ok, decoded_body}
             authenticate_user(decoded_body, provider)
 
           {:error, _} ->
@@ -92,8 +98,6 @@ defmodule Backend.Oauth do
         case HTTPoison.get(user_url, [{"Authorization", "#{token_type} #{access_token}"}]) do
           {:ok, response} ->
             {:ok, decoded_body} = Jason.decode(response.body)
-            IO.inspect(decoded_body, label: "DEcoded User")
-            {:ok, decoded_body}
             authenticate_user(decoded_body, provider)
 
           {:error, reason} ->
