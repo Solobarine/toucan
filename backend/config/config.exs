@@ -47,7 +47,7 @@ config :waffle,
 config :backend, Oban,
   repo: Backend.Repo,
   plugins: [Oban.Plugins.Pruner],
-  queues: [default: 10, notifications: 20]
+  queues: [default: 4, notifications: 4]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
