@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import { Link, Navigate } from "react-router-dom";
 import { type ChangeEvent, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Github, Chrome, ArrowRight, Shield, Users, Zap } from "lucide-react";
+import { ArrowRight, Shield, Users, Zap } from "lucide-react";
 import TextInput from "../../../components/form/inputs";
 import { RegisterSchema } from "../../../schemas/auth";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,11 +50,6 @@ const Register = () => {
   ) => {
     const { name, value } = e.target;
     setValues((values) => ({ ...values, [name]: value }));
-  };
-
-  const handleSocialLogin = (provider: string) => {
-    console.log(`Register with ${provider}`);
-    // Implement social registration logic
   };
 
   if (isLoggedIn) {

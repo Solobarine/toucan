@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import { Link, Navigate } from "react-router-dom";
 import { type ChangeEvent, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Eye, Github, Chrome, ArrowRight, Sparkles } from "lucide-react";
+import { Eye, ArrowRight, Sparkles } from "lucide-react";
 import TextInput from "../../../components/form/inputs";
 import { LoginSchema } from "../../../schemas/auth";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,11 +45,6 @@ const Login = () => {
   ) => {
     const { name, value } = e.target;
     setValues((values) => ({ ...values, [name]: value }));
-  };
-
-  const handleSocialLogin = (provider: string) => {
-    console.log(`Login with ${provider}`);
-    // Implement social login logic
   };
 
   if (isLoggedIn) {

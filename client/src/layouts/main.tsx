@@ -1,21 +1,22 @@
+import { useEffect, useRef } from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import { Socket } from "phoenix";
+import { AnimatePresence } from "framer-motion";
+
 import SideBar from "../components/sideBar";
 import { AppDispatch, RootState } from "../features/store";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef } from "react";
 import { setSideBarState, togglePostModal } from "../features/slices/settings";
 import { me } from "../features/thunks/auth";
 import Loading from "../components/loading";
 import NetworkError from "../pages/errors/networkError";
-import { ToastContainer } from "react-toastify";
 import Navigation from "../components/navigation";
-
-import "react-toastify/dist/ReactToastify.min.css";
 import { getSocket, initSocket } from "../socket";
-import { Socket } from "phoenix";
-import { AnimatePresence } from "framer-motion";
 import Create from "../components/posts/create";
 import { appendNotifications } from "../features/slices/notifications";
+
+import "react-toastify/dist/ReactToastify.min.css";
 
 const Main = () => {
   const { isDarkTheme, isPostModalOpen } = useSelector(
@@ -53,7 +54,7 @@ const Main = () => {
     if (!socketRef.current || !user) return;
 
     const notificationsChannel = socketRef.current!.channel(
-      `notifications:${user!.id}`
+      `notifications:${user.id}`
     );
 
     notificationsChannel

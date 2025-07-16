@@ -13,7 +13,7 @@ const AuthCallback = () => {
     } else {
       navigate("/login?error='Unable to authenticate user'");
     }
-  }, [navigate]);
+  }, [navigate, token]);
 
   return (
     <div className="flex items-center justify-center h-screen text-lg">
