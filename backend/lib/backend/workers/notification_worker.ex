@@ -5,8 +5,6 @@ defmodule Backend.Workers.NotificationWorker do
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: args}) do
-    IO.inspect(args, label: "Job Args")
-
     case args["action"] do
       "single" ->
         Notifications.notify_user(%{

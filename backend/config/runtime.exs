@@ -78,13 +78,6 @@ if config_env() == :prod do
     secret_key: guardian_secret,
     ttl: {3, :days}
 
-  config :backend,
-    client_uri: System.fetch_env!("CLIENT_URI"),
-    github_client_id: System.fetch_env!("GITHUB_CLIENT_ID"),
-    github_client_secret: System.fetch_env!("GITHUB_CLIENT_SECRET"),
-    google_client_id: System.fetch_env!("GOOGLE_CLIENT_ID"),
-    google_client_secret: System.fetch_env!("GOOGLE_CLIENT_SECRET")
-
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key
@@ -135,3 +128,10 @@ if config_env() == :prod do
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 end
+
+config :backend,
+  client_uri: System.fetch_env!("CLIENT_URI"),
+  github_client_id: System.fetch_env!("GITHUB_CLIENT_ID"),
+  github_client_secret: System.fetch_env!("GITHUB_CLIENT_SECRET"),
+  google_client_id: System.fetch_env!("GOOGLE_CLIENT_ID"),
+  google_client_secret: System.fetch_env!("GOOGLE_CLIENT_SECRET")
