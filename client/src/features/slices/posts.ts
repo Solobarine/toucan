@@ -2,10 +2,15 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Post, Repost } from "../../types/post";
 import {
   createPost,
+  deletePost,
+  deleteRepost,
   getPost,
   getPostsFeed,
+  getRepost,
   getUserPosts,
   repostPost,
+  updatePost,
+  updateRepost,
 } from "../thunks/posts";
 import { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
@@ -38,16 +43,10 @@ interface InitialState {
     error: string | undefined;
   };
   update: {
-    statusCode: number | undefined;
     status: LoadingInterface;
-    message: string | undefined;
-    error: string | undefined;
   };
   delete: {
-    statusCode: number | undefined;
-    message: string | undefined;
     status: LoadingInterface;
-    error: string | undefined;
   };
   getComments: {
     status: LoadingInterface;
@@ -77,7 +76,18 @@ interface InitialState {
     data: Post[] | [];
     error: string | undefined;
   };
-  repost: { status: LoadingInterface };
+  createRepost: { status: LoadingInterface };
+  repost: {
+    status: LoadingInterface;
+    data: Repost | null;
+    error: string;
+  };
+  updateRepost: {
+    status: LoadingInterface;
+  };
+  deleteRepost: {
+    status: LoadingInterface;
+  };
 }
 
 const initialState: InitialState = {
@@ -101,16 +111,10 @@ const initialState: InitialState = {
     error: undefined,
   },
   update: {
-    statusCode: undefined,
     status: "idle",
-    message: undefined,
-    error: undefined,
   },
   delete: {
-    statusCode: undefined,
     status: "idle",
-    message: undefined,
-    error: undefined,
   },
   getComments: {
     status: "idle",
@@ -137,7 +141,18 @@ const initialState: InitialState = {
     error: undefined,
   },
   unlike: { status: "idle", error: undefined },
+  createRepost: {
+    status: "idle",
+  },
   repost: {
+    status: "idle",
+    data: null,
+    error: "",
+  },
+  updateRepost: {
+    status: "idle",
+  },
+  deleteRepost: {
     status: "idle",
   },
 };
@@ -329,6 +344,27 @@ const post = createSlice({
       };
     });
 
+    /** UPDATE POST **/
+    builder.addCase(updatePost.fulfilled, (state) => {
+      state.update = { status: "idle" };
+      toast.success("Post Updated Successfully");
+    });
+    builder.addCase(updatePost.rejected, (state) => {
+      state.update = { status: "failed" };
+      toast.error("Failed to Update Post");
+    });
+
+    /** DELETE POST **/
+    builder.addCase(deletePost.fulfilled, (state) => {
+      state.delete = { status: "idle" };
+      toast.success("Post Deleted Successfully");
+    });
+
+    builder.addCase(deletePost.rejected, (state) => {
+      state.delete = { status: "failed" };
+      toast.error("Failed to Delete Post");
+    });
+
     /** GET COMMENTS **/
     builder.addCase(getComments.pending, (state) => {
       state.getComments = { status: "pending" };
@@ -456,19 +492,59 @@ const post = createSlice({
       state.userPosts.error = "Something went wrong";
     });
 
-    /** REPOST **/
+    /** CREATE REPOST **/
     builder.addCase(repostPost.pending, (state) => {
-      state.repost.status = "pending";
+      state.createRepost.status = "pending";
     });
 
     builder.addCase(repostPost.fulfilled, (state) => {
-      state.repost.status = "idle";
+      state.createRepost.status = "idle";
       toast.success("Repost successful");
     });
 
     builder.addCase(repostPost.rejected, (state) => {
-      state.repost.status = "failed";
+      state.createRepost.status = "failed";
       toast.error("Repost failed");
+    });
+
+    /** GET REPOST **/
+    builder.addCase(getRepost.pending, (state) => {
+      state.repost = { status: "pending", data: null, error: "" };
+    });
+    builder.addCase(getRepost.fulfilled, (state, action) => {
+      state.repost = {
+        ...state.repost,
+        status: "idle",
+        data: action.payload.data.repost,
+      };
+    });
+    builder.addCase(getRepost.rejected, (state) => {
+      state.repost = {
+        ...state.repost,
+        status: "failed",
+        error: "Failed to Retrieve Repost",
+      };
+    });
+
+    /** UPDATE REPOST **/
+    builder.addCase(updateRepost.fulfilled, (state) => {
+      state.updateRepost = { status: "idle" };
+      toast.success("Repost Updated Successfully");
+    });
+
+    builder.addCase(updateRepost.rejected, (state) => {
+      state.updateRepost = { status: "failed" };
+      toast.error("Failed to Update Repost");
+    });
+    /** DELETE REPOST **/
+    builder.addCase(deleteRepost.fulfilled, (state) => {
+      state.deleteRepost = { status: "idle" };
+      toast.success("Repost Deleted Successfully");
+    });
+
+    builder.addCase(deleteRepost.rejected, (state) => {
+      state.deleteRepost = { status: "failed" };
+      toast.error("Failed to Delete Repost");
     });
   },
 });

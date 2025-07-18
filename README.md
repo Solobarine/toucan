@@ -64,7 +64,7 @@ By design, Toucan fosters healthier online communities by opting out of hyper-ta
 
 - Sign up, login, and JWT-based token management
 - Auto-generated usernames for user convenience
-- OAuth integration in progress (Google, GitHub)
+- OAuth integration (Google, GitHub)
 
 ### 📝 Posts
 
@@ -81,7 +81,8 @@ By design, Toucan fosters healthier online communities by opting out of hyper-ta
 ### 💬 Real-time Messaging
 
 - One-to-one private chat built from scratch using Phoenix Channels
-- Real-time message delivery with typing indicators (in progress)
+- Real-time message delivery
+- Typing indicators (in progress)
 
 ### 🛎 Notifications
 

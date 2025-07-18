@@ -20,4 +20,10 @@ defmodule Backend.Posts.Repost do
     |> foreign_key_constraint(:original_post_id)
     |> unique_constraint([:user_id, :original_post_id], message: "Post already reposted")
   end
+
+  def update_changeset(repost, attrs) do
+    repost
+    |> cast(attrs, [:body])
+    |> validate_required([:body])
+  end
 end

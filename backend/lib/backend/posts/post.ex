@@ -83,4 +83,10 @@ defmodule Backend.Posts.Post do
     |> cast(attrs, [:title, :body, :user_id])
     |> validate_required([:body, :user_id])
   end
+
+  def update_changeset(post, attrs) do
+    post
+    |> cast(attrs, [:title, :body])
+    |> validate_required([:body])
+  end
 end

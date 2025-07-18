@@ -2,14 +2,13 @@ defmodule BackendWeb.PostController do
   use BackendWeb, :controller
 
   require Logger
+  alias BackendWeb.PostJSON
   alias Backend.Posts.Repost
   alias Backend.Workers.NotificationWorker
   alias Backend.Notifications
-  alias BackendWeb.RepostJSON
   alias BackendWeb.Policies.PostsPolicy
   alias Backend.Posts
   alias Backend.Posts.Post
-  alias Backend.Guardian
 
   action_fallback BackendWeb.FallbackController
 
@@ -73,7 +72,23 @@ defmodule BackendWeb.PostController do
     render(conn, :index, posts: posts, current_user_id: current_user.id)
   end
 
-  def repost(conn, %{"repost" => repost_params}) do
+  def delete(conn, %{"id" => id}) do
+    post = Posts.get_post!(id)
+
+    PostsPolicy.delete(conn, post)
+
+    with {:ok, %Post{}} <- Posts.delete_post(post) do
+      send_resp(conn, :no_content, "")
+    end
+  end
+
+  def get_repost(conn, %{"id" => id}) do
+    repost = Posts.get_repost!(id)
+
+    json(conn, %{repost: PostJSON.repost_data(repost)})
+  end
+
+  def create_repost(conn, %{"repost" => repost_params}) do
     current_user = Guardian.Plug.current_resource(conn)
 
     params = Map.merge(repost_params, %{"user_id" => current_user.id})
@@ -97,13 +112,29 @@ defmodule BackendWeb.PostController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    post = Posts.get_post!(id)
+  def update_repost(conn, %{"id" => id, "repost" => repost_params}) do
+    current_user = Guardian.Plug.current_resource(conn)
 
-    PostsPolicy.delete(conn, post)
+    repost = Posts.get_repost!(id)
 
-    with {:ok, %Post{}} <- Posts.delete_post(post) do
-      send_resp(conn, :no_content, "")
+    PostsPolicy.update_repost(conn, repost, current_user)
+
+    with {:ok, _updated_repost} <- Posts.update_repost(repost, repost_params) do
+      conn
+      |> put_status(:created)
+      |> json(%{message: "Repost Updated"})
     end
+  end
+
+  def delete_repost(conn, %{"id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+
+    repost = Posts.get_repost!(id)
+
+    PostsPolicy.delete_repost(conn, repost, current_user)
+
+    Posts.delete_repost(repost)
+
+    send_resp(conn, :no_content, "")
   end
 end

@@ -12,11 +12,13 @@ import {
 import { likeContent, unlikeContent } from "../../../features/thunks/likes";
 import CreateRepostModal from "../create/repost";
 import LargeAvatar from "../../avatar/large";
+import Options from "../options";
 
 const Card = ({ post }: { post: Post }) => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
 
   const goToPost = () => {
     navigate(`/posts/${post.id}`);
@@ -41,7 +43,7 @@ const Card = ({ post }: { post: Post }) => {
 
   return (
     <>
-      <div className="bg-white dark:bg-stone-700 rounded-xl max-w-xl w-full mx-auto shadow-lg transition-all duration-300 hover:shadow-xl">
+      <div className="relative bg-white dark:bg-stone-700 rounded-xl max-w-xl w-full mx-auto shadow-lg transition-all duration-300 hover:shadow-xl">
         <div className="p-4">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center space-x-3">
@@ -62,7 +64,10 @@ const Card = ({ post }: { post: Post }) => {
                 </p>
               </div>
             </div>
-            <button className="p-2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors">
+            <button
+              className="p-2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
+              onClick={() => setIsMoreOpen(!isMoreOpen)}
+            >
               <Ellipsis className="w-5 h-5" />
             </button>
           </div>
@@ -72,7 +77,7 @@ const Card = ({ post }: { post: Post }) => {
                 {post.body}
               </p>
             </div>
-            {post.user.username && (
+            {post.body && (
               <div className="mb-4 rounded-lg overflow-hidden">
                 <img
                   src="/placeholder.svg"
@@ -170,6 +175,13 @@ const Card = ({ post }: { post: Post }) => {
             <span className="text-sm font-medium">Share</span>
           </button>
         </div>
+        {isMoreOpen && (
+          <Options
+            postId={post.id!}
+            postOwner={post.user_id}
+            closeModal={() => setIsMoreOpen(false)}
+          />
+        )}
       </div>
       <CreateRepostModal
         originalPost={post}

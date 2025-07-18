@@ -31,6 +31,8 @@ import ContactUs from "../pages/contactUs";
 import AboutUs from "../pages/aboutUs";
 import PrivacyPolicy from "../pages/privacy";
 import AuthCallback from "../pages/auth/callback";
+import UpdateRepost from "../pages/repost/update";
+import UpdatePost from "../pages/posts/update";
 
 const router = createBrowserRouter([
   {
@@ -80,6 +82,8 @@ const router = createBrowserRouter([
         Component: Feed,
       },
       { path: "posts/:id", Component: Post },
+      { path: "posts/:id/update", Component: UpdatePost },
+      { path: "reposts/:id/update", Component: UpdateRepost },
       { path: "network", Component: Network },
       { path: "network/friends", Component: FriendsPage },
       { path: "network/friend-requests", Component: FriendRequestsPage },

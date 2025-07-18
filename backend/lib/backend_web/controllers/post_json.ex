@@ -1,4 +1,5 @@
 defmodule BackendWeb.PostJSON do
+  alias Backend.Posts.Repost
   alias BackendWeb.PostJSON
   alias BackendWeb.UserJSON
   alias Backend.Posts.Post
@@ -24,6 +25,7 @@ defmodule BackendWeb.PostJSON do
       title: post.title,
       body: post.body,
       inserted_at: post.inserted_at,
+      user_id: post.user_id,
       user: UserJSON.show(%{user: post.user}).user,
       likes_count: post.likes_count,
       comments_count: post.comments_count,
@@ -58,6 +60,7 @@ defmodule BackendWeb.PostJSON do
       id: repost.id,
       body: repost.body,
       inserted_at: repost.inserted_at,
+      user_id: repost.user_id,
       user: UserJSON.show(%{user: repost.user}).user,
       likes_count: repost.likes_count,
       comments_count: repost.comments_count,
@@ -73,12 +76,30 @@ defmodule BackendWeb.PostJSON do
     }
   end
 
+  def repost_data(%Repost{} = repost) do
+    %{
+      id: repost.id,
+      body: repost.body,
+      user_id: repost.user_id,
+      original_post_id: repost.original_post_id,
+      original_post: %{
+        id: repost.id,
+        user: UserJSON.show(%{user: repost.original_post.user}).user,
+        title: repost.original_post.title,
+        body: repost.original_post.body
+      },
+      inserted_at: repost.inserted_at,
+      updated_at: repost.updated_at
+    }
+  end
+
   defp post_data(%Post{} = post, user_id) do
     %{
       id: post.id,
       title: post.title,
       body: post.body,
       inserted_at: post.inserted_at,
+      user_id: post.user_id,
       user: Accounts.get_user!(post.user_id),
       likes_count: Likes.count_likes(post.id, "post"),
       comments_count: Comments.count_comments(post.id, "post"),
