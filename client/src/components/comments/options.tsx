@@ -68,12 +68,7 @@ const CommentOptions = ({
         </div>
       </div>
 
-      {formOpen && (
-        <ReportComment
-          commentId={commentId}
-          closeModal={() => setFormOpen(false)}
-        />
-      )}
+      {formOpen && <ReportComment closeModal={() => setFormOpen(false)} />}
       {deleteModalOpen && (
         <DeleteCommentConfirmation
           commentId={commentId}
@@ -154,13 +149,7 @@ const DeleteCommentConfirmation = ({
   );
 };
 
-const ReportComment = ({
-  commentId,
-  closeModal,
-}: {
-  commentId: string | number;
-  closeModal: () => void;
-}) => {
+const ReportComment = ({ closeModal }: { closeModal: () => void }) => {
   const validationSchema = Yup.object().shape({
     reason: Yup.string()
       .min(5, "Minimum of 5 Characters")
