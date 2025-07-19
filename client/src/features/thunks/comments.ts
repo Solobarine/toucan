@@ -1,5 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getRequest, postRequest } from "../../utils/api";
+import {
+  deleteRequest,
+  getRequest,
+  patchRequest,
+  postRequest,
+} from "../../utils/api";
 import { API_URL } from "../../constants";
 import { Comment } from "../../types/comment";
 
@@ -33,5 +38,24 @@ export const getComments = createAsyncThunk(
   ) => {
     const url = `${API_URL}/api/comments?content_type=${content_type}&id=${id}`;
     return getRequest(url, { rejectWithValue });
+  }
+);
+
+export const updateComment = createAsyncThunk(
+  "COMMENTS/UPDATE_COMMENT",
+  async (
+    { id, data }: { id: string | number; data: Pick<Comment, "text"> },
+    { rejectWithValue }
+  ) => {
+    const url = `${API_URL}/api/comments/${id}`;
+    return patchRequest(url, { comment: data }, { rejectWithValue });
+  }
+);
+
+export const deleteComment = createAsyncThunk(
+  "COMMENTS/DELETE_COMMENT",
+  async (id: string | number, { rejectWithValue }) => {
+    const url = `${API_URL}/api/comments/${id}`;
+    return deleteRequest(url, { rejectWithValue });
   }
 );

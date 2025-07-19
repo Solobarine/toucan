@@ -2,7 +2,6 @@ defmodule BackendWeb.CommentController do
   use BackendWeb, :controller
 
   alias Backend.Workers.NotificationWorker
-  alias Backend.Notifications
   alias Backend.Posts
   alias BackendWeb.Policies.CommentsPolicies
   alias Backend.Comments
