@@ -121,7 +121,7 @@ defmodule BackendWeb.PostController do
 
     with {:ok, _updated_repost} <- Posts.update_repost(repost, repost_params) do
       conn
-      |> put_status(:created)
+      |> put_status(:ok)
       |> json(%{message: "Repost Updated"})
     end
   end

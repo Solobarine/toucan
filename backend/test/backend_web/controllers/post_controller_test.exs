@@ -124,4 +124,83 @@ defmodule BackendWeb.PostControllerTest do
       assert response(conn, 409)
     end
   end
+
+  describe "update repost" do
+    test "updates a repost with valid params", %{
+      conn: conn,
+      user: user,
+      user2: user2,
+      token: token
+    } do
+      params = Map.merge(@valid_attrs, %{user_id: user2.id})
+      {:ok, post} = Posts.create_post(params)
+
+      {:ok, repost} =
+        Posts.create_repost(%{body: "Nice Post", user_id: user.id, original_post_id: post.id})
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> patch(~p"/api/reposts/#{repost.id}", %{repost: %{body: "Good to see."}})
+
+      assert response(conn, 200)
+    end
+
+    test "fails to update repost for non-owner", %{
+      conn: conn,
+      user: user,
+      user2: user2,
+      token: token
+    } do
+      params = Map.merge(@valid_attrs, %{user_id: user.id})
+      {:ok, post} = Posts.create_post(params)
+
+      {:ok, repost} =
+        Posts.create_repost(%{body: "Nice Post", user_id: user2.id, original_post_id: post.id})
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> patch(~p"/api/reposts/#{repost.id}", %{repost: %{body: "Great Post"}})
+
+      assert response(conn, 403)
+    end
+  end
+
+  describe "delete repost" do
+    test "deletes a repost for valid user", %{conn: conn, user: user, user2: user2, token: token} do
+      params = Map.merge(@valid_attrs, %{user_id: user2.id})
+      {:ok, post} = Posts.create_post(params)
+
+      {:ok, repost} =
+        Posts.create_repost(%{body: "Nice Post", user_id: user.id, original_post_id: post.id})
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> delete(~p"/api/reposts/#{repost.id}")
+
+      assert response(conn, 204)
+    end
+
+    test "fails to delete repost for non-owner", %{
+      conn: conn,
+      user: user,
+      user2: user2,
+      token: token
+    } do
+      params = Map.merge(@valid_attrs, %{user_id: user.id})
+      {:ok, post} = Posts.create_post(params)
+
+      {:ok, repost} =
+        Posts.create_repost(%{body: "Nice Post", user_id: user2.id, original_post_id: post.id})
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> delete(~p"/api/reposts/#{repost.id}")
+
+      assert response(conn, 403)
+    end
+  end
 end
