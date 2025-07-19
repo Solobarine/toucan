@@ -193,7 +193,7 @@ const Post = () => {
         </div>
         {showMore && (
           <Options
-            postId={data?.id!}
+            postId={data?.id as number}
             postOwner={data?.user.id}
             closeModal={() => setShowMore(false)}
           />
