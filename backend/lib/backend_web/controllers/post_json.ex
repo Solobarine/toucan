@@ -86,7 +86,9 @@ defmodule BackendWeb.PostJSON do
         id: repost.id,
         user: UserJSON.show(%{user: repost.original_post.user}).user,
         title: repost.original_post.title,
-        body: repost.original_post.body
+        body: repost.original_post.body,
+        inserted_at: repost.original_post.inserted_at,
+        updated_at: repost.original_post.updated_at
       },
       inserted_at: repost.inserted_at,
       updated_at: repost.updated_at

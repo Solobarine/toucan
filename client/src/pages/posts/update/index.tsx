@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { motion } from "framer-motion";
-import { Image, MapPin, Smile, Video, X } from "lucide-react";
+import { Image, MapPin, Smile, Video } from "lucide-react";
 
 import TextInput from "../../../components/form/inputs";
 import { useDispatch, useSelector } from "react-redux";

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Repeat2, User } from "lucide-react";
 import * as Yup from "yup";
 import { formatDistanceToNow } from "date-fns";
@@ -10,6 +10,8 @@ import { getRepost, updateRepost } from "../../../features/thunks/posts";
 
 const UpdateRepost = () => {
   const { id } = useParams();
+
+  const navigate = useNavigate();
 
   const dispatch: AppDispatch = useDispatch();
   const [comment, setComment] = useState("");
@@ -27,12 +29,15 @@ const UpdateRepost = () => {
 
   const handleClose = () => {
     if (!isSubmitting) {
+      navigate(-1);
     }
   };
 
   useEffect(() => {
     dispatch(getRepost(id!));
   }, []);
+
+  console.log(data);
 
   useEffect(() => {
     if (status == "idle" && data) {
@@ -139,12 +144,13 @@ const UpdateRepost = () => {
                       data?.original_post.user.last_name}
                   </h4>
                   <p className="text-xs text-neutral-400 dark:text-neutral-500">
-                    {/**formatDistanceToNow(
-                      data?.original_post.inserted_at as string,
+                    {formatDistanceToNow(
+                      (data?.original_post.inserted_at as string) ||
+                        new Date().getUTCDay(),
                       {
                         addSuffix: true,
                       }
-                    )**/}
+                    )}
                   </p>
                 </div>
               </div>
