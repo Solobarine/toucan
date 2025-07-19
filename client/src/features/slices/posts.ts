@@ -14,11 +14,16 @@ import {
 } from "../thunks/posts";
 import { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { createComment, createReply, getComments } from "../thunks/comments";
+import {
+  createComment,
+  createReply,
+  deleteComment,
+  getComments,
+  updateComment,
+} from "../thunks/comments";
 import { likeContent, unlikeContent } from "../thunks/likes";
 import { LoadingInterface } from "../../types/loading";
 import { Comment } from "../../types/comment";
-// import { appendComment } from "../../utils";
 
 type FeedItem = Post | Repost;
 
@@ -62,6 +67,12 @@ interface InitialState {
     status: LoadingInterface;
     message: string | undefined;
     error: string | undefined;
+  };
+  updateComment: {
+    status: LoadingInterface;
+  };
+  deleteComment: {
+    status: LoadingInterface;
   };
   like: {
     status: LoadingInterface;
@@ -124,6 +135,12 @@ const initialState: InitialState = {
     status: "idle",
     message: undefined,
     error: undefined,
+  },
+  updateComment: {
+    status: "idle",
+  },
+  deleteComment: {
+    status: "idle",
   },
   userPosts: {
     status: "idle",
@@ -345,9 +362,34 @@ const post = createSlice({
     });
 
     /** UPDATE POST **/
-    builder.addCase(updatePost.fulfilled, (state) => {
+    builder.addCase(updatePost.fulfilled, (state, action) => {
       state.update = { status: "idle" };
       toast.success("Post Updated Successfully");
+      const postId = action.meta.arg.id;
+
+      // Update Posts Feed
+      const postIndex = state.posts.data.findIndex(
+        (feedItem) => feedItem.id == postId && feedItem.item_type == "post"
+      );
+
+      if (postIndex !== -1) {
+        state.posts.data[postIndex] = {
+          ...state.posts.data[postIndex],
+          title: action.meta.arg.data.title,
+          body: action.meta.arg.data.body,
+        } as Post;
+      }
+
+      // Update User Posts
+      const index = state.userPosts.data.findIndex((item) => item.id == postId);
+
+      if (index !== -1) {
+        state.userPosts.data[postIndex] = {
+          ...state.userPosts.data[postIndex],
+          title: action.meta.arg.data.title,
+          body: action.meta.arg.data.body,
+        } as Post;
+      }
     });
     builder.addCase(updatePost.rejected, (state) => {
       state.update = { status: "failed" };
@@ -355,9 +397,23 @@ const post = createSlice({
     });
 
     /** DELETE POST **/
-    builder.addCase(deletePost.fulfilled, (state) => {
+    builder.addCase(deletePost.fulfilled, (state, action) => {
       state.delete = { status: "idle" };
       toast.success("Post Deleted Successfully");
+
+      const postId =
+        typeof action.meta.arg == "string"
+          ? parseInt(action.meta.arg)
+          : action.meta.arg;
+      // Update Feed
+      state.posts.data = state.posts.data.filter(
+        (feedItem) => feedItem.id !== postId
+      );
+
+      // Update User Posts
+      state.userPosts.data = state.userPosts.data.filter(
+        (item) => item.id !== postId
+      );
     });
 
     builder.addCase(deletePost.rejected, (state) => {
@@ -440,6 +496,38 @@ const post = createSlice({
         status: "failed",
         statusCode: payload.statusCode,
       };
+    });
+
+    /** UPDATE COMMENT **/
+    builder.addCase(updateComment.fulfilled, (state, action) => {
+      toast.success("Comment updated successfully");
+      const commentId = action.meta.arg.id;
+      if (!state.post.comments) return;
+      const comments = state.post.comments;
+      const commentIndex = comments.findIndex(
+        (comment) => comment.id == commentId
+      );
+
+      if (commentIndex >= 0) {
+        state.post.comments[commentIndex].text = action.meta.arg.data.text;
+      }
+    });
+    builder.addCase(updateComment.rejected, () => {
+      toast.error("Unable to update comment");
+    });
+
+    /** DELETE COMMENT **/
+    builder.addCase(deleteComment.fulfilled, (state, action) => {
+      toast.success("Comment deleted successfully");
+      const commentId = action.meta.arg;
+      if (!state.post.comments) return;
+      const comments = state.post.comments;
+      state.post.comments = comments.filter(
+        (comment) => comment.id !== commentId
+      );
+    });
+    builder.addCase(deleteComment.rejected, () => {
+      toast.error("Unable to delete comment");
     });
 
     /** LIKE CONTENT **/

@@ -4,18 +4,20 @@ import NewComment from "./new";
 import { Comment as CommentInterface } from "../../types/comment";
 import { capitalizeText } from "../../utils";
 import { formatDistanceToNow } from "date-fns";
+import CommentOptions from "./options";
 
 const Comment = ({ comment }: { comment: CommentInterface }) => {
   const [replyState, setReplyState] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const handleLike = () => {
     setIsLiked(!isLiked);
   };
 
   return (
-    <div className="bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700">
+    <div className="relative bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700">
       <div className="flex items-start gap-3">
         {/* User Avatar */}
         <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
@@ -37,7 +39,10 @@ const Comment = ({ comment }: { comment: CommentInterface }) => {
                 {formatDistanceToNow(comment.inserted_at)} ago
               </span>
             </div>
-            <button className="p-1 rounded-lg text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors duration-200">
+            <button
+              className="p-1 rounded-lg text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors duration-200"
+              onClick={() => setShowMore(true)}
+            >
               <MoreHorizontal className="w-4 h-4" />
             </button>
           </div>
@@ -101,6 +106,13 @@ const Comment = ({ comment }: { comment: CommentInterface }) => {
           )}
         </div>
       </div>
+      {showMore && (
+        <CommentOptions
+          commentId={comment.id!}
+          commentOwner={comment.user_id}
+          closeModal={() => setShowMore(false)}
+        />
+      )}
     </div>
   );
 };

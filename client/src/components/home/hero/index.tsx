@@ -1,7 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import PrimaryButton from "../../primaryButton";
 import { ArrowRight } from "lucide-react";
 
 export default function Hero() {
+  const navigate = useNavigate();
+
   return (
     <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-600 dark:from-purple-900 dark:to-indigo-900 opacity-90"></div>
@@ -24,10 +27,16 @@ export default function Hero() {
           moments.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="px-4 py-3 rounded-md bg-white text-primary hover:bg-gray-100">
+          <button
+            className="px-4 py-3 rounded-md bg-white text-primary hover:bg-gray-100"
+            onClick={() => navigate("/register")}
+          >
             Get Started
           </button>
-          <PrimaryButton className="bg-transparent border-white text-white hover:bg-white hover:text-purple-600 flex items-center justify-between gap-2">
+          <PrimaryButton
+            className="bg-transparent border-white text-white hover:bg-white hover:text-purple-600 flex items-center justify-between gap-2"
+            onClick={() => navigate("/about-us")}
+          >
             Learn More
             <ArrowRight className="ml-2 h-4 w-4" />
           </PrimaryButton>
