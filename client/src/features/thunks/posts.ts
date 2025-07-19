@@ -1,6 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { API_URL } from "../../constants";
-import { getRequest, postRequest } from "../../utils/api";
+import {
+  deleteRequest,
+  getRequest,
+  patchRequest,
+  postRequest,
+} from "../../utils/api";
 import { Post, Repost } from "../../types/post";
 
 export const getPostsFeed = createAsyncThunk(
@@ -27,12 +32,40 @@ export const getPost = createAsyncThunk(
   }
 );
 
+export const updatePost = createAsyncThunk(
+  "POST/UPDATE_POST",
+  async (
+    { id, data }: { id: number; data: Pick<Post, "id" | "title" | "body"> },
+    { rejectWithValue }
+  ) => {
+    console.log(data);
+    const url = `${API_URL}/api/posts/${id}`;
+    return patchRequest(url, { post: data }, { rejectWithValue });
+  }
+);
+
+export const deletePost = createAsyncThunk(
+  "POST/DELETE_POST",
+  async (id: string | number, { rejectWithValue }) => {
+    const url = `${API_URL}/api/posts/${id}`;
+    return deleteRequest(url, { rejectWithValue });
+  }
+);
+
 export const getUserPosts = createAsyncThunk(
   "POSTS/GET_USER_POSTS",
   async (id: string | undefined, { rejectWithValue }) => {
     const url = id
       ? `${API_URL}/api/user-posts?user_id=${id}`
       : `${API_URL}/api/user-posts`;
+    return getRequest(url, { rejectWithValue });
+  }
+);
+
+export const getRepost = createAsyncThunk(
+  "POST/GET_REPOST",
+  async (id: string | number, { rejectWithValue }) => {
+    const url = `${API_URL}/api/reposts/${id}`;
     return getRequest(url, { rejectWithValue });
   }
 );
@@ -45,5 +78,24 @@ export const repostPost = createAsyncThunk(
   ) => {
     const url = `${API_URL}/api/posts/repost`;
     return postRequest(url, { repost: data }, { rejectWithValue });
+  }
+);
+
+export const updateRepost = createAsyncThunk(
+  "POST/UPDATE_REPOST",
+  async (
+    { id, data }: { id: string | number; data: Pick<Repost, "body"> },
+    { rejectWithValue }
+  ) => {
+    const url = `${API_URL}/api/reposts/${id}`;
+    return patchRequest(url, { repost: data }, { rejectWithValue });
+  }
+);
+
+export const deleteRepost = createAsyncThunk(
+  "POST/DELETE_REPOST",
+  async (id: string | number, { rejectWithValue }) => {
+    const url = `${API_URL}/api/reposts/${id}`;
+    return deleteRequest(url, { rejectWithValue });
   }
 );

@@ -34,7 +34,10 @@ defmodule BackendWeb.Router do
     put "/users/avatar", UserController, :update_avatar
 
     resources "/posts", PostController, except: [:new, :edit]
-    post "/posts/repost", PostController, :repost
+    post "/posts/repost", PostController, :create_repost
+    get "/reposts/:id", PostController, :get_repost
+    patch "/reposts/:id", PostController, :update_repost
+    delete "/reposts/:id", PostController, :delete_repost
 
     resources "/comments", CommentController, only: [:index, :create, :show, :update, :delete]
     post "/replies", CommentController, :create_reply

@@ -41,6 +41,7 @@ defmodule Backend.Posts do
           body: p.body,
           inserted_at: p.inserted_at,
           user: u,
+          user_id: u.id,
           # posts have no “original”
           original_post: nil,
           likes_count: count(l.id, :distinct),
@@ -74,6 +75,7 @@ defmodule Backend.Posts do
           inserted_at: r.inserted_at,
           # the *reposter*
           user: reposter,
+          user_id: reposter.id,
           # nest original post + author
           original_post: %{p | user: post_author},
           likes_count: 0,
@@ -244,6 +246,10 @@ defmodule Backend.Posts do
     Post.changeset(post, attrs)
   end
 
+  def get_repost!(id) do
+    Repo.get!(Repost, id) |> Repo.preload(original_post: [:user])
+  end
+
   @doc """
   Creates a repost. Returns `{:ok, %Repost{}}` or `{:error, reason}`
   """
@@ -260,5 +266,21 @@ defmodule Backend.Posts do
 
       {:ok, repost}
     end
+  end
+
+  @doc """
+  Update a Repost
+  """
+  def update_repost(%Repost{} = repost, attrs) do
+    repost
+    |> Repost.update_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Delete a Repost
+  """
+  def delete_repost(%Repost{} = repost) do
+    Repo.delete(repost)
   end
 end

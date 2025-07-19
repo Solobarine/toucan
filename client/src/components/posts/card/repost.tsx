@@ -11,10 +11,14 @@ import {
 } from "../../../features/slices/posts";
 import { likeContent, unlikeContent } from "../../../features/thunks/likes";
 import SmallAvatar from "../../avatar/small";
+import RepostOptions from "../repostOptions";
+import { useState } from "react";
 
 const RepostCard = ({ repost }: { repost: Repost }) => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
+
+  const [showMore, setShowMore] = useState(false);
 
   const goToOriginalPost = () => {
     navigate(`/posts/${repost.original_post.id}`);
@@ -48,7 +52,7 @@ const RepostCard = ({ repost }: { repost: Repost }) => {
 
   return (
     <>
-      <div className="bg-white dark:bg-stone-700 rounded-xl max-w-xl w-full mx-auto shadow-lg transition-all duration-300 hover:shadow-xl">
+      <div className="relative bg-white dark:bg-stone-700 rounded-xl max-w-xl w-full mx-auto shadow-lg transition-all duration-300 hover:shadow-xl">
         <div className="p-4">
           {/* Repost Header */}
           <div className="flex items-start justify-between mb-4">
@@ -91,7 +95,10 @@ const RepostCard = ({ repost }: { repost: Repost }) => {
                 )}
               </div>
             </div>
-            <button className="p-2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors">
+            <button
+              className="p-2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
+              onClick={() => setShowMore(true)}
+            >
               <Ellipsis className="w-5 h-5" />
             </button>
           </div>
@@ -228,6 +235,13 @@ const RepostCard = ({ repost }: { repost: Repost }) => {
             <span className="text-sm font-medium">Share</span>
           </button>
         </div>
+        {showMore && (
+          <RepostOptions
+            repostId={repost.id}
+            repostOwner={repost.user_id}
+            closeModal={() => setShowMore(false)}
+          />
+        )}
       </div>
     </>
   );
