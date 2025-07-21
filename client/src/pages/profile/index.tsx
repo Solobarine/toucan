@@ -34,6 +34,8 @@ import {
   rejectFriendRequest as handleRejectFriendRequest,
 } from "../../features/thunks/connections";
 import { getUserMetrics } from "../../features/thunks/user";
+import ProfileLoading from "../../components/profile/loading";
+import ApiErrorPage from "../../components/apiError";
 
 export default function Profile() {
   const { id } = useParams();
@@ -73,16 +75,26 @@ export default function Profile() {
     dispatch(getFriends({ id: parseInt(id as string), page: 1, per: 20 }));
   }, [dispatch, id]);
 
+  if (profile.status == "pending") return <ProfileLoading />;
+
+  if (profile.status == "failed")
+    return <ApiErrorPage statusCode={profile.statusCode} />;
+
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
       <Helmet>
         <title>
-          {profile.data?.first_name + " " + profile.data?.last_name}'s Profile
+          {profile.data
+            ? profile.data?.first_name + " " + profile.data?.last_name
+            : "User"}
+          's Profile
         </title>
         <meta
           name="description"
           content={`Toucan Profile of ${
-            profile.data?.first_name + " " + profile.data?.last_name
+            profile.data
+              ? profile.data?.first_name + " " + profile.data?.last_name
+              : "User"
           }`}
         />
       </Helmet>

@@ -1,158 +1,209 @@
-import { useFormik } from "formik";
 import { useState } from "react";
-import TextInput from "../../../components/form/inputs";
-import { Helmet } from "react-helmet";
+import { Shield, Smartphone, Clock, MapPin } from "lucide-react";
 
-const SecuritySettings = () => {
-  const [twoFactorAuth, setTwoFactorAuth] = useState(false);
-  const [securityNotifications, setSecurityNotifications] = useState(true);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
+interface LoginSession {
+  id: string;
+  device: string;
+  location: string;
+  lastActive: string;
+  current: boolean;
+}
 
-  const { values, errors, touched, handleChange } = useFormik({
-    initialValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmNewPassword: "",
-    },
-    onSubmit: (values) => console.log(values),
+export default function SecuritySettings() {
+  const [settings, setSettings] = useState({
+    loginAlerts: true,
+    suspiciousActivityAlerts: true,
+    passwordChangeAlerts: true,
+    newDeviceAlerts: true,
   });
 
-  return (
-    <div className="min-h-screen py-10 px-5 md:px-20">
-      <Helmet>
-        <title>Toucan - Security Setting</title>
-        <meta name="description" content="User Security Setting" />
-      </Helmet>
-      <div className="max-w-3xl mx-auto bg-white dark:bg-stone-700 rounded-lg shadow-md p-8">
-        {/* Two-Factor Authentication */}
-        <div className="border-b pb-4 mb-5">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold">
-              Two-Factor Authentication (2FA)
-            </h2>
-            <button
-              className={`${
-                twoFactorAuth ? "bg-green-500" : "bg-gray-300"
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none`}
-              onClick={() => setTwoFactorAuth(!twoFactorAuth)}
-            >
-              <span
-                className={`${
-                  twoFactorAuth ? "translate-x-6" : "translate-x-1"
-                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-              />
-            </button>
-          </div>
-          <p className="text-sm mt-2">
-            Add an extra layer of security to your account by enabling 2FA.
-          </p>
-        </div>
+  const [loginSessions] = useState<LoginSession[]>([
+    {
+      id: "1",
+      device: "iPhone 14 Pro • Safari",
+      location: "San Francisco, CA",
+      lastActive: "Active now",
+      current: true,
+    },
+    {
+      id: "2",
+      device: "MacBook Pro • Chrome",
+      location: "San Francisco, CA",
+      lastActive: "2 hours ago",
+      current: false,
+    },
+    {
+      id: "3",
+      device: "Windows PC • Edge",
+      location: "New York, NY",
+      lastActive: "3 days ago",
+      current: false,
+    },
+  ]);
 
-        {/* Security Notifications */}
-        <div className="border-b pb-4 mb-5">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Security Notifications</h2>
-            <button
-              className={`${
-                securityNotifications ? "bg-green-500" : "bg-gray-300"
-              } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none`}
-              onClick={() => setSecurityNotifications(!securityNotifications)}
-            >
-              <span
-                className={`${
-                  securityNotifications ? "translate-x-6" : "translate-x-1"
-                } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-              />
-            </button>
-          </div>
-          <p className="text-sm mt-2">
-            Get notified when unusual activity is detected in your account.
-          </p>
-        </div>
+  const handleSettingChange = (key: string, value: boolean) => {
+    const newSettings = { ...settings, [key]: value };
+    setSettings(newSettings);
+  };
 
-        {/* Change Password */}
-        <div className="border-b pb-4 mb-5">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Change Password</h2>
-            <button
-              className="bg-primary hover:opacity-75 text-white px-4 py-2 rounded-lg"
-              onClick={() => setShowPasswordModal(true)}
-            >
-              Change Password
-            </button>
-          </div>
-          <p className="text-sm mt-2">
-            Update your password regularly to keep your account secure.
-          </p>
-        </div>
+  const handleLogoutSession = async (sessionId: string) => {
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    alert("Session logged out successfully");
+  };
 
-        {/* Password Change Modal */}
-        {showPasswordModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white dark:bg-stone-700 rounded-lg p-8 shadow-md max-w-md w-full relative">
-              <button
-                className="absolute top-2 right-2 text-gray-500 hover"
-                onClick={() => setShowPasswordModal(false)}
-              >
-                ✕
-              </button>
-              <h3 className="text-xl font-semibold mb-4">Change Password</h3>
-              <form className="space-y-4">
-                <div className="grid gap-2">
-                  <label className="block text-sm font-medium">
-                    Current Password
-                  </label>
-                  <TextInput
-                    name="currentPassword"
-                    type="text"
-                    placeholder="Password..."
-                    error={errors.currentPassword}
-                    touched={touched.currentPassword}
-                    handleChange={handleChange}
-                    value={values.currentPassword}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label className="block text-sm font-medium">
-                    New Password
-                  </label>
-                  <TextInput
-                    name="newPassword"
-                    type="text"
-                    placeholder="Password..."
-                    error={errors.newPassword}
-                    touched={touched.newPassword}
-                    handleChange={handleChange}
-                    value={values.newPassword}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label className="block text-sm font-medium">
-                    Confirm New Password
-                  </label>
-                  <TextInput
-                    name="confirmNewPassword"
-                    type="text"
-                    placeholder="Password..."
-                    error={errors.confirmNewPassword}
-                    touched={touched.confirmNewPassword}
-                    handleChange={handleChange}
-                    value={values.confirmNewPassword}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full bg-primary hover:opacity-75 text-white py-2 rounded-lg mt-4"
-                >
-                  Save Changes
-                </button>
-              </form>
-            </div>
-          </div>
+  const ToggleOption = ({
+    title,
+    description,
+    checked,
+    onChange,
+    icon: Icon,
+  }: {
+    title: string;
+    description: string;
+    checked: boolean;
+    onChange: (checked: boolean) => void;
+    icon?: any;
+  }) => (
+    <div className="flex items-start justify-between">
+      <div className="flex items-start gap-3 flex-1">
+        {Icon && (
+          <Icon className="w-5 h-5 text-neutral-500 dark:text-neutral-400 mt-0.5" />
         )}
+        <div className="flex-1">
+          <h4 className="font-medium text-neutral-900 dark:text-white">
+            {title}
+          </h4>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            {description}
+          </p>
+        </div>
+      </div>
+      <button
+        onClick={() => onChange(!checked)}
+        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+          checked ? "bg-purple-600" : "bg-neutral-300 dark:bg-neutral-600"
+        }`}
+      >
+        <span
+          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+            checked ? "translate-x-6" : "translate-x-1"
+          }`}
+        />
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+          Security Settings
+        </h3>
+        <p className="text-neutral-600 dark:text-neutral-400">
+          Manage your account security and connected devices
+        </p>
+      </div>
+
+      {/* Security Alerts */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Shield className="w-5 h-5 text-purple-600" />
+          <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
+            Security Alerts
+          </h4>
+        </div>
+
+        <ToggleOption
+          title="Login Alerts"
+          description="Get notified when someone logs into your account"
+          checked={settings.loginAlerts}
+          onChange={(checked) => handleSettingChange("loginAlerts", checked)}
+        />
+
+        <ToggleOption
+          title="Suspicious Activity Alerts"
+          description="Get notified about unusual account activity"
+          checked={settings.suspiciousActivityAlerts}
+          onChange={(checked) =>
+            handleSettingChange("suspiciousActivityAlerts", checked)
+          }
+        />
+
+        <ToggleOption
+          title="Password Change Alerts"
+          description="Get notified when your password is changed"
+          checked={settings.passwordChangeAlerts}
+          onChange={(checked) =>
+            handleSettingChange("passwordChangeAlerts", checked)
+          }
+        />
+
+        <ToggleOption
+          title="New Device Alerts"
+          description="Get notified when your account is accessed from a new device"
+          checked={settings.newDeviceAlerts}
+          onChange={(checked) =>
+            handleSettingChange("newDeviceAlerts", checked)
+          }
+        />
+      </div>
+
+      {/* Active Sessions */}
+      <div className="space-y-4 border-t border-neutral-200 dark:border-neutral-700 pt-6">
+        <div className="flex items-center gap-2">
+          <Smartphone className="w-5 h-5 text-purple-600" />
+          <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
+            Active Sessions
+          </h4>
+        </div>
+        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+          These are the devices currently logged into your account
+        </p>
+
+        <div className="space-y-3">
+          {loginSessions.map((session) => (
+            <div
+              key={session.id}
+              className="flex items-center justify-between p-4 border border-neutral-200 dark:border-neutral-700 rounded-lg"
+            >
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-neutral-100 dark:bg-neutral-700 rounded-lg">
+                  <Smartphone className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                </div>
+                <div>
+                  <h5 className="font-medium text-neutral-900 dark:text-white">
+                    {session.device}
+                    {session.current && (
+                      <span className="ml-2 px-2 py-0.5 text-xs bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-full">
+                        Current
+                      </span>
+                    )}
+                  </h5>
+                  <div className="flex items-center gap-4 text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-3 h-3" />
+                      {session.location}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {session.lastActive}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {!session.current && (
+                <button
+                  onClick={() => handleLogoutSession(session.id)}
+                  className="px-3 py-1.5 text-sm text-red-600 border border-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                >
+                  Log Out
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
-};
-
-export default SecuritySettings;
+}
