@@ -17,6 +17,7 @@ import {
 } from "../../../features/slices/posts";
 import LargeAvatar from "../../../components/avatar/large";
 import Options from "../../../components/posts/options";
+import ApiErrorPage from "../../../components/apiError";
 
 const Post = () => {
   const { id } = useParams();
@@ -24,14 +25,13 @@ const Post = () => {
   const [showMore, setShowMore] = useState(false);
 
   const {
-    post: { data, comments },
+    post: { data, comments, status, statusCode },
     getComments,
   } = useSelector((state: RootState) => state.posts);
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
   console.log(data);
 
-  console.log(comments);
   useEffect(() => {
     Promise.all([
       dispatch(getPost(id as string)),
@@ -55,6 +55,10 @@ const Post = () => {
       );
     }
   };
+
+  console.log(status);
+
+  if (status == "failed") return <ApiErrorPage statusCode={statusCode!} />;
 
   return (
     <>
@@ -194,7 +198,7 @@ const Post = () => {
         {showMore && (
           <Options
             postId={data?.id as number}
-            postOwner={data?.user.id}
+            postOwner={data?.user}
             closeModal={() => setShowMore(false)}
           />
         )}

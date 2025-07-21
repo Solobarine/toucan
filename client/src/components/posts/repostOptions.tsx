@@ -1,12 +1,22 @@
 import { useFormik } from "formik";
 import { useState } from "react";
-import { AlertTriangle, Loader, PenBox, Plane, Trash2, X } from "lucide-react";
+import {
+  AlertTriangle,
+  Ban,
+  Loader,
+  PenBox,
+  Plane,
+  Trash2,
+  X,
+} from "lucide-react";
 import * as Yup from "yup";
 import TextInput from "../form/inputs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../features/store";
 import { useNavigate } from "react-router-dom";
 import { deleteRepost } from "../../features/thunks/posts";
+import { User } from "../../types/auth";
+import { banUser } from "../../features/thunks/user";
 
 const RepostOptions = ({
   repostId,
@@ -14,7 +24,7 @@ const RepostOptions = ({
   closeModal,
 }: {
   repostId: number;
-  repostOwner?: number;
+  repostOwner: User;
   closeModal: () => void;
 }) => {
   const navigate = useNavigate();
@@ -52,7 +62,7 @@ const RepostOptions = ({
         </div>
 
         <div className="space-y-1">
-          {user?.id == repostOwner && (
+          {user?.id == repostOwner.id ? (
             <>
               <button
                 className="flex items-center gap-3 w-full px-3 py-2.5 text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200 hover:translate-x-1 group"
@@ -77,6 +87,19 @@ const RepostOptions = ({
                 <span className="font-medium">Edit Repost</span>
               </button>
             </>
+          ) : (
+            <button
+              className="flex items-center gap-3 w-full px-3 py-2.5 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 rounded-lg transition-all duration-200 hover:translate-x-1 group"
+              onClick={() => dispatch(banUser({ blocked_id: repostOwner.id }))}
+            >
+              <Ban
+                size={18}
+                className="group-hover:scale-110 transition-transform duration-200"
+              />
+              <span className="font-medium">
+                Ban {repostOwner.first_name} {repostOwner.last_name}
+              </span>
+            </button>
           )}
           <button
             className="flex items-center gap-3 w-full px-3 py-2.5 text-left text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-all duration-200 hover:translate-x-1 group"

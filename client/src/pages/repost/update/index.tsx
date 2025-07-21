@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { formatDistanceToNow } from "date-fns";
 import { AppDispatch, RootState } from "../../../features/store";
 import { getRepost, updateRepost } from "../../../features/thunks/posts";
+import ApiErrorPage from "../../../components/apiError";
 
 const UpdateRepost = () => {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const UpdateRepost = () => {
   const [comment, setComment] = useState("");
 
   const {
-    repost: { status, data },
+    repost: { status, data, statusCode },
   } = useSelector((state: RootState) => state.posts);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,8 +35,8 @@ const UpdateRepost = () => {
   };
 
   useEffect(() => {
-    dispatch(getRepost(id!));
-  }, []);
+    dispatch(getRepost(id as string));
+  }, [dispatch, id]);
 
   console.log(data);
 
@@ -71,6 +72,8 @@ const UpdateRepost = () => {
       dispatch(updateRepost({ id: id!, data: values }));
     },
   });
+
+  if (status == "failed") return <ApiErrorPage statusCode={statusCode} />;
 
   return (
     <div className="flex items-center justify-center z-50 p-4">

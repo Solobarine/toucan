@@ -33,6 +33,7 @@ import PrivacyPolicy from "../pages/privacy";
 import AuthCallback from "../pages/auth/callback";
 import UpdateRepost from "../pages/repost/update";
 import UpdatePost from "../pages/posts/update";
+import PrivacyPage from "../pages/settings/privacy";
 
 const router = createBrowserRouter([
   {
@@ -119,7 +120,7 @@ const router = createBrowserRouter([
             Component: Account,
           },
           {
-            path: "profile",
+            path: "account",
             Component: Account,
           },
           {
@@ -127,8 +128,12 @@ const router = createBrowserRouter([
             Component: Notifications,
           },
           {
-            path: "account",
+            path: "security",
             Component: Security,
+          },
+          {
+            path: "privacy",
+            Component: PrivacyPage,
           },
         ],
       },

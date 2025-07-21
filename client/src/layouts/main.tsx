@@ -10,13 +10,13 @@ import { AppDispatch, RootState } from "../features/store";
 import { setSideBarState, togglePostModal } from "../features/slices/settings";
 import { me } from "../features/thunks/auth";
 import Loading from "../components/loading";
-import NetworkError from "../pages/errors/networkError";
 import Navigation from "../components/navigation";
 import { getSocket, initSocket } from "../socket";
 import Create from "../components/posts/create";
 import { appendNotifications } from "../features/slices/notifications";
 
 import "react-toastify/dist/ReactToastify.min.css";
+import ApiErrorPage from "../components/apiError";
 
 const Main = () => {
   const { isDarkTheme, isPostModalOpen } = useSelector(
@@ -51,7 +51,7 @@ const Main = () => {
       socketRef.current = initSocket(token!);
     }
 
-    if (!socketRef.current || !user) return;
+    if (!socketRef.current || !user || !user.id) return;
 
     const notificationsChannel = socketRef.current!.channel(
       `notifications:${user.id}`
@@ -128,7 +128,11 @@ const Main = () => {
           />
           <Navigation />
           {!isLoggedIn && error ? (
-            <NetworkError message={error} />
+            <ApiErrorPage
+              statusCode={statusCode! || 500}
+              showRetry
+              onRetry={() => window.location.reload()}
+            />
           ) : (
             <>
               <AnimatePresence>

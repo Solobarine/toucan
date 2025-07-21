@@ -12,6 +12,7 @@ import { PostSchema } from "../../../schemas/post";
 import { getPost, updatePost } from "../../../features/thunks/posts";
 import SmallAvatar from "../../../components/avatar/small";
 import LoadingPage from "../../../components/loading";
+import ApiErrorPage from "../../../components/apiError";
 
 const UpdatePost = () => {
   const { id } = useParams();
@@ -31,8 +32,8 @@ const UpdatePost = () => {
     submitForm,
   } = useFormik({
     initialValues: {
-      title: post.data?.title || "",
-      body: post.data?.body || "",
+      title: post.data?.title as string,
+      body: post.data?.body as string,
     },
     validationSchema: PostSchema,
     onSubmit: (values) => {
@@ -58,6 +59,9 @@ const UpdatePost = () => {
   }, [post, setValues]);
 
   if (post.status == "pending") return <LoadingPage />;
+
+  if (post.status == "failed")
+    return <ApiErrorPage statusCode={post.statusCode} />;
 
   return (
     <motion.div

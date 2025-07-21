@@ -49,6 +49,9 @@ defmodule BackendWeb.PostController do
     current_user = Guardian.Plug.current_resource(conn)
 
     post = Posts.get_post!(id)
+
+    PostsPolicy.show_post(conn, post, current_user)
+
     render(conn, :show, post: post, current_user_id: current_user.id || nil)
   end
 
@@ -83,7 +86,10 @@ defmodule BackendWeb.PostController do
   end
 
   def get_repost(conn, %{"id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+
     repost = Posts.get_repost!(id)
+    PostsPolicy.show_repost(conn, repost, current_user)
 
     json(conn, %{repost: PostJSON.repost_data(repost)})
   end

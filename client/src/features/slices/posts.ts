@@ -24,6 +24,7 @@ import {
 import { likeContent, unlikeContent } from "../thunks/likes";
 import { LoadingInterface } from "../../types/loading";
 import { Comment } from "../../types/comment";
+import { banUser } from "../thunks/user";
 
 type FeedItem = Post | Repost;
 
@@ -35,7 +36,7 @@ interface InitialState {
     error: string | undefined;
   };
   post: {
-    statusCode: number | undefined;
+    statusCode: number;
     status: LoadingInterface;
     data: Post | undefined;
     comments: [] | Comment[];
@@ -92,6 +93,7 @@ interface InitialState {
     status: LoadingInterface;
     data: Repost | null;
     error: string;
+    statusCode: number;
   };
   updateRepost: {
     status: LoadingInterface;
@@ -109,7 +111,7 @@ const initialState: InitialState = {
     error: undefined,
   },
   post: {
-    statusCode: undefined,
+    statusCode: 0,
     data: undefined,
     comments: [],
     status: "idle",
@@ -165,6 +167,7 @@ const initialState: InitialState = {
     status: "idle",
     data: null,
     error: "",
+    statusCode: 0,
   },
   updateRepost: {
     status: "idle",
@@ -342,7 +345,7 @@ const post = createSlice({
         ...state.post,
         status: "pending",
         error: undefined,
-        statusCode: undefined,
+        statusCode: 0,
       };
     });
     builder.addCase(getPost.fulfilled, (state, action) => {
@@ -355,8 +358,8 @@ const post = createSlice({
     builder.addCase(getPost.rejected, (state, action) => {
       state.post = {
         ...state.post,
-        statusCode: (action.payload as { statusCode: number | undefined })
-          .statusCode,
+        status: "failed",
+        statusCode: (action.payload as { statusCode: number }).statusCode,
         error: (action.payload as { error: string | undefined }).error,
       };
     });
@@ -392,7 +395,9 @@ const post = createSlice({
       }
     });
     builder.addCase(updatePost.rejected, (state) => {
-      state.update = { status: "failed" };
+      state.update = {
+        status: "failed",
+      };
       toast.error("Failed to Update Post");
     });
 
@@ -597,13 +602,19 @@ const post = createSlice({
 
     /** GET REPOST **/
     builder.addCase(getRepost.pending, (state) => {
-      state.repost = { status: "pending", data: null, error: "" };
+      state.repost = {
+        status: "pending",
+        data: null,
+        error: "",
+        statusCode: 0,
+      };
     });
     builder.addCase(getRepost.fulfilled, (state, action) => {
       state.repost = {
         ...state.repost,
         status: "idle",
         data: action.payload.data.repost,
+        statusCode: (action.payload as { statusCode: number }).statusCode,
       };
     });
     builder.addCase(getRepost.rejected, (state) => {
@@ -616,12 +627,14 @@ const post = createSlice({
 
     /** UPDATE REPOST **/
     builder.addCase(updateRepost.fulfilled, (state) => {
-      state.updateRepost = { status: "idle" };
+      state.updateRepost = { ...state.updateRepost };
       toast.success("Repost Updated Successfully");
     });
 
     builder.addCase(updateRepost.rejected, (state) => {
-      state.updateRepost = { status: "failed" };
+      state.updateRepost = {
+        status: "failed",
+      };
       toast.error("Failed to Update Repost");
     });
     /** DELETE REPOST **/
@@ -633,6 +646,14 @@ const post = createSlice({
     builder.addCase(deleteRepost.rejected, (state) => {
       state.deleteRepost = { status: "failed" };
       toast.error("Failed to Delete Repost");
+    });
+
+    /** BAN USER **/
+    builder.addCase(banUser.fulfilled, (state, action) => {
+      const userId = action.meta.arg.blocked_id;
+      state.posts.data = state.posts.data.filter(
+        (post) => post.user_id !== userId
+      );
     });
   },
 });
