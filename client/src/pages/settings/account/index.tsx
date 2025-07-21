@@ -172,7 +172,7 @@ const Account = () => {
         confirmPassword: "",
       });
       setShowPasswordForm(false);
-    } catch (error) {
+    } catch {
       alert("Failed to change password");
     } finally {
       setIsProcessing(false);
@@ -186,7 +186,7 @@ const Account = () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       alert("Account deactivated successfully");
       setShowDeactivateDialog(false);
-    } catch (error) {
+    } catch {
       alert("Failed to deactivate account");
     } finally {
       setIsProcessing(false);
@@ -200,7 +200,7 @@ const Account = () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       alert("Account deletion initiated");
       setShowDeleteDialog(false);
-    } catch (error) {
+    } catch {
       alert("Failed to delete account");
     } finally {
       setIsProcessing(false);
@@ -213,7 +213,7 @@ const Account = () => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
       alert("Data download started. You'll receive an email when it's ready.");
-    } catch (error) {
+    } catch {
       alert("Failed to start data download");
     } finally {
       setIsProcessing(false);
@@ -255,9 +255,9 @@ const Account = () => {
                   />
                 ) : (
                   <LargeAvatar
-                    avatar={user?.avatar!}
-                    first_name={user?.first_name!}
-                    last_name={user?.last_name!}
+                    avatar={user?.avatar as string}
+                    first_name={user?.first_name as string}
+                    last_name={user?.last_name as string}
                   />
                 )}
               </div>

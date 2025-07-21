@@ -32,8 +32,8 @@ const UpdatePost = () => {
     submitForm,
   } = useFormik({
     initialValues: {
-      title: post.data?.title! || "",
-      body: post.data?.body! || "",
+      title: post.data?.title as string,
+      body: post.data?.body as string,
     },
     validationSchema: PostSchema,
     onSubmit: (values) => {
@@ -65,10 +65,6 @@ const UpdatePost = () => {
 
   return (
     <motion.div
-      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-        if (e.target === e.currentTarget) {
-        }
-      }}
       variants={dropIn}
       initial="hidden"
       animate="visible"

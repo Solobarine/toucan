@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Bell, Mail, MessageSquare, Heart, UserPlus } from "lucide-react";
+import {
+  Bell,
+  Mail,
+  MessageSquare,
+  Heart,
+  UserPlus,
+  LucideIcon,
+} from "lucide-react";
 
 export default function NotificationSettings() {
   const [settings, setSettings] = useState({
@@ -30,7 +37,11 @@ export default function NotificationSettings() {
     },
   });
 
-  const handleSettingChange = (category: string, key: string, value: any) => {
+  const handleSettingChange = (
+    category: string,
+    key: string,
+    value: boolean | string
+  ) => {
     const newSettings = {
       ...settings,
       [category]: {
@@ -53,7 +64,7 @@ export default function NotificationSettings() {
     description: string;
     checked: boolean;
     onChange: (checked: boolean) => void;
-    icon?: any;
+    icon?: LucideIcon;
     disabled?: boolean;
   }) => (
     <div

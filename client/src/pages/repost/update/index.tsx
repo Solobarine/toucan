@@ -35,8 +35,8 @@ const UpdateRepost = () => {
   };
 
   useEffect(() => {
-    dispatch(getRepost(id!));
-  }, []);
+    dispatch(getRepost(id as string));
+  }, [dispatch, id]);
 
   console.log(data);
 

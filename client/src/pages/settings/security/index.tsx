@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Shield, Smartphone, Clock, MapPin } from "lucide-react";
+import { Shield, Smartphone, Clock, MapPin, LucideIcon } from "lucide-react";
 
 interface LoginSession {
   id: string;
@@ -49,6 +49,7 @@ export default function SecuritySettings() {
   const handleLogoutSession = async (sessionId: string) => {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log(sessionId);
     alert("Session logged out successfully");
   };
 
@@ -63,7 +64,7 @@ export default function SecuritySettings() {
     description: string;
     checked: boolean;
     onChange: (checked: boolean) => void;
-    icon?: any;
+    icon?: LucideIcon;
   }) => (
     <div className="flex items-start justify-between">
       <div className="flex items-start gap-3 flex-1">
