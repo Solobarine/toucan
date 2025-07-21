@@ -30,6 +30,7 @@ const Post = () => {
   } = useSelector((state: RootState) => state.posts);
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
+  console.log(data);
 
   useEffect(() => {
     Promise.all([
