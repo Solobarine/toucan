@@ -178,7 +178,7 @@ const Card = ({ post }: { post: Post }) => {
         {isMoreOpen && (
           <Options
             postId={post.id!}
-            postOwner={post.user_id}
+            postOwner={post.user}
             closeModal={() => setIsMoreOpen(false)}
           />
         )}

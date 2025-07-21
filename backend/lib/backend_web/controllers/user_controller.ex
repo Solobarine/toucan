@@ -1,6 +1,7 @@
 defmodule BackendWeb.UserController do
   use BackendWeb, :controller
 
+  alias BackendWeb.Policies.UsersPolicy
   alias Backend.Avatar
   alias Backend.Accounts
 
@@ -28,6 +29,8 @@ defmodule BackendWeb.UserController do
     current_user = Guardian.Plug.current_resource(conn)
 
     id = id |> String.to_integer()
+
+    UsersPolicy.show(conn, id, current_user.id)
 
     user = Accounts.get_full_user_details(id, current_user.id)
 

@@ -45,6 +45,7 @@ interface InitialState {
     status: "idle" | "pending" | "failed";
     error: string | null;
     data: User | null;
+    statusCode: number;
   };
   updateAvatar: {
     status: LoadingInterface;
@@ -86,6 +87,7 @@ const initialState: InitialState = {
     status: "idle",
     error: null,
     data: null,
+    statusCode: 0,
   },
   updateAvatar: {
     status: "idle",
@@ -175,11 +177,12 @@ const authSlice = createSlice({
         data: action.payload.data.user,
       };
     });
-    builder.addCase(getProfile.rejected, (state) => {
+    builder.addCase(getProfile.rejected, (state, action) => {
       state.profile = {
         ...state.profile,
         status: "failed",
         error: "Something went wrong",
+        statusCode: (action.payload as { statusCode: number }).statusCode,
       };
     });
 

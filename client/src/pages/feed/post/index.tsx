@@ -16,19 +16,21 @@ import {
   incrementLikeCount,
 } from "../../../features/slices/posts";
 import LargeAvatar from "../../../components/avatar/large";
+import Options from "../../../components/posts/options";
+import ApiErrorPage from "../../../components/apiError";
 
 const Post = () => {
   const { id } = useParams();
   const [showRepost, toggleShowRepost] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const {
-    post: { data, comments },
+    post: { data, comments, status, statusCode },
     getComments,
   } = useSelector((state: RootState) => state.posts);
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
 
-  console.log(comments);
   useEffect(() => {
     Promise.all([
       dispatch(getPost(id as string)),
@@ -53,9 +55,13 @@ const Post = () => {
     }
   };
 
+  console.log(status);
+
+  if (status == "failed") return <ApiErrorPage statusCode={statusCode!} />;
+
   return (
     <>
-      <section className="bg-white dark:bg-stone-700 p-6 rounded-xl max-w-2xl mx-auto my-8 shadow-lg transition-all duration-300">
+      <section className="relative bg-white dark:bg-stone-700 p-6 rounded-xl max-w-2xl mx-auto my-8 shadow-lg transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-4">
             <LargeAvatar
@@ -76,7 +82,10 @@ const Post = () => {
               </p>
             </div>
           </div>
-          <button className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+          <button
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+            onClick={() => setShowMore(true)}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
@@ -185,6 +194,13 @@ const Post = () => {
             </div>
           )}
         </div>
+        {showMore && (
+          <Options
+            postId={data?.id as number}
+            postOwner={data?.user}
+            closeModal={() => setShowMore(false)}
+          />
+        )}
       </section>
       <CreateRepostModal
         originalPost={data!}

@@ -1,12 +1,22 @@
 import { useFormik } from "formik";
 import { useState } from "react";
-import { AlertTriangle, Loader, PenBox, Plane, Trash2, X } from "lucide-react";
+import {
+  AlertTriangle,
+  Ban,
+  Loader,
+  PenBox,
+  Plane,
+  Trash2,
+  X,
+} from "lucide-react";
 import * as Yup from "yup";
 import TextInput from "../form/inputs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../features/store";
 import { useNavigate } from "react-router-dom";
 import { deletePost } from "../../features/thunks/posts";
+import { User } from "../../types/auth";
+import { banUser } from "../../features/thunks/user";
 
 const Options = ({
   postId,
@@ -14,7 +24,7 @@ const Options = ({
   closeModal,
 }: {
   postId: number;
-  postOwner?: number;
+  postOwner?: User;
   closeModal: () => void;
 }) => {
   const navigate = useNavigate();
@@ -31,7 +41,6 @@ const Options = ({
   const handleDelete = () => {
     // Add your delete logic here
     dispatch(deletePost(postId!));
-    console.log("Deleting post:", postId);
 
     if (status == "idle") {
       setDeleteModalOpen(false);
@@ -55,7 +64,7 @@ const Options = ({
         </div>
 
         <div className="space-y-1">
-          {user?.id == postOwner && (
+          {user?.id == postOwner?.id ? (
             <>
               <button
                 className="flex items-center gap-3 w-full px-3 py-2.5 text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200 hover:translate-x-1 group"
@@ -80,6 +89,21 @@ const Options = ({
                 <span className="font-medium">Edit Post</span>
               </button>
             </>
+          ) : (
+            <button
+              className="flex items-center gap-3 w-full px-3 py-2.5 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 rounded-lg transition-all duration-200 hover:translate-x-1 group"
+              onClick={() =>
+                dispatch(banUser({ blocked_id: postOwner?.id as number }))
+              }
+            >
+              <Ban
+                size={18}
+                className="group-hover:scale-110 transition-transform duration-200"
+              />
+              <span className="font-medium">
+                Ban {postOwner?.first_name} {postOwner?.last_name}
+              </span>
+            </button>
           )}
           <button
             className="flex items-center gap-3 w-full px-3 py-2.5 text-left text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-all duration-200 hover:translate-x-1 group"

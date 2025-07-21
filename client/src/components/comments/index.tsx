@@ -109,7 +109,7 @@ const Comment = ({ comment }: { comment: CommentInterface }) => {
       {showMore && (
         <CommentOptions
           commentId={comment.id!}
-          commentOwner={comment.user_id}
+          commentOwner={comment.user}
           closeModal={() => setShowMore(false)}
         />
       )}

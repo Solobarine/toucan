@@ -1,11 +1,20 @@
 import { useFormik } from "formik";
 import { useState } from "react";
-import { AlertTriangle, Loader, MessageSquare, Trash2, X } from "lucide-react";
+import {
+  AlertTriangle,
+  Ban,
+  Loader,
+  MessageSquare,
+  Trash2,
+  X,
+} from "lucide-react";
 import * as Yup from "yup";
 import TextInput from "../form/inputs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../features/store";
 import { deleteComment } from "../../features/thunks/comments";
+import { User } from "../../types/auth";
+import { banUser } from "../../features/thunks/user";
 
 const CommentOptions = ({
   commentId,
@@ -13,16 +22,16 @@ const CommentOptions = ({
   closeModal,
 }: {
   commentId: number;
-  commentOwner?: number;
+  commentOwner: User;
   closeModal: () => void;
 }) => {
   const [formOpen, setFormOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const { user } = useSelector((state: RootState) => state.auth);
 
+  const dispatch: AppDispatch = useDispatch();
+
   const handleDelete = () => {
-    // Add your delete logic here
-    console.log("Deleting comment:", commentId);
     setDeleteModalOpen(false);
     closeModal();
   };
@@ -43,7 +52,7 @@ const CommentOptions = ({
         </div>
 
         <div className="space-y-1">
-          {user?.id == commentOwner && (
+          {user?.id == commentOwner.id ? (
             <button
               className="flex items-center gap-3 w-full px-3 py-2.5 text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200 hover:translate-x-1 group"
               onClick={() => setDeleteModalOpen(true)}
@@ -53,6 +62,19 @@ const CommentOptions = ({
                 className="group-hover:scale-110 transition-transform duration-200"
               />
               <span className="font-medium">Delete Comment</span>
+            </button>
+          ) : (
+            <button
+              className="flex items-center gap-3 w-full px-3 py-2.5 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 rounded-lg transition-all duration-200 hover:translate-x-1 group"
+              onClick={() => dispatch(banUser({ blocked_id: commentOwner.id }))}
+            >
+              <Ban
+                size={18}
+                className="group-hover:scale-110 transition-transform duration-200"
+              />
+              <span className="font-medium">
+                Ban {commentOwner.first_name} {commentOwner.last_name}
+              </span>
             </button>
           )}
           <button

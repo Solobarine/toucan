@@ -12,7 +12,12 @@ import {
   rejectFriendRequest,
   sendFriendRequest,
 } from "../thunks/connections";
-import { getUserMetrics } from "../thunks/user";
+import {
+  banUser,
+  getBannedUsers,
+  getUserMetrics,
+  unbanUser,
+} from "../thunks/user";
 import { toast } from "react-toastify";
 
 interface UserState {
@@ -50,6 +55,9 @@ interface UserState {
   cancelFriendRequest: { state: LoadingInterface };
   acceptFriendRequest: { state: LoadingInterface };
   rejectFriendRequest: { state: LoadingInterface };
+  blockedUsers: { state: LoadingInterface; data: User[] | []; error: string };
+  banUser: { state: LoadingInterface };
+  unbanUser: { state: LoadingInterface };
 }
 
 const initialMetricsData = {
@@ -97,6 +105,9 @@ const initialState: UserState = {
   cancelFriendRequest: { state: "idle" },
   acceptFriendRequest: { state: "idle" },
   rejectFriendRequest: { state: "idle" },
+  blockedUsers: { state: "idle", data: [], error: "" },
+  banUser: { state: "idle" },
+  unbanUser: { state: "idle" },
 };
 
 const usersSlice = createSlice({
@@ -282,6 +293,55 @@ const usersSlice = createSlice({
     builder.addCase(rejectFriendRequest.rejected, (state) => {
       state.rejectFriendRequest = { state: "failed" };
       toast.error("Unable to Reject Friend Request");
+    });
+
+    /** GET BLOCKED USERS **/
+    builder.addCase(getBannedUsers.pending, (state) => {
+      state.blockedUsers = { state: "pending", data: [], error: "" };
+    });
+    builder.addCase(getBannedUsers.fulfilled, (state, action) => {
+      state.blockedUsers = {
+        ...state.blockedUsers,
+        state: "idle",
+        data: action.payload.data.users,
+      };
+    });
+    builder.addCase(getBannedUsers.rejected, (state) => {
+      state.blockedUsers = {
+        ...state.blockedUsers,
+        state: "failed",
+        error: "Unable to get Banned Users",
+      };
+    });
+
+    /** BAN USER **/
+    builder.addCase(banUser.pending, (state) => {
+      state.banUser = { state: "pending" };
+    });
+    builder.addCase(banUser.fulfilled, (state) => {
+      state.banUser = { state: "idle" };
+      toast.success("User Banned. You will not see posts from this user");
+    });
+    builder.addCase(banUser.rejected, (state) => {
+      state.banUser = { state: "failed" };
+      toast.error("Failed to ban user");
+    });
+
+    /** UNBAN USER **/
+    builder.addCase(unbanUser.pending, (state) => {
+      state.unbanUser = { state: "pending" };
+    });
+    builder.addCase(unbanUser.fulfilled, (state, action) => {
+      const blockedUserId = action.meta.arg;
+      state.unbanUser = { state: "idle" };
+      toast.success("User unbanned successfully");
+      state.blockedUsers.data = state.blockedUsers.data.filter(
+        (user) => user.id !== blockedUserId
+      );
+    });
+    builder.addCase(unbanUser.rejected, (state) => {
+      state.unbanUser = { state: "failed" };
+      toast.error("Failed to Unban User");
     });
   },
 });

@@ -33,6 +33,10 @@ defmodule BackendWeb.Router do
     get "/users/:user_id/metrics", MetricsController, :show
     put "/users/avatar", UserController, :update_avatar
 
+    get "/users/blocked", UserBlocksController, :index
+    post "/users/block", UserBlocksController, :create
+    delete "/users/:id/block", UserBlocksController, :delete
+
     resources "/posts", PostController, except: [:new, :edit]
     post "/posts/repost", PostController, :create_repost
     get "/reposts/:id", PostController, :get_repost

@@ -2,6 +2,10 @@ defmodule BackendWeb.UserJSON do
   alias Backend.Avatar
   alias Backend.Accounts.User
 
+  def index(users) do
+    %{users: for(user <- users, do: data(user))}
+  end
+
   def show(%{user: user}) do
     %{user: data(user)}
   end

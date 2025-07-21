@@ -10,10 +10,12 @@ defmodule BackendWeb.CommentController do
   action_fallback BackendWeb.FallbackController
 
   def index(conn, params) do
+    current_user = Guardian.Plug.current_resource(conn)
+
     content_type = Map.get(params, "content_type", "post")
     id = Map.get(params, "id", "-1")
 
-    comments = Comments.get_comments(id, content_type)
+    comments = Comments.get_comments(current_user.id, id, content_type)
 
     conn
     |> render(:index, comments: comments)

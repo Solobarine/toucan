@@ -4,6 +4,7 @@ defmodule Backend.Comments do
   """
 
   import Ecto.Query, warn: false
+  alias Backend.UserBlocks
   alias Backend.Repo
 
   alias Backend.Comments.Comment
@@ -94,10 +95,14 @@ defmodule Backend.Comments do
   @doc """
   Get comments for a content type
   """
-  def get_comments(id, content_type \\ "post") do
+  def get_comments(user_id, id, content_type \\ "post") do
+    blocked_user_ids = UserBlocks.get_blocked_user_ids(user_id)
+
     from(
       c in Comment,
-      where: c.content_id == ^id and c.content_type == ^content_type,
+      where:
+        c.content_id == ^id and c.content_type == ^content_type and
+          c.user_id not in ^blocked_user_ids,
       preload: [:user],
       select: c
     )

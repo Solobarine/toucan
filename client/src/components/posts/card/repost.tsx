@@ -238,7 +238,7 @@ const RepostCard = ({ repost }: { repost: Repost }) => {
         {showMore && (
           <RepostOptions
             repostId={repost.id}
-            repostOwner={repost.user_id}
+            repostOwner={repost.user}
             closeModal={() => setShowMore(false)}
           />
         )}

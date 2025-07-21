@@ -4,6 +4,7 @@ defmodule Backend.Posts do
   """
 
   import Ecto.Query, warn: false
+  alias Backend.UserBlocks
   alias Backend.Comments.Comment
   alias Backend.Likes.Like
   alias Backend.Repo
@@ -19,6 +20,8 @@ defmodule Backend.Posts do
 
   """
   def list_posts(user_id \\ nil) do
+    blocked_user_ids = UserBlocks.get_blocked_user_ids(user_id)
+
     base_posts =
       from p in Post,
         join: u in assoc(p, :user),
@@ -34,6 +37,7 @@ defmodule Backend.Posts do
             ul.content_type == "post" and
             ul.user_id == ^user_id,
         group_by: [p.id, u.id],
+        where: p.user_id not in ^blocked_user_ids,
         select: %{
           # helps you tell them apart later
           item_type: "post",
@@ -67,6 +71,7 @@ defmodule Backend.Posts do
             ul.content_type == "repost" and
             ul.user_id == ^user_id,
         group_by: [r.id, reposter.id, p.id, post_author.id],
+        where: r.user_id not in ^blocked_user_ids and post_author.id not in ^blocked_user_ids,
         select: %{
           item_type: "repost",
           id: r.id,
