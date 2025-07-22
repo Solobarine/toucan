@@ -59,7 +59,8 @@ defmodule Backend.MixProject do
       {:hackney, "~> 1.9"},
       {:sweet_xml, "~> 0.6"},
       {:cachex, "~> 4.1"},
-      {:httpoison, "~> 1.8"}
+      {:httpoison, "~> 1.8"},
+      {:plug_attack, "~> 0.4.3"}
     ]
   end
 

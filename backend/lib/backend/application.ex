@@ -18,7 +18,8 @@ defmodule Backend.Application do
       # {Backend.Worker, arg},
       # Start to serve requests, typically the last entry
       BackendWeb.Endpoint,
-      {Oban, Application.fetch_env!(:backend, Oban)}
+      {Oban, Application.fetch_env!(:backend, Oban)},
+      {PlugAttack.Storage.Ets, name: BackendWeb.Plugs.RateLimiter.Storage, clean_period: 60_000}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
