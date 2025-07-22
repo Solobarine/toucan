@@ -58,5 +58,6 @@ defmodule BackendWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
+  plug BackendWeb.Plugs.RateLimiter
   plug BackendWeb.Router
 end
