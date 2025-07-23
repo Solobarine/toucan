@@ -7,8 +7,6 @@ import {
   Camera,
   Disc,
   Download,
-  Eye,
-  EyeOff,
   Key,
   Shield,
   Trash2,
@@ -27,41 +25,6 @@ import {
   UpdateProfileSchema,
 } from "../../../schemas/auth";
 
-const PasswordInput = ({
-  label,
-  value,
-  onChange,
-  show,
-  onToggleShow,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  show: boolean;
-  onToggleShow: () => void;
-}) => (
-  <div className="space-y-1">
-    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-      {label}
-    </label>
-    <div className="relative">
-      <input
-        type={show ? "text" : "password"}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3 py-2 pr-10 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-      />
-      <button
-        type="button"
-        onClick={onToggleShow}
-        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
-      >
-        {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-      </button>
-    </div>
-  </div>
-);
-
 const Account = () => {
   const { user, updateAvatar } = useSelector((state: RootState) => state.auth);
 
@@ -72,16 +35,6 @@ const Account = () => {
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
-  const [showPasswords, setShowPasswords] = useState({
-    current: false,
-    new: false,
-    confirm: false,
-  });
   const [isProcessing, setIsProcessing] = useState(false);
 
   const dispatch: AppDispatch = useDispatch();
