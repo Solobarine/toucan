@@ -3,6 +3,7 @@ defmodule BackendWeb.AuthController do
   Authentication Controller
   """
   use BackendWeb, :controller
+  alias BackendWeb.UserJSON
   alias Backend.Oauth
   alias BackendWeb.ErrorResponse
   alias Backend.Guardian
@@ -70,7 +71,7 @@ defmodule BackendWeb.AuthController do
         conn |> put_status(401) |> json(%{error: "Unauthorized"})
 
       _ ->
-        conn |> put_status(200) |> json(%{user: user})
+        conn |> put_status(200) |> json(UserJSON.show(%{user: user}))
     end
   end
 
@@ -126,8 +127,6 @@ defmodule BackendWeb.AuthController do
       _ ->
         raise ErrorResponse.BadRequest
     end
-
-    # json(conn, %{code: code, provider: provider})
   end
 
   defp client_uri do

@@ -32,6 +32,8 @@ defmodule BackendWeb.Router do
     get "/user/:id", UserController, :show
     get "/users/:user_id/metrics", MetricsController, :show
     put "/users/avatar", UserController, :update_avatar
+    patch "/users", UserController, :update_profile
+    patch "/users/password", UserController, :update_password
 
     get "/users/blocked", UserBlocksController, :index
     post "/users/block", UserBlocksController, :create

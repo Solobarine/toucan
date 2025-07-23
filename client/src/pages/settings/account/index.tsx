@@ -16,8 +16,16 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import TextInput from "../../../components/form/inputs";
 import PrimaryButton from "../../../components/primaryButton";
-import { updateAvatar as handleUpdateAvatar } from "../../../features/thunks/auth";
+import {
+  updateAvatar as handleUpdateAvatar,
+  updatePassword,
+  updateProfile,
+} from "../../../features/thunks/auth";
 import LargeAvatar from "../../../components/avatar/large";
+import {
+  UpdatePasswordSchema,
+  UpdateProfileSchema,
+} from "../../../schemas/auth";
 
 const PasswordInput = ({
   label,
@@ -93,16 +101,30 @@ const Account = () => {
       email: user?.email || "",
       username: user?.username || "",
       bio: user?.bio || "",
-      location: "",
     },
+    validationSchema: UpdateProfileSchema,
     onSubmit(values) {
       console.log(values);
+      dispatch(updateProfile(values));
+    },
+  });
+
+  const updatePasswordForm = useFormik({
+    initialValues: {
+      current_password: "",
+      new_password: "",
+      confirm_password: "",
+    },
+    validationSchema: UpdatePasswordSchema,
+    onSubmit: (values, { setSubmitting }) => {
+      console.log(values);
+      dispatch(updatePassword(values)).finally(() => setSubmitting(false));
     },
   });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    setSubmitting(true);
     e.preventDefault();
+    setSubmitting(true);
     submitForm().finally(() => setSubmitting(false));
   };
 
@@ -153,30 +175,6 @@ const Account = () => {
     formData.append("avatar", avatar);
 
     dispatch(handleUpdateAvatar(formData));
-  };
-
-  const handlePasswordChange = async () => {
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      alert("New passwords don't match");
-      return;
-    }
-
-    setIsProcessing(true);
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      alert("Password changed successfully");
-      setPasswordForm({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-      setShowPasswordForm(false);
-    } catch {
-      alert("Failed to change password");
-    } finally {
-      setIsProcessing(false);
-    }
   };
 
   const handleDeactivateAccount = async () => {
@@ -249,7 +247,7 @@ const Account = () => {
               <div className="w-20 h-20 rounded-full overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
                 {preview ? (
                   <img
-                    src={preview || "/placeholder.svg"}
+                    src={preview || user?.avatar}
                     alt="Profile preview"
                     className="w-full h-full object-cover"
                   />
@@ -369,8 +367,9 @@ const Account = () => {
               placeholder="Enter Email"
               handleChange={handleChange}
               value={values.email}
-              error={errors.email}
-              touched={touched.email}
+              error={undefined}
+              touched={false}
+              disabled
             />
 
             <TextInput
@@ -419,60 +418,46 @@ const Account = () => {
 
         {showPasswordForm && (
           <div className="ml-8 p-4 border border-neutral-200 dark:border-neutral-700 rounded-lg space-y-4">
-            <PasswordInput
+            <TextInput
               label="Current Password"
-              value={passwordForm.currentPassword}
-              onChange={(value) =>
-                setPasswordForm({ ...passwordForm, currentPassword: value })
-              }
-              show={showPasswords.current}
-              onToggleShow={() =>
-                setShowPasswords({
-                  ...showPasswords,
-                  current: !showPasswords.current,
-                })
-              }
+              type="password"
+              name="current_password"
+              placeholder=""
+              handleChange={updatePasswordForm.handleChange}
+              value={updatePasswordForm.values.current_password}
+              error={updatePasswordForm.errors.current_password}
+              touched={updatePasswordForm.touched.current_password}
             />
-
-            <PasswordInput
+            <TextInput
               label="New Password"
-              value={passwordForm.newPassword}
-              onChange={(value) =>
-                setPasswordForm({ ...passwordForm, newPassword: value })
-              }
-              show={showPasswords.new}
-              onToggleShow={() =>
-                setShowPasswords({ ...showPasswords, new: !showPasswords.new })
-              }
+              type="password"
+              name="new_password"
+              placeholder=""
+              handleChange={updatePasswordForm.handleChange}
+              value={updatePasswordForm.values.new_password}
+              error={updatePasswordForm.errors.new_password}
+              touched={updatePasswordForm.touched.new_password}
             />
-
-            <PasswordInput
+            <TextInput
               label="Confirm New Password"
-              value={passwordForm.confirmPassword}
-              onChange={(value) =>
-                setPasswordForm({ ...passwordForm, confirmPassword: value })
-              }
-              show={showPasswords.confirm}
-              onToggleShow={() =>
-                setShowPasswords({
-                  ...showPasswords,
-                  confirm: !showPasswords.confirm,
-                })
-              }
+              type="password"
+              name="confirm_password"
+              placeholder=""
+              handleChange={updatePasswordForm.handleChange}
+              value={updatePasswordForm.values.confirm_password}
+              error={updatePasswordForm.errors.confirm_password}
+              touched={updatePasswordForm.touched.confirm_password}
             />
 
             <div className="flex gap-3">
               <button
-                onClick={handlePasswordChange}
-                disabled={
-                  isProcessing ||
-                  !passwordForm.currentPassword ||
-                  !passwordForm.newPassword ||
-                  !passwordForm.confirmPassword
-                }
+                onClick={updatePasswordForm.submitForm}
+                disabled={updatePasswordForm.isSubmitting}
                 className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isProcessing ? "Changing..." : "Change Password"}
+                {updatePasswordForm.isSubmitting
+                  ? "Changing..."
+                  : "Change Password"}
               </button>
               <button
                 onClick={() => setShowPasswordForm(false)}

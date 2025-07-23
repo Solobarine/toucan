@@ -1,7 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { API_URL } from "../../constants";
-import { deleteRequest, getRequest, postRequest } from "../../utils/api";
-import { LoginInterface, RegisterInterface } from "../../types/auth";
+import {
+  deleteRequest,
+  getRequest,
+  patchRequest,
+  postRequest,
+} from "../../utils/api";
+import {
+  LoginInterface,
+  RegisterInterface,
+  UpdatePasswordInterface,
+  User,
+} from "../../types/auth";
 import axios from "axios";
 
 export const loginUser = createAsyncThunk(
@@ -71,5 +81,24 @@ export const updateAvatar = createAsyncThunk(
         statusCode: 0,
       });
     }
+  }
+);
+
+export const updatePassword = createAsyncThunk(
+  "USER/UPDATE_PASSWORD",
+  async (data: UpdatePasswordInterface, { rejectWithValue }) => {
+    const url = `${API_URL}/api/users/password`;
+    return patchRequest(url, { user: data }, { rejectWithValue });
+  }
+);
+
+export const updateProfile = createAsyncThunk(
+  "USER/UPDATE_PROFILE",
+  async (
+    data: Pick<User, "first_name" | "last_name" | "username" | "bio">,
+    { rejectWithValue }
+  ) => {
+    const url = `${API_URL}/api/users`;
+    return patchRequest(url, { user: data }, { rejectWithValue });
   }
 );

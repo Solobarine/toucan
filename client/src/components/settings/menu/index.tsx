@@ -11,7 +11,7 @@ type SettingsSection =
 
 const Menu = () => {
   const [activeSection, setActiveSection] =
-    useState<SettingsSection>("privacy");
+    useState<SettingsSection>("account");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigate = useNavigate();

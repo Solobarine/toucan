@@ -34,9 +34,9 @@ defmodule Backend.Accounts.User do
 
   def update_changeset(user, attrs) do
     user
-    |> cast(attrs, [:first_name, :last_name, :avatar])
+    |> cast(attrs, [:first_name, :last_name, :username, :avatar])
     |> cast_attachments(attrs, [:avatar])
-    |> validate_required([:first_name, :last_name])
+    |> validate_required([:first_name, :last_name, :username])
     |> unique_constraint(:username)
   end
 
@@ -46,6 +46,13 @@ defmodule Backend.Accounts.User do
     |> cast_attachments(attrs, [:avatar])
     |> validate_required([:first_name, :email, :password_hash, :tos])
     |> unique_constraint([:username, :email])
+  end
+
+  def update_password_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:password_hash])
+    |> validate_required([:password_hash])
+    |> put_password_hash
   end
 
   defp put_password_hash(changeset) do
