@@ -19,6 +19,8 @@ defmodule BackendWeb.Plugs.RateLimiter do
   rule "limit post creation", conn do
     if conn.method == "POST" and conn.request_path == "/api/posts" do
       throttle(user_or_ip(conn), period: 60_000, limit: 3, storage: @storage)
+    else
+      :allow
     end
   end
 
@@ -26,6 +28,8 @@ defmodule BackendWeb.Plugs.RateLimiter do
   rule "limit comment creation", conn do
     if conn.method == "POST" and Regex.match?(~r|^/api/posts/\d+/comments$|, conn.request_path) do
       throttle(user_or_ip(conn), period: 60_000, limit: 20, storage: @storage)
+    else
+      :allow
     end
   end
 
@@ -33,6 +37,8 @@ defmodule BackendWeb.Plugs.RateLimiter do
   rule "limit likes", conn do
     if conn.method == "POST" and String.starts_with?(conn.request_path, "/api/likes") do
       throttle(user_or_ip(conn), period: 60_000, limit: 20, storage: @storage)
+    else
+      :allow
     end
   end
 
@@ -40,11 +46,13 @@ defmodule BackendWeb.Plugs.RateLimiter do
   rule "limit reports", conn do
     if conn.method == "POST" and String.contains?(conn.request_path, "/report") do
       throttle(user_or_ip(conn), period: 60_000, limit: 20, storage: @storage)
+    else
+      :allow
     end
   end
 
   rule "global fallback", conn do
-    throttle(user_or_ip(conn), period: 60_000, limit: 10, storage: @storage)
+    throttle(user_or_ip(conn), period: 60_000, limit: 60, storage: @storage)
   end
 
   def allow_action(conn, _data, _opts) do
@@ -52,7 +60,10 @@ defmodule BackendWeb.Plugs.RateLimiter do
   end
 
   def block_action(conn, _data, _opts) do
-    conn |> send_resp(:forbidden, "Forbidden/n") |> halt()
+    conn
+    |> put_resp_content_type("application/json")
+    |> resp(:too_many_requests, %{error: "Too many requests. Please try again later."})
+    |> halt()
   end
 
   ## Final init & call
