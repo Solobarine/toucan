@@ -41,3 +41,9 @@ export interface Metrics {
   reposts_count: number;
   total_posts: number;
 }
+
+export interface UpdatePasswordInterface {
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+}

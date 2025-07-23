@@ -6,6 +6,8 @@ import {
   getProfile,
   registerUser,
   updateAvatar,
+  updatePassword,
+  updateProfile,
 } from "../thunks/auth";
 import { AxiosResponse } from "axios";
 import { User } from "../../types/auth";
@@ -50,6 +52,12 @@ interface InitialState {
   updateAvatar: {
     status: LoadingInterface;
   };
+  updatePassword: {
+    status: LoadingInterface;
+  };
+  updateProfile: {
+    status: LoadingInterface;
+  };
 }
 
 const initialState: InitialState = {
@@ -90,6 +98,12 @@ const initialState: InitialState = {
     statusCode: 0,
   },
   updateAvatar: {
+    status: "idle",
+  },
+  updatePassword: {
+    status: "idle",
+  },
+  updateProfile: {
     status: "idle",
   },
 };
@@ -231,6 +245,7 @@ const authSlice = createSlice({
       };
     });
 
+    /** UPDATE AVATAR **/
     builder.addCase(updateAvatar.pending, (state) => {
       state.updateAvatar = { status: "pending" };
     });
@@ -241,6 +256,32 @@ const authSlice = createSlice({
     builder.addCase(updateAvatar.rejected, (state) => {
       state.updateAvatar = { status: "failed" };
       toast.error("Unable to upload avatar");
+    });
+
+    /** UPDATE PASSWORD **/
+    builder.addCase(updatePassword.pending, (state) => {
+      state.updatePassword = { status: "pending" };
+    });
+    builder.addCase(updatePassword.fulfilled, (state) => {
+      state.updatePassword = { status: "idle" };
+      toast.success("Password Updated");
+    });
+    builder.addCase(updatePassword.rejected, (state) => {
+      state.updatePassword = { status: "failed" };
+      toast.error("Failed to Update Password");
+    });
+
+    /** UPDATE PROFILE **/
+    builder.addCase(updateProfile.pending, (state) => {
+      state.updateProfile = { status: "pending" };
+    });
+    builder.addCase(updateProfile.fulfilled, (state) => {
+      state.updateProfile = { status: "idle" };
+      toast.success("Profile Updated");
+    });
+    builder.addCase(updateProfile.rejected, (state) => {
+      state.updateProfile = { status: "failed" };
+      toast.error("Failed to Update Profile");
     });
   },
 });

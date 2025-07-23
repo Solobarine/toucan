@@ -26,14 +26,8 @@ defmodule BackendWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :backend,
-    gzip: false
-
-  # only: BackendWeb.static_paths()
-  #
-  plug Plug.Static,
-    at: "/uploads",
-    from: Path.expand("./uploads"),
-    gzip: false
+    gzip: false,
+    only: BackendWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

@@ -54,6 +54,7 @@ defmodule Backend.Accounts do
       on: fe.followee_id == ^id and fe.follower_id == ^current_user_id,
       select: %{
         id: u.id,
+        avatar: u.avatar,
         first_name: u.first_name,
         last_name: u.last_name,
         username: u.username,
@@ -182,6 +183,15 @@ defmodule Backend.Accounts do
       {:ok, user}
     else
       {:error, :invalid_credentials}
+    end
+  end
+
+  def update_password(user, current_password, new_password)
+      when is_binary(current_password) and is_binary(new_password) do
+    if user && Bcrypt.verify_pass(current_password, user.password_hash) do
+      user |> User.update_password_changeset(%{password_hash: new_password}) |> Repo.update()
+    else
+      {:error, "Invalid Credentials"}
     end
   end
 

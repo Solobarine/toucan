@@ -34,7 +34,36 @@ defmodule BackendWeb.UserController do
 
     user = Accounts.get_full_user_details(id, current_user.id)
 
-    # render(conn, :show, user: user)
     json(conn, %{user: user})
+  end
+
+  def update_profile(conn, %{"user" => user_params}) do
+    current_user = Guardian.Plug.current_resource(conn)
+
+    case Accounts.update_user(current_user, user_params) do
+      {:ok, _user} ->
+        json(conn, %{message: "Profile updated successfully"})
+
+      {:error, changeset} ->
+        conn |> put_status(:unprocessable_entity) |> render("error.json", changeset: changeset)
+    end
+  end
+
+  def update_password(conn, %{
+        "user" => %{
+          "current_password" => current_password,
+          "new_password" => new_password,
+          "confirm_password" => _confirm_password
+        }
+      }) do
+    current_user = Guardian.Plug.current_resource(conn)
+
+    case Accounts.update_password(current_user, current_password, new_password) do
+      {:ok, _user} ->
+        conn |> put_status(:ok) |> json(%{message: "Password Updated Successfully"})
+
+      {:error, _reason} ->
+        conn |> put_status(:unprocessable_entity) |> json(%{error: "Invalid Credentials"})
+    end
   end
 end
