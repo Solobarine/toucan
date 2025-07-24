@@ -6,7 +6,6 @@ import {
   Shield,
   Globe,
   Zap,
-  TrendingUp,
   Mail,
   Linkedin,
   Twitter,
@@ -17,15 +16,26 @@ import {
   Quote,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import BetaBanner from "../../components/banner/betabanner";
 
 const AboutUs = () => {
   const [activeTab, setActiveTab] = useState("story");
   const navigate = useNavigate();
 
   const stats = [
-    { icon: Users, label: "Active Users", value: "2.5M+", color: "blue" },
+    {
+      icon: Users,
+      label: "Active Users",
+      value: "2.5M+",
+      color: "blue",
+    },
     { icon: Globe, label: "Countries", value: "150+", color: "green" },
-    { icon: Heart, label: "Posts Shared", value: "50M+", color: "red" },
+    {
+      icon: Heart,
+      label: "Posts Shared",
+      value: "50M+",
+      color: "red",
+    },
     { icon: Shield, label: "Safety Score", value: "99.9%", color: "purple" },
   ];
 
@@ -63,9 +73,9 @@ const AboutUs = () => {
   const team = [
     {
       name: "Solomon Akpuru",
-      role: "CEO & Co-Founder",
+      role: "Founder",
       image: "https://i.postimg.cc/d35Q23MS/avatar.jpg",
-      bio: "Former Software Engineering Consultant at Sollyverse, passionate about building authentic social connections.",
+      bio: "Former Software Engineering Consultant, passionate about building authentic social connections.",
       social: {
         linkedin: "https://linkedin.com/in/solomon-akpuru",
         twitter: "https://twitter.com/solomonakpuru",
@@ -76,20 +86,20 @@ const AboutUs = () => {
 
   const milestones = [
     {
-      year: "2023",
+      year: "2025",
       title: "The Beginning",
       description:
         "Toucan was founded with a vision to create authentic social connections.",
       icon: Target,
     },
     {
-      year: "2024",
+      year: "2025",
       title: "Beta Launch",
       description:
         "Launched private beta with 10,000 users and received overwhelming positive feedback.",
       icon: Zap,
     },
-    {
+    /**    {
       year: "2024",
       title: "Public Launch",
       description:
@@ -102,7 +112,7 @@ const AboutUs = () => {
       description:
         "Expanded to 150+ countries with 2.5M+ active users worldwide.",
       icon: Globe,
-    },
+    }, **/
   ];
 
   const testimonials = [
@@ -157,6 +167,7 @@ const AboutUs = () => {
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
       {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white overflow-hidden">
+        <BetaBanner />
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative max-w-6xl mx-auto px-6 py-20">
           <div className="text-center">
@@ -466,12 +477,12 @@ const AboutUs = () => {
               <div className="space-y-12">
                 {milestones.map((milestone, index) => (
                   <div key={index} className="relative flex items-start gap-8">
-                    <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center relative z-10">
+                    <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center relative z-10">
                       <milestone.icon className="w-8 h-8 text-white" />
                     </div>
                     <div className="flex-1 bg-white dark:bg-neutral-800 rounded-xl p-6 border border-neutral-200 dark:border-neutral-700">
                       <div className="flex items-center gap-4 mb-3">
-                        <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 rounded-full text-sm font-medium">
+                        <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400 rounded-full text-sm font-medium">
                           {milestone.year}
                         </span>
                         <h3 className="text-xl font-bold text-neutral-900 dark:text-neutral-100">
