@@ -136,12 +136,12 @@ const ContactUs = () => {
   ];
 
   const socialLinks = [
-    { icon: Twitter, label: "Twitter", url: "https://twitter.com/toucanapp" },
-    { icon: Github, label: "GitHub", url: "https://github.com/toucanapp" },
+    { icon: Twitter, label: "Twitter", url: "https://x.com/SolomonAkpuru" },
+    { icon: Github, label: "GitHub", url: "https://github.com/solobarine" },
     {
       icon: Linkedin,
       label: "LinkedIn",
-      url: "https://linkedin.com/company/toucanapp",
+      url: "https://linkedin.com/in/solomon-akpuru",
     },
     { icon: Globe, label: "Blog", url: "https://blog.toucanapp.io" },
   ];
