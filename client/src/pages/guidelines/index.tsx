@@ -11,12 +11,13 @@ import {
   Eye,
   Zap,
   Scale,
+  LucideIcon,
 } from "lucide-react";
 
 interface GuidelineSection {
   id: string;
   title: string;
-  icon: any;
+  icon: LucideIcon;
   description: string;
   rules: GuidelineRule[];
 }

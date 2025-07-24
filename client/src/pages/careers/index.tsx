@@ -14,6 +14,7 @@ import {
   Calendar,
   ChevronRight,
   ExternalLink,
+  LucideIcon,
 } from "lucide-react";
 
 interface JobListing {
@@ -31,13 +32,13 @@ interface JobListing {
 interface Benefit {
   title: string;
   description: string;
-  icon: any;
+  icon: LucideIcon;
 }
 
 interface TeamValue {
   title: string;
   description: string;
-  icon: any;
+  icon: LucideIcon;
 }
 
 export default function CareersPage() {

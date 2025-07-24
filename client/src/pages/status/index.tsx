@@ -12,6 +12,7 @@ import {
   ImageIcon,
   Search,
   Bell,
+  LucideIcon,
 } from "lucide-react";
 
 interface ServiceStatus {
@@ -19,7 +20,7 @@ interface ServiceStatus {
   name: string;
   status: "operational" | "degraded" | "partial" | "major" | "maintenance";
   description: string;
-  icon: any;
+  icon: LucideIcon;
   uptime: number;
   responseTime: number;
 }

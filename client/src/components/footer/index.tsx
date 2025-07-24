@@ -1,6 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { Heart, Github, Twitter, Mail, ExternalLink } from "lucide-react";
-import Logo from "../loading/logo";
 
 interface FooterProps {
   className?: string;

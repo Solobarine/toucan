@@ -16,6 +16,7 @@ import {
   CreditCard,
   ThumbsUp,
   ThumbsDown,
+  LucideIcon,
 } from "lucide-react";
 
 interface FAQItem {
@@ -31,7 +32,7 @@ interface HelpCategory {
   id: string;
   title: string;
   description: string;
-  icon: any;
+  icon: LucideIcon;
   articleCount: number;
 }
 
@@ -40,7 +41,7 @@ interface ContactOption {
   title: string;
   description: string;
   availability: string;
-  icon: any;
+  icon: LucideIcon;
   action: string;
 }
 
