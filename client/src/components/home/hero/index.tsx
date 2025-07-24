@@ -23,8 +23,7 @@ export default function Hero() {
         </h1>
         <p className="text-xl sm:text-2xl mb-8 max-w-2xl mx-auto">
           Experience a new era of social networking where your voice matters.
-          Join millions in creating meaningful connections and sharing life's
-          moments.
+          Join in creating meaningful connections and sharing life's moments.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
