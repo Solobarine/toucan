@@ -20,7 +20,7 @@ defmodule BackendWeb.Plugs.RateLimiter do
     if conn.method == "POST" and conn.request_path == "/api/posts" do
       throttle(user_or_ip(conn), period: 60_000, limit: 3, storage: @storage)
     else
-      :allow
+      nil
     end
   end
 
@@ -29,7 +29,7 @@ defmodule BackendWeb.Plugs.RateLimiter do
     if conn.method == "POST" and Regex.match?(~r|^/api/posts/\d+/comments$|, conn.request_path) do
       throttle(user_or_ip(conn), period: 60_000, limit: 20, storage: @storage)
     else
-      :allow
+      nil
     end
   end
 
@@ -38,7 +38,7 @@ defmodule BackendWeb.Plugs.RateLimiter do
     if conn.method == "POST" and String.starts_with?(conn.request_path, "/api/likes") do
       throttle(user_or_ip(conn), period: 60_000, limit: 20, storage: @storage)
     else
-      :allow
+      nil
     end
   end
 
@@ -47,7 +47,7 @@ defmodule BackendWeb.Plugs.RateLimiter do
     if conn.method == "POST" and String.contains?(conn.request_path, "/report") do
       throttle(user_or_ip(conn), period: 60_000, limit: 20, storage: @storage)
     else
-      :allow
+      nil
     end
   end
 
@@ -55,7 +55,7 @@ defmodule BackendWeb.Plugs.RateLimiter do
     throttle(user_or_ip(conn), period: 60_000, limit: 60, storage: @storage)
   end
 
-  def allow_action(conn, _data, _opts) do
+  def nilaction(conn, _data, _opts) do
     conn
   end
 

@@ -74,7 +74,7 @@ const NotFound = () => {
   }, [isDarkTheme]);
 
   return (
-    <div className="min-h-screen bg-stone-200 dark:bg-stone-800">
+    <div className="min-h-screen font-itim bg-neutral-200 dark:bg-dark text-gray-800 dark:text-gray-100">
       <Header />
       <div className="max-w-4xl mx-auto p-6">
         {/* Header Section */}
@@ -189,8 +189,8 @@ const NotFound = () => {
             </div>
           </div>
         </div>
-        <Footer />
       </div>
+      <Footer />
     </div>
   );
 };

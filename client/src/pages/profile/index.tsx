@@ -24,7 +24,7 @@ import { AppDispatch, RootState } from "../../features/store";
 import { capitalizeText } from "../../utils";
 import { format } from "date-fns";
 import { getUserPosts } from "../../features/thunks/posts";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getProfile } from "../../features/thunks/auth";
 import {
   getFriends,
@@ -36,12 +36,14 @@ import {
 import { getUserMetrics } from "../../features/thunks/user";
 import ProfileLoading from "../../components/profile/loading";
 import ApiErrorPage from "../../components/apiError";
+import SmallAvatar from "../../components/avatar/small";
 
 export default function Profile() {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("posts");
   const [showMore, setShowMore] = useState(false);
   const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { profile, user } = useSelector((state: RootState) => state.auth);
   const { userPosts } = useSelector((state: RootState) => state.posts);
@@ -51,6 +53,7 @@ export default function Profile() {
     cancelFriendRequest,
     acceptFriendRequest,
     rejectFriendRequest,
+    friends,
   } = useSelector((state: RootState) => state.users);
 
   const tabs = [
@@ -59,7 +62,7 @@ export default function Profile() {
     {
       id: "friends",
       label: "Friends",
-      count: metrics.data.followers_count + metrics.data.friends_count,
+      count: metrics.data.friends_count,
     },
   ];
 
@@ -382,22 +385,30 @@ export default function Profile() {
           {activeTab === "friends" && (
             <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-700 p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Array.from({ length: 9 }).map((_, index) => (
+                {friends.data.map((friend, index) => (
                   <div
                     key={index}
                     className="flex items-center space-x-3 p-3 hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded-lg transition-colors"
                   >
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-400 to-blue-500"></div>
+                    <SmallAvatar
+                      avatar={friend.avatar}
+                      first_name={friend.first_name}
+                      last_name={friend.last_name}
+                    />
                     <div className="flex-1">
                       <h3 className="font-medium text-neutral-900 dark:text-white">
-                        User {index + 1}
+                        {capitalizeText(friend.first_name)}{" "}
+                        {capitalizeText(friend.last_name)}
                       </h3>
                       <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                        Software Engineer
+                        {friend.username}
                       </p>
                     </div>
-                    <button className="px-3 py-1 text-sm text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
-                      Connect
+                    <button
+                      className="px-3 py-1 text-sm text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                      onClick={() => navigate("/u/" + friend.id)}
+                    >
+                      View Profile
                     </button>
                   </div>
                 ))}

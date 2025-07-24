@@ -34,6 +34,14 @@ import AuthCallback from "../pages/auth/callback";
 import UpdateRepost from "../pages/repost/update";
 import UpdatePost from "../pages/posts/update";
 import PrivacyPage from "../pages/settings/privacy";
+import CommunityPage from "../pages/community";
+import PressPage from "../pages/press";
+import CookiePolicy from "../pages/cookiePolicy";
+import GuidelinesPage from "../pages/guidelines";
+import CareersPage from "../pages/careers";
+import PlatformStatus from "../pages/status";
+import HelpCenter from "../pages/help";
+import BlogPage from "../pages/blogs";
 
 const router = createBrowserRouter([
   {
@@ -72,6 +80,14 @@ const router = createBrowserRouter([
       { path: "/about-us", Component: AboutUs },
       { path: "/privacy", Component: PrivacyPolicy },
       { path: "/callback", Component: AuthCallback },
+      { path: "/community", Component: CommunityPage },
+      { path: "/press", Component: PressPage },
+      { path: "/cookies", Component: CookiePolicy },
+      { path: "/guidelines", Component: GuidelinesPage },
+      { path: "/careers", Component: CareersPage },
+      { path: "/status", Component: PlatformStatus },
+      { path: "/help", Component: HelpCenter },
+      { path: "/blogs", Component: BlogPage },
     ],
   },
   {
