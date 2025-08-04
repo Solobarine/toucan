@@ -65,6 +65,7 @@ By design, Toucan fosters healthier online communities by opting out of hyper-ta
 - Sign up, login, and JWT-based token management
 - Auto-generated usernames for user convenience
 - OAuth integration (Google, GitHub)
+- Email Verification (upcoming)
 
 ### 📝 Posts
 
@@ -89,6 +90,7 @@ By design, Toucan fosters healthier online communities by opting out of hyper-ta
 - Real-time in-app notifications when users are liked, followed, or mentioned
 - Phoenix PubSub-based channel broadcasting for notification delivery
 - Notifications creation via background jobs
+- Email Notifications (upcoming)
 
 ### 🧑‍🤝‍🧑 Groups (Upcoming)
 
@@ -104,6 +106,11 @@ By design, Toucan fosters healthier online communities by opting out of hyper-ta
 
 - Upload and associate images with posts and profiles using Waffle
 - Support for local uploads in development, S3 in production (upcoming)
+
+### 🚫 User Blocks and Content Reporting
+
+- Report harmful content
+- Block users posting harmful content
 
 ### 🔍 Search (Planned)
 
@@ -161,7 +168,7 @@ If you find Toucan inspiring or useful, feel free to star the repository to supp
 
 ## 📄 License
 
-Click [here](./LICENSE) to view Toucan's License
+Click [here](./LICENSE.md) to view Toucan's License
 
 <div align=right>
 <img src="./client/public/android-chrome-192x192.png" width=80 alt="Logo" />
