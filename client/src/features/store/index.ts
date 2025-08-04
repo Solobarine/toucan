@@ -5,6 +5,7 @@ import posts from "../slices/posts";
 import chats from "../slices/chats";
 import users from "../slices/users";
 import notifications from "../slices/notifications";
+import reports from "../slices/report";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     chats,
     users,
     notifications,
+    reports,
   },
 });
 

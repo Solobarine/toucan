@@ -67,6 +67,8 @@ defmodule BackendWeb.Router do
 
     resources "/notifications", NotificationController, only: [:index, :delete]
     put "/notifications/:id", NotificationController, :mark_read
+
+    resources "/report-content", ReportController, only: [:index, :create]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

@@ -14,6 +14,12 @@ defmodule BackendWeb.FallbackController do
     |> render(:error, changeset: changeset)
   end
 
+  def call(conn, {:error, :cannot_report_own_content}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{errors: "Cannot report your own content"})
+  end
+
   # This clause is an example of how to handle resources that cannot be found.
   def call(conn, {:error, :not_found}) do
     conn
