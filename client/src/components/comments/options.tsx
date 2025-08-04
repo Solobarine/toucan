@@ -15,6 +15,9 @@ import { AppDispatch, RootState } from "../../features/store";
 import { deleteComment } from "../../features/thunks/comments";
 import { User } from "../../types/auth";
 import { banUser } from "../../features/thunks/user";
+import SelectInput from "../form/inputs/select";
+import { reportContentReasons } from "../../constants/reports";
+import { reportContent } from "../../features/thunks/report";
 
 const CommentOptions = ({
   commentId,
@@ -64,33 +67,43 @@ const CommentOptions = ({
               <span className="font-medium">Delete Comment</span>
             </button>
           ) : (
-            <button
-              className="flex items-center gap-3 w-full px-3 py-2.5 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 rounded-lg transition-all duration-200 hover:translate-x-1 group"
-              onClick={() => dispatch(banUser({ blocked_id: commentOwner.id }))}
-            >
-              <Ban
-                size={18}
-                className="group-hover:scale-110 transition-transform duration-200"
-              />
-              <span className="font-medium">
-                Ban {commentOwner.first_name} {commentOwner.last_name}
-              </span>
-            </button>
+            <>
+              <button
+                className="flex items-center gap-3 w-full px-3 py-2.5 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 rounded-lg transition-all duration-200 hover:translate-x-1 group"
+                onClick={() =>
+                  dispatch(banUser({ blocked_id: commentOwner.id }))
+                }
+              >
+                <Ban
+                  size={18}
+                  className="group-hover:scale-110 transition-transform duration-200"
+                />
+                <span className="font-medium">
+                  Ban {commentOwner.first_name} {commentOwner.last_name}
+                </span>
+              </button>
+              <button
+                className="flex items-center gap-3 w-full px-3 py-2.5 text-left text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-all duration-200 hover:translate-x-1 group"
+                onClick={() => setFormOpen(true)}
+              >
+                <AlertTriangle
+                  size={16}
+                  className="group-hover:scale-110 transition-transform duration-200"
+                />
+                <span className="font-medium">Report Comment</span>
+              </button>
+            </>
           )}
-          <button
-            className="flex items-center gap-3 w-full px-3 py-2.5 text-left text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-all duration-200 hover:translate-x-1 group"
-            onClick={() => setFormOpen(true)}
-          >
-            <AlertTriangle
-              size={16}
-              className="group-hover:scale-110 transition-transform duration-200"
-            />
-            <span className="font-medium">Report Comment</span>
-          </button>
         </div>
       </div>
 
-      {formOpen && <ReportComment closeModal={() => setFormOpen(false)} />}
+      {formOpen && (
+        <ReportComment
+          contentId={commentId}
+          contentType="comment"
+          closeModal={() => setFormOpen(false)}
+        />
+      )}
       {deleteModalOpen && (
         <DeleteCommentConfirmation
           commentId={commentId}
@@ -171,21 +184,36 @@ const DeleteCommentConfirmation = ({
   );
 };
 
-const ReportComment = ({ closeModal }: { closeModal: () => void }) => {
+const ReportComment = ({
+  contentId,
+  contentType,
+  closeModal,
+}: {
+  contentId: number;
+  contentType: string;
+  closeModal: () => void;
+}) => {
+  const dispatch: AppDispatch = useDispatch();
   const validationSchema = Yup.object().shape({
-    reason: Yup.string()
+    reason: Yup.string().required("Reason is Required"),
+    description: Yup.string()
       .min(5, "Minimum of 5 Characters")
       .max(1000, "Maximum of 1000 Characters")
-      .required("Reason is Required"),
+      .notRequired(),
   });
 
   const { values, errors, touched, handleChange, handleSubmit, isSubmitting } =
     useFormik({
-      initialValues: { reason: "" },
+      initialValues: { reason: "", description: "" },
       validationSchema,
       onSubmit: (values) => {
         console.log(values);
-        // Add your report submission logic here
+        const data = {
+          ...values,
+          content_id: contentId,
+          content_type: contentType,
+        };
+        dispatch(reportContent(data));
         setTimeout(() => {
           closeModal();
         }, 1000);
@@ -214,13 +242,25 @@ const ReportComment = ({ closeModal }: { closeModal: () => void }) => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <TextInput
+            <SelectInput
               name="reason"
-              label="Reason for Reporting"
-              type="textarea"
+              label="Select Reason"
               value={values.reason}
               error={errors.reason}
               touched={touched.reason}
+              handleChange={handleChange}
+              options={reportContentReasons.map((reason) => ({
+                label: reason.label,
+                value: reason.description,
+              }))}
+            />
+            <TextInput
+              name="description"
+              label="Reason for Reporting"
+              type="textarea"
+              value={values.description}
+              error={errors.description}
+              touched={touched.description}
               handleChange={handleChange}
               placeholder="Please describe why you're reporting this comment..."
             />

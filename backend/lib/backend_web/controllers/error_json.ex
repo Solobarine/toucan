@@ -11,6 +11,18 @@ defmodule BackendWeb.ErrorJSON do
   # def render("500.json", _assigns) do
   #   %{errors: %{detail: "Internal Server Error"}}
   # end
+  #
+  def render("401.json", _assigns) do
+    %{errors: %{detail: "Unauthorized Request"}}
+  end
+
+  def render("403.json", _assigns) do
+    %{errors: %{detail: "Forbidden Request"}}
+  end
+
+  def render("422.json", _assigns) do
+    %{errors: %{detail: "Invalid Params"}}
+  end
 
   # By default, Phoenix returns the status message from
   # the template name. For example, "404.json" becomes
