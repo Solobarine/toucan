@@ -4,6 +4,7 @@ import { LoadingInterface } from "../../types/loading";
 import {
   acceptFriendRequest,
   cancelFriendRequest,
+  followUser,
   getFollowers,
   getFollowing,
   getFriendRequests,
@@ -11,6 +12,8 @@ import {
   getFriends,
   rejectFriendRequest,
   sendFriendRequest,
+  unfollowUser,
+  unfriend,
 } from "../thunks/connections";
 import {
   banUser,
@@ -36,6 +39,8 @@ interface UserState {
     error: string;
     data: User[] | [];
   };
+  follow: { state: LoadingInterface };
+  unfollow: { state: LoadingInterface };
   followers: {
     state: LoadingInterface;
     error: string;
@@ -55,6 +60,7 @@ interface UserState {
   cancelFriendRequest: { state: LoadingInterface };
   acceptFriendRequest: { state: LoadingInterface };
   rejectFriendRequest: { state: LoadingInterface };
+  unfriend: { state: LoadingInterface };
   blockedUsers: { state: LoadingInterface; data: User[] | []; error: string };
   banUser: { state: LoadingInterface };
   unbanUser: { state: LoadingInterface };
@@ -86,6 +92,8 @@ const initialState: UserState = {
     error: "",
     data: [],
   },
+  follow: { state: "idle" },
+  unfollow: { state: "idle" },
   followers: {
     state: "idle",
     error: "",
@@ -105,6 +113,7 @@ const initialState: UserState = {
   cancelFriendRequest: { state: "idle" },
   acceptFriendRequest: { state: "idle" },
   rejectFriendRequest: { state: "idle" },
+  unfriend: { state: "idle" },
   blockedUsers: { state: "idle", data: [], error: "" },
   banUser: { state: "idle" },
   unbanUser: { state: "idle" },
@@ -223,6 +232,32 @@ const usersSlice = createSlice({
       };
     });
 
+    /** Follow User **/
+    builder.addCase(followUser.pending, (state) => {
+      state.follow = { state: "pending" };
+    });
+    builder.addCase(followUser.fulfilled, (state) => {
+      state.follow = { state: "idle" };
+      toast.success("Following User");
+    });
+    builder.addCase(followUser.rejected, (state) => {
+      state.follow = { state: "failed" };
+      toast.error("Unable to Follow User");
+    });
+
+    /** Unfollow User **/
+    builder.addCase(unfollowUser.pending, (state) => {
+      state.unfollow = { state: "pending" };
+    });
+    builder.addCase(unfollowUser.fulfilled, (state, action) => {
+      state.unfollow = { state: "idle" };
+      toast.success(action.payload.data.message);
+    });
+    builder.addCase(unfollowUser.rejected, (state) => {
+      state.unfollow = { state: "failed" };
+      toast.error("Failed to Unfollow User");
+    });
+
     /** Friend Suggestions **/
     builder.addCase(getFriendSuggestions.pending, (state) => {
       state.friendSuggestions = { state: "pending", error: "", data: [] };
@@ -295,6 +330,19 @@ const usersSlice = createSlice({
       toast.error("Unable to Reject Friend Request");
     });
 
+    /** Unfriend User **/
+    builder.addCase(unfriend.pending, (state) => {
+      state.unfriend = { state: "pending" };
+    });
+    builder.addCase(unfriend.fulfilled, (state, action) => {
+      state.unfriend = { state: "idle" };
+      toast.success(action.payload.data.message);
+    });
+    builder.addCase(unfriend.rejected, (state) => {
+      state.unfriend = { state: "failed" };
+      toast.error("Something went wrong");
+    });
+
     /** GET BLOCKED USERS **/
     builder.addCase(getBannedUsers.pending, (state) => {
       state.blockedUsers = { state: "pending", data: [], error: "" };
@@ -336,7 +384,7 @@ const usersSlice = createSlice({
       state.unbanUser = { state: "idle" };
       toast.success("User unbanned successfully");
       state.blockedUsers.data = state.blockedUsers.data.filter(
-        (user) => user.id !== blockedUserId
+        (user) => user.id !== blockedUserId,
       );
     });
     builder.addCase(unbanUser.rejected, (state) => {

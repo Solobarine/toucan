@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import Card from "../../components/posts/card";
 
 import {
+  Ban,
   Calendar,
   Camera,
   Check,
@@ -10,7 +11,7 @@ import {
   CircleX,
   Ellipsis,
   Fan,
-  Flag,
+  Loader,
   MapPin,
   MessageCircleMore,
   UserRound,
@@ -32,6 +33,9 @@ import {
   cancelFriendRequest as handleCancelFriendRequest,
   acceptFriendRequest as handleAcceptFriendRequest,
   rejectFriendRequest as handleRejectFriendRequest,
+  unfriend as terminateFriendship,
+  followUser,
+  unfollowUser,
 } from "../../features/thunks/connections";
 import { getUserMetrics } from "../../features/thunks/user";
 import ProfileLoading from "../../components/profile/loading";
@@ -54,6 +58,9 @@ export default function Profile() {
     acceptFriendRequest,
     rejectFriendRequest,
     friends,
+    unfriend,
+    follow,
+    unfollow,
   } = useSelector((state: RootState) => state.users);
 
   const tabs = [
@@ -84,7 +91,7 @@ export default function Profile() {
     return <ApiErrorPage statusCode={profile.statusCode} />;
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+    <div className="min-h-screen">
       <Helmet>
         <title>
           {profile.data
@@ -194,7 +201,7 @@ export default function Profile() {
                     <button
                       onClick={() =>
                         dispatch(
-                          handleCancelFriendRequest(profile.data?.id as number)
+                          handleCancelFriendRequest(profile.data?.id as number),
                         )
                       }
                       className="flex items-center space-x-2 px-6 py-2 font-medium rounded-lg transition-colors border border-red-500 text-red-500"
@@ -219,7 +226,7 @@ export default function Profile() {
                       className="flex items-center space-x-2 px-6 py-2 font-medium rounded-lg transition-colors border border-purple-500 text-purple-500"
                       onClick={() =>
                         dispatch(
-                          handleAcceptFriendRequest(profile.data?.id as number)
+                          handleAcceptFriendRequest(profile.data?.id as number),
                         )
                       }
                     >
@@ -238,7 +245,7 @@ export default function Profile() {
                       className="flex items-center space-x-2 px-6 py-2 font-medium rounded-lg transition-colors border border-red-500 text-red-500"
                       onClick={() =>
                         dispatch(
-                          handleRejectFriendRequest(profile.data?.id as number)
+                          handleRejectFriendRequest(profile.data?.id as number),
                         )
                       }
                     >
@@ -262,7 +269,7 @@ export default function Profile() {
                       className="flex items-center gap-2 px-6 py-2 font-medium rounded-lg transition-colors bg-purple-600 hover:bg-purple-700 text-white"
                       onClick={() =>
                         dispatch(
-                          handleSendFriendRequest(parseInt(id as string))
+                          handleSendFriendRequest(parseInt(id as string)),
                         )
                       }
                     >
@@ -292,41 +299,107 @@ export default function Profile() {
                   <Ellipsis className="w-5 h-5" />
                 </button>
                 <div
-                  className={`bg-white dark:bg-neutral-700 shadow-lg absolute w-60 right-0 top-12 flex flex-col gap-3 p-4 rounded-md ${
+                  className={`bg-white dark:bg-neutral-700 shadow-lg absolute w-60 right-0 top-12 flex flex-col gap-3 p-4 rounded-md space-y-4 ${
                     showMore ? "z-20" : "-z-20"
                   } transition-all duration-700`}
                 >
                   {profile.data?.is_friend && (
-                    <button className="flex items-center gap-3">
-                      <UserRoundMinus /> Unfriend
+                    <button
+                      className="flex items-center gap-3 disabled:opacity-75"
+                      onClick={() =>
+                        dispatch(
+                          terminateFriendship(profile.data?.id as number),
+                        )
+                      }
+                      disabled={unfriend.state == "pending"}
+                    >
+                      {unfriend.state === "pending" ? (
+                        <>
+                          <Loader className="animate-spin" /> Unfriending...
+                        </>
+                      ) : (
+                        <>
+                          <UserRoundMinus /> Unfriend
+                        </>
+                      )}
                     </button>
                   )}
                   {profile.data?.friend_request_sent && (
-                    <button className="flex items-center gap-3">
+                    <button
+                      className="flex items-center gap-3"
+                      onClick={() =>
+                        dispatch(
+                          handleCancelFriendRequest(profile.data?.id as number),
+                        )
+                      }
+                    >
                       <UserRoundX /> Cancel Friend Request
                     </button>
                   )}
                   {profile.data?.friend_request_received && (
-                    <button className="flex items-center gap-3">
+                    <button
+                      className="flex items-center gap-3"
+                      onClick={() =>
+                        dispatch(
+                          handleAcceptFriendRequest(profile.data?.id as number),
+                        )
+                      }
+                    >
                       <UserRoundCheck /> Accept Friend Request
                     </button>
                   )}
                   {profile.data?.friend_request_received && (
-                    <button className="flex items-center gap-3">
+                    <button
+                      className="flex items-center gap-3"
+                      onClick={() =>
+                        dispatch(
+                          handleRejectFriendRequest(profile.data?.id as number),
+                        )
+                      }
+                    >
                       <CircleX /> Reject Friend Request
                     </button>
                   )}
                   {profile.data?.is_following ? (
-                    <button className="flex items-center gap-3">
-                      <X /> Unfollow
+                    <button
+                      className="flex items-center gap-3"
+                      onClick={() =>
+                        dispatch(unfollowUser(profile.data?.id as number))
+                      }
+                    >
+                      {unfollow.state == "pending" ? (
+                        <>
+                          <Loader className="animate-spin" /> Unfollowing...
+                        </>
+                      ) : (
+                        <>
+                          <X /> Unfollow
+                        </>
+                      )}
                     </button>
                   ) : (
-                    <button className="flex items-center gap-3">
-                      <Check /> Follow
+                    <button
+                      className="flex items-center gap-3"
+                      onClick={() =>
+                        dispatch(followUser(profile.data?.id as number))
+                      }
+                    >
+                      {follow.state == "pending" ? (
+                        <>
+                          <Loader className="animate-spin" /> Following...
+                        </>
+                      ) : (
+                        <>
+                          <Check /> Follow
+                        </>
+                      )}
                     </button>
                   )}
                   <button className="flex gap-3">
-                    <Flag /> Report / Block
+                    <Ban /> Ban{" "}
+                    {capitalizeText(profile.data?.first_name) +
+                      " " +
+                      capitalizeText(profile.data?.last_name || "")}
                   </button>
                 </div>
               </div>
