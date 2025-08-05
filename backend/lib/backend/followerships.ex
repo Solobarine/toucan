@@ -127,6 +127,19 @@ defmodule Backend.Followerships do
     Repo.delete(followership)
   end
 
+  def delete_followership(follower_id, followee_id) do
+    followership =
+      from(f in Followership,
+        where: f.followee_id == ^followee_id and f.follower_id == ^follower_id
+      )
+      |> Repo.one()
+
+    case followership do
+      nil -> {:error, :not_found}
+      record -> Repo.delete(record)
+    end
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking followership changes.
 
