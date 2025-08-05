@@ -1,16 +1,21 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { API_URL } from "../../constants";
-import { getRequest, postRequest, putRequest } from "../../utils/api";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+  putRequest,
+} from "../../utils/api";
 
 export const getFriends = createAsyncThunk(
   "FRIENDS/GET_FRIENDS",
   async (
     { id, page, per }: { id: number; page: number; per: number },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     const url = `${API_URL}/api/friends?user_id=${id}&page=${page}&per=${per}`;
     return getRequest(url, { rejectWithValue });
-  }
+  },
 );
 
 export const getFriendRequests = createAsyncThunk(
@@ -18,7 +23,7 @@ export const getFriendRequests = createAsyncThunk(
   async (type: string, { rejectWithValue }) => {
     const url = `${API_URL}/api/friendships/requests?type=${type}`;
     return getRequest(url, { rejectWithValue });
-  }
+  },
 );
 
 export const getFriendSuggestions = createAsyncThunk(
@@ -26,7 +31,7 @@ export const getFriendSuggestions = createAsyncThunk(
   async ({ id, limit }: { id: number; limit: number }, { rejectWithValue }) => {
     const url = `${API_URL}/api/friends/suggestions?id=${id}&limit=${limit}`;
     return getRequest(url, { rejectWithValue });
-  }
+  },
 );
 
 export const getFollowers = createAsyncThunk(
@@ -34,7 +39,7 @@ export const getFollowers = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const url = `${API_URL}/api/followerships/followers`;
     return getRequest(url, { rejectWithValue });
-  }
+  },
 );
 
 export const getFollowing = createAsyncThunk(
@@ -42,7 +47,27 @@ export const getFollowing = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const url = `${API_URL}/api/followerships/following`;
     return getRequest(url, { rejectWithValue });
-  }
+  },
+);
+
+export const followUser = createAsyncThunk(
+  "FOLLOWERSHIPS/FOLLOW_USER",
+  async (id: number, { rejectWithValue }) => {
+    const url = `${API_URL}/api/followerships`;
+    return postRequest(
+      url,
+      { followership: { followee_id: id } },
+      { rejectWithValue },
+    );
+  },
+);
+
+export const unfollowUser = createAsyncThunk(
+  "FOLLOWERSHIP/UNFOLLOW_USER",
+  async (id: number, { rejectWithValue }) => {
+    const url = `${API_URL}/api/followerships?followee_id=${id}`;
+    return deleteRequest(url, { rejectWithValue });
+  },
 );
 
 export const sendFriendRequest = createAsyncThunk(
@@ -51,7 +76,7 @@ export const sendFriendRequest = createAsyncThunk(
     const url = `${API_URL}/api/friendships/request`;
     const body = { friendship: { friend_id: id } };
     return postRequest(url, body, { rejectWithValue });
-  }
+  },
 );
 
 export const cancelFriendRequest = createAsyncThunk(
@@ -60,7 +85,7 @@ export const cancelFriendRequest = createAsyncThunk(
     const url = `${API_URL}/api/friendships/request/cancel`;
     const body = { id: id };
     return putRequest(url, body, { rejectWithValue });
-  }
+  },
 );
 
 export const acceptFriendRequest = createAsyncThunk(
@@ -69,7 +94,7 @@ export const acceptFriendRequest = createAsyncThunk(
     const url = `${API_URL}/api/friendships/${id}/accept`;
     const body = { id: id };
     return putRequest(url, body, { rejectWithValue });
-  }
+  },
 );
 
 export const rejectFriendRequest = createAsyncThunk(
@@ -78,5 +103,13 @@ export const rejectFriendRequest = createAsyncThunk(
     const url = `${API_URL}/api/friendships/${id}/block`;
     const body = { id: id };
     return putRequest(url, body, { rejectWithValue });
-  }
+  },
+);
+
+export const unfriend = createAsyncThunk(
+  "FRIENDSHIP/UNFRIEND",
+  async (id: number, { rejectWithValue }) => {
+    const url = `${API_URL}/api/friendships?friend_id=${id}`;
+    return deleteRequest(url, { rejectWithValue });
+  },
 );
