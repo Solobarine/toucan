@@ -1,6 +1,7 @@
 defmodule BackendWeb.FriendshipController do
   use BackendWeb, :controller
 
+  alias Backend.Workers.NotificationWorker
   alias Backend.Accounts
   alias BackendWeb.Policies.FriendshipsPolicy
   alias Backend.Friendships
@@ -26,6 +27,17 @@ defmodule BackendWeb.FriendshipController do
 
     with {:ok, %Friendship{} = friendship} <-
            Friendships.send_friend_request(current_user.id, fid, :pending) do
+      %{
+        action: "single",
+        content_owner_id: fid,
+        user_id: current_user.id,
+        verb: "friend_request",
+        metadata: %{},
+        object: %{}
+      }
+      |> NotificationWorker.new()
+      |> Oban.insert()
+
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/friendships/#{friendship}")
@@ -107,6 +119,14 @@ defmodule BackendWeb.FriendshipController do
 
     with {:ok, %Friendship{}} <- Friendships.unfriend(friendship) do
       send_resp(conn, :no_content, "")
+    end
+  end
+
+  def delete(conn, %{"friend_id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+
+    with {:ok, _friend} <- Friendships.unfriend(id, current_user.id) do
+      conn |> put_status(:ok) |> json(%{message: "Friendship terminated"})
     end
   end
 end

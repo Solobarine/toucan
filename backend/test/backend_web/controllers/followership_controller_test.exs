@@ -47,7 +47,7 @@ defmodule BackendWeb.FollowershipControllerTest do
         |> put_req_header("authorization", "bearer #{token}")
         |> get("/api/followerships/followers")
 
-      assert json_response(conn, 200)["data"]
+      assert json_response(conn, 200)["followerships"]
     end
   end
 
@@ -58,25 +58,43 @@ defmodule BackendWeb.FollowershipControllerTest do
         |> put_req_header("authorization", "bearer #{token}")
         |> get("/api/followerships/following")
 
-      assert json_response(conn, 200)["data"]
+      assert json_response(conn, 200)["followerships"]
     end
   end
 
   describe "delete followership" do
-    setup %{user: user, user2: user2} do
+    test "deletes chosen followership using followership id", %{
+      conn: conn,
+      user: user,
+      user2: user2,
+      token: token
+    } do
       %{followership: followership} =
-        create_followership(%{follower_id: user.id, followee_id: user2.id})
+        create_followership(%{follower: user, followee: user2})
 
-      %{followership: followership}
-    end
-
-    test "deletes chosen followership", %{conn: conn, followership: followership, token: token} do
       conn =
         conn
         |> put_req_header("authorization", "Bearer #{token}")
         |> delete(~p"/api/followerships/#{followership}")
 
       assert response(conn, 204)
+    end
+
+    test "deletes followership using followee id", %{
+      conn: conn,
+      user: user,
+      user2: user2,
+      token: token
+    } do
+      %{followership: followership} =
+        create_followership(%{follower: user, followee: user2})
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> delete(~p"/api/followerships?followee_id=#{followership.followee_id}")
+
+      assert json_response(conn, 200) == %{"message" => "Unfollowed user"}
     end
   end
 

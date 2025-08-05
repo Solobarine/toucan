@@ -153,7 +153,7 @@ defmodule BackendWeb.FriendshipControllerTest do
     end
   end
 
-  describe "DELETE /api/friendships/:id – unfriend" do
+  describe "DELETE /api/friendships – unfriend" do
     test "returns 204 when friendship is deleted by participant", %{
       conn: conn,
       user: user,
@@ -167,7 +167,7 @@ defmodule BackendWeb.FriendshipControllerTest do
       conn =
         conn
         |> put_req_header("authorization", "Bearer #{token}")
-        |> delete("/api/friendships/#{friendship.id}")
+        |> delete("/api/friendships/?id=#{friendship.id}")
 
       assert response(conn, 204)
     end
@@ -187,7 +187,7 @@ defmodule BackendWeb.FriendshipControllerTest do
       assert_error_sent 403, fn ->
         conn
         |> put_req_header("authorization", "Bearer #{token}")
-        |> delete(~p"/api/friendships/#{friendship.id}")
+        |> delete(~p"/api/friendships?id=#{friendship.id}")
       end
     end
   end

@@ -57,13 +57,14 @@ defmodule BackendWeb.Router do
     put "/friendships/:id/block", FriendshipController, :reject_friend_request
     put "/friendships/request/cancel", FriendshipController, :cancel_friend_request
     get "/friendships/requests", FriendshipController, :friend_requests
-    delete "/friendships/:id", FriendshipController, :delete
+    delete "/friendships", FriendshipController, :delete
     get "/friends", FriendshipController, :index
     get "/friends/suggestions", FriendshipController, :friends_suggestions
 
     resources "/followerships", FollowershipController, only: [:index, :create, :delete]
     get "/followerships/followers", FollowershipController, :followers
     get "/followerships/following", FollowershipController, :following
+    delete "/followerships", FollowershipController, :delete
 
     resources "/notifications", NotificationController, only: [:index, :delete]
     put "/notifications/:id", NotificationController, :mark_read
