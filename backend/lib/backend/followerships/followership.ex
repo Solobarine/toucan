@@ -16,5 +16,6 @@ defmodule Backend.Followerships.Followership do
     |> validate_required([:follower_id, :followee_id])
     |> assoc_constraint(:follower)
     |> assoc_constraint(:followee)
+    |> unique_constraint([:follower_id, :followee_id], name: :unique_followership)
   end
 end
