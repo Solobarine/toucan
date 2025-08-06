@@ -16,8 +16,10 @@ import { toast } from "react-toastify";
 import {
   acceptFriendRequest,
   cancelFriendRequest,
+  followUser,
   rejectFriendRequest,
   sendFriendRequest,
+  unfollowUser,
 } from "../thunks/connections";
 import { LoadingInterface } from "../../types/loading";
 
@@ -126,7 +128,7 @@ const authSlice = createSlice({
         state.isLoggedIn = true;
         state.login.status = "idle";
         localStorage.setItem("auth_token", action.payload.data.token);
-      }
+      },
     );
     builder.addCase(loginUser.rejected, (state, action) => {
       state.login.error = (action.payload as { error: string }).error;
@@ -243,6 +245,18 @@ const authSlice = createSlice({
         friend_request_received: false,
         is_friend: false,
       };
+    });
+
+    builder.addCase(followUser.fulfilled, (state) => {
+      if (state.profile.data) {
+        state.profile.data.is_following = true;
+      }
+    });
+
+    builder.addCase(unfollowUser.fulfilled, (state) => {
+      if (state.profile.data) {
+        state.profile.data.is_following = false;
+      }
     });
 
     /** UPDATE AVATAR **/

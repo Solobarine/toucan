@@ -1,6 +1,7 @@
 defmodule BackendWeb.FollowershipController do
   use BackendWeb, :controller
 
+  alias Backend.Workers.NotificationWorker
   alias BackendWeb.Policies.FollowershipsPolicy
   alias Backend.Followerships
   alias Backend.Followerships.Followership
@@ -20,6 +21,17 @@ defmodule BackendWeb.FollowershipController do
     FollowershipsPolicy.create(conn, current_user.id, followee_id)
 
     with {:ok, %Followership{} = followership} <- Followerships.create_followership(params) do
+      %{
+        action: "single",
+        content_owner_id: followee_id,
+        user_id: current_user.id,
+        verb: "follow",
+        object: %{},
+        metadata: %{}
+      }
+      |> NotificationWorker.new()
+      |> Oban.insert()
+
       conn
       |> put_status(:created)
       |> render(:show, followership: followership)
@@ -31,7 +43,6 @@ defmodule BackendWeb.FollowershipController do
 
     followers = Followerships.followers(current_user)
     render(conn, :index, followerships: followers, assoc: :followers)
-    # json(conn, %{followers: followers})
   end
 
   def following(conn, _params) do
@@ -40,7 +51,6 @@ defmodule BackendWeb.FollowershipController do
     users_following = Followerships.following(current_user)
 
     render(conn, :index, followerships: users_following, assoc: :following)
-    # json(conn, %{following: users_following})
   end
 
   def delete(conn, %{"id" => id}) do
@@ -48,6 +58,23 @@ defmodule BackendWeb.FollowershipController do
 
     with {:ok, %Followership{}} <- Followerships.delete_followership(followership) do
       send_resp(conn, :no_content, "")
+    end
+  end
+
+  def delete(conn, %{"followee_id" => followee_id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+    followee_id = followee_id |> String.to_integer()
+
+    case Followerships.delete_followership(current_user.id, followee_id) do
+      {:ok, _followership} ->
+        conn
+        |> put_status(:ok)
+        |> json(%{message: "Unfollowed user"})
+
+      {:error, :not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{errors: "Resource not found"})
     end
   end
 end
