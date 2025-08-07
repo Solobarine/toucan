@@ -39,10 +39,6 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-# Configure Waffle for file uploads
-config :waffle,
-  storage: Waffle.Storage.Local
-
 # Configure Oban for Background Jobs
 config :backend, Oban,
   repo: Backend.Repo,

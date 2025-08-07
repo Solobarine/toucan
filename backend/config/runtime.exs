@@ -78,6 +78,12 @@ if config_env() == :prod do
     secret_key: guardian_secret,
     ttl: {3, :days}
 
+  # Configure Waffle for file uploads
+  config :waffle,
+    storage: Waffle.Storage.S3,
+    asset_host: "https://toucan-assets.s3.us-east-1.amazonaws.com",
+    bucket: "toucan-assets"
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key
@@ -135,3 +141,18 @@ config :backend,
   github_client_secret: System.fetch_env!("GITHUB_CLIENT_SECRET"),
   google_client_id: System.fetch_env!("GOOGLE_CLIENT_ID"),
   google_client_secret: System.fetch_env!("GOOGLE_CLIENT_SECRET")
+
+config :waffle,
+  storage: Waffle.Storage.S3,
+  asset_host: "https://test-toucan-assets.s3.us-east-1.amazonaws.com",
+  bucket: "test-toucan-assets"
+
+config :ex_aws,
+  json_codec: Jason,
+  access_key_id: System.fetch_env!("AWS_ACCESS_KEY"),
+  secret_access_key: System.fetch_env!("AWS_SECRET_KEY"),
+  region: "us-east-1"
+
+config :ex_aws, :s3,
+  scheme: "https://",
+  region: "us-east-1"
