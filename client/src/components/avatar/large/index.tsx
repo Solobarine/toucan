@@ -11,13 +11,36 @@ const LargeAvatar = ({
   last_name: string;
   avatar: string;
   type?: string;
-  size?: "lg" | "xl";
+  size?: "lg" | "xl" | "3xl";
 }) => {
+  const returnAvatarSize = () => {
+    switch (size) {
+      case "lg":
+        return "w-12 h-12";
+      case "xl":
+        return "w-16 h-16";
+      case "3xl":
+        return "w-28 h-28";
+      default:
+        return "w-12 h-12";
+    }
+  };
+
+  const returnAvatarTextSize = () => {
+    switch (size) {
+      case "lg":
+        return "text-lg";
+      case "xl":
+        return "text-xl";
+      case "3xl":
+        return "text-2xl";
+      default:
+        return "text-lg";
+    }
+  };
   return (
     <div
-      className={`${
-        size == "xl" ? "w-16 h-16" : "w-12 h-12"
-      } rounded-full bg-gradient-to-r ${
+      className={`${returnAvatarSize()} rounded-full bg-gradient-to-r ${
         type == "post"
           ? "from-blue-500 to-purple-600"
           : "from-green-500 to-teal-600"
@@ -27,14 +50,12 @@ const LargeAvatar = ({
         <img
           src={avatar}
           alt={capitalizeText(first_name) + " " + capitalizeText(last_name)}
-          className="w-full h-full rounded-full object-cover"
+          className={`${returnAvatarSize()} rounded-full object-fill`}
         />
       ) : (
         first_name && (
           <span
-            className={`text-white font-semibold ${
-              size == "xl" ? "text-4xl" : "text-lg"
-            }`}
+            className={`text-white font-semibold ${returnAvatarTextSize()}`}
           >
             {first_name.charAt(0).toUpperCase()}
           </span>

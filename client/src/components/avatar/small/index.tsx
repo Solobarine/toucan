@@ -27,7 +27,7 @@ const SmallAvatar = ({
         <img
           src={avatar}
           alt={capitalizeText(first_name) + " " + capitalizeText(last_name)}
-          className="w-full h-full rounded-full object-cover"
+          className={`${size == "xs" ? "w-8 h-8" : "w-10 h-10"} rounded-full object-cover`}
         />
       ) : (
         first_name && (
