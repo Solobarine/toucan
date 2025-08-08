@@ -41,6 +41,7 @@ import { getUserMetrics } from "../../features/thunks/user";
 import ProfileLoading from "../../components/profile/loading";
 import ApiErrorPage from "../../components/apiError";
 import SmallAvatar from "../../components/avatar/small";
+import LargeAvatar from "../../components/avatar/large";
 
 export default function Profile() {
   const { id } = useParams();
@@ -121,13 +122,22 @@ export default function Profile() {
           {/* Profile Picture */}
           <div className="absolute -bottom-16 left-6">
             <div className="relative">
-              <div className="w-32 h-32 rounded-full bg-white dark:bg-neutral-800 p-1 shadow-lg">
-                <div className="w-full h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                  <span className="text-white font-bold text-4xl">
-                    {capitalizeText(profile.data?.first_name[0]) +
-                      capitalizeText(profile.data?.last_name[0])}
-                  </span>
-                </div>
+              <div className="w-32 h-32 rounded-full bg-white dark:bg-neutral-800 shadow-lg grid place-content-center">
+                {profile.data?.avatar ? (
+                  <LargeAvatar
+                    avatar={profile.data?.avatar}
+                    first_name={profile.data?.first_name}
+                    last_name={profile.data?.last_name}
+                    size="3xl"
+                  />
+                ) : (
+                  <div className="w-full h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                    <span className="text-white font-bold text-4xl">
+                      {capitalizeText(profile.data?.first_name[0]) +
+                        capitalizeText(profile.data?.last_name[0])}
+                    </span>
+                  </div>
+                )}
               </div>
               <button className="absolute bottom-2 right-2 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg transition-colors">
                 <Camera className="w-4 h-4" />

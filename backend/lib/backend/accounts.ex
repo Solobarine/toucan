@@ -135,6 +135,12 @@ defmodule Backend.Accounts do
     |> Repo.update()
   end
 
+  def update_user_avatar(%User{} = user, attrs) do
+    user
+    |> User.update_avatar_changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a user.
 

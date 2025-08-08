@@ -14,7 +14,7 @@ defmodule BackendWeb.UserController do
 
     avatar = params["avatar"]
 
-    case Accounts.update_user(current_user, %{"avatar" => avatar}) do
+    case Accounts.update_user_avatar(current_user, %{"avatar" => avatar}) do
       {:ok, user} ->
         json(conn, %{avatar: Avatar.url({user.avatar, user})})
 
@@ -34,7 +34,7 @@ defmodule BackendWeb.UserController do
 
     user = Accounts.get_full_user_details(id, current_user.id)
 
-    json(conn, %{user: user})
+    render(conn, :show_full_data, user: user)
   end
 
   def update_profile(conn, %{"user" => user_params}) do
