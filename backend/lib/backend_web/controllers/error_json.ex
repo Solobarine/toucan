@@ -6,12 +6,12 @@ defmodule BackendWeb.ErrorJSON do
   """
 
   # If you want to customize a particular status code,
-  # you may add your own clauses, such as:
-  #
-  # def render("500.json", _assigns) do
-  #   %{errors: %{detail: "Internal Server Error"}}
-  # end
-  #
+  # you may add your own clauses, such as: 
+
+  def render("400.json", _assigns) do
+    %{errors: %{detail: "Bad Reqeust"}}
+  end
+
   def render("401.json", _assigns) do
     %{errors: %{detail: "Unauthorized Request"}}
   end
@@ -20,8 +20,16 @@ defmodule BackendWeb.ErrorJSON do
     %{errors: %{detail: "Forbidden Request"}}
   end
 
+  def render("404.json", _assigns) do
+    %{errors: %{detail: "Resource not Found"}}
+  end
+
   def render("422.json", _assigns) do
     %{errors: %{detail: "Invalid Params"}}
+  end
+
+  def render("500.json", _assigns) do
+    %{errors: %{detail: "Internal Server Error"}}
   end
 
   # By default, Phoenix returns the status message from

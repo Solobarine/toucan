@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Ellipsis, Heart, MessageCircle, Share, Repeat2 } from "lucide-react";
@@ -12,7 +13,7 @@ import {
 import { likeContent, unlikeContent } from "../../../features/thunks/likes";
 import SmallAvatar from "../../avatar/small";
 import RepostOptions from "../repostOptions";
-import { useState } from "react";
+import MediaDisplay from "../mediaDisplay";
 
 const RepostCard = ({ repost }: { repost: Repost }) => {
   const navigate = useNavigate();
@@ -31,8 +32,8 @@ const RepostCard = ({ repost }: { repost: Repost }) => {
           decrementLikeCount({
             post_id: repost.original_post.id as number,
             context: "posts",
-          })
-        )
+          }),
+        ),
       );
     } else {
       const data = {
@@ -44,8 +45,8 @@ const RepostCard = ({ repost }: { repost: Repost }) => {
           incrementLikeCount({
             post_id: repost.original_post.id as number,
             context: "posts",
-          })
-        )
+          }),
+        ),
       );
     }
   };
@@ -140,6 +141,7 @@ const RepostCard = ({ repost }: { repost: Repost }) => {
                 {repost.original_post.body}
               </p>
             </div>
+            <MediaDisplay media={repost.original_post.media} />
           </div>
 
           {/* Engagement Stats */}

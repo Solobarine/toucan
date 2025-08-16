@@ -4,6 +4,7 @@ defmodule Backend.Posts do
   """
 
   import Ecto.Query, warn: false
+  # alias Backend.Post.Media
   alias Backend.UserBlocks
   alias Backend.Comments.Comment
   alias Backend.Likes.Like
@@ -25,6 +26,7 @@ defmodule Backend.Posts do
     base_posts =
       from p in Post,
         join: u in assoc(p, :user),
+        left_join: m in assoc(p, :media),
         left_join: l in Like,
         on: l.content_id == p.id and l.content_type == "post",
         left_join: c in Comment,
@@ -46,6 +48,14 @@ defmodule Backend.Posts do
           inserted_at: p.inserted_at,
           user: u,
           user_id: u.id,
+          media:
+            fragment(
+              "COALESCE(json_agg(DISTINCT jsonb_build_object('id', ?, 'file', ?, 'inserted_at', ?)) FILTER (WHERE ? IS NOT NULL), '[]')",
+              m.id,
+              m.file,
+              m.inserted_at,
+              m.id
+            ),
           # posts have no “original”
           original_post: nil,
           likes_count: count(l.id, :distinct),
@@ -59,7 +69,7 @@ defmodule Backend.Posts do
         join: reposter in assoc(r, :user),
         join: p in assoc(r, :original_post),
         join: post_author in assoc(p, :user),
-
+        left_join: m in assoc(p, :media),
         # counts & “is‑liked” are on the **repost** itself
         left_join: l in Like,
         on: l.content_id == r.id and l.content_type == "repost",
@@ -82,7 +92,16 @@ defmodule Backend.Posts do
           user: reposter,
           user_id: reposter.id,
           # nest original post + author
-          original_post: %{p | user: post_author},
+          original_post: %{
+            p
+            | user: post_author,
+              media:
+                fragment(
+                  "COALESCE(json_agg(DISTINCT ?) FILTER (WHERE ? IS NOT NULL), '[]')",
+                  m,
+                  m.id
+                )
+          },
           likes_count: 0,
           comments_count: 0,
           # usually we don’t count reposts of reposts
@@ -150,7 +169,7 @@ defmodule Backend.Posts do
       from b in base,
         order_by: [desc: b.inserted_at]
 
-    Repo.all(query)
+    Repo.all(query) |> Repo.preload(:media)
   end
 
   @doc """
@@ -182,13 +201,11 @@ defmodule Backend.Posts do
 
   """
   def create_post(attrs \\ %{}) do
-    result =
-      %Post{}
-      |> Post.changeset(attrs)
-      |> Repo.insert()
-
-    case result do
-      {:ok, post} -> {:ok, Repo.preload(post, [:user])}
+    %Post{}
+    |> Post.changeset(attrs)
+    |> Repo.insert()
+    |> case do
+      {:ok, post} -> {:ok, Repo.preload(post, [:user, :media])}
       {:error, changeset} -> {:error, changeset}
     end
   end

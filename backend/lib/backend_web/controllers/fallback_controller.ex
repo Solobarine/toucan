@@ -25,5 +25,19 @@ defmodule BackendWeb.FallbackController do
     conn
     |> put_status(:not_found)
     |> put_view(json: BackendWeb.ErrorJSON)
+    |> render(:"404")
+  end
+
+  def call(conn, {:error, :forbidden}) do
+    conn
+    |> put_status(:forbidden)
+    |> put_view(json: BackendWeb.ErrorJSON)
+    |> render(:"403")
+  end
+
+  def call(conn, {:error, :bad_request}) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(json: BackendWeb.ErrorJSON)
   end
 end

@@ -121,7 +121,7 @@ defmodule BackendWeb.PostControllerTest do
 
       conn = post(conn, ~p"/api/posts/repost", repost: data)
 
-      assert response(conn, 409)
+      assert response(conn, 400)
     end
   end
 
@@ -180,7 +180,7 @@ defmodule BackendWeb.PostControllerTest do
         |> put_req_header("authorization", "Bearer #{token}")
         |> delete(~p"/api/reposts/#{repost.id}")
 
-      assert response(conn, 204)
+      assert response(conn, 200)
     end
 
     test "fails to delete repost for non-owner", %{

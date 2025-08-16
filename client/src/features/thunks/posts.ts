@@ -4,6 +4,7 @@ import {
   deleteRequest,
   getRequest,
   patchRequest,
+  postFormRequest,
   postRequest,
 } from "../../utils/api";
 import { Post, Repost } from "../../types/post";
@@ -13,15 +14,15 @@ export const getPostsFeed = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const url = `${API_URL}/api/posts`;
     return getRequest(url, { rejectWithValue });
-  }
+  },
 );
 
 export const createPost = createAsyncThunk(
   "POSTS/CREATE",
-  async (data: { post: Pick<Post, "title" | "body"> }, { rejectWithValue }) => {
+  async (data: FormData, { rejectWithValue }) => {
     const url = `${API_URL}/api/posts`;
-    return postRequest(url, data, { rejectWithValue });
-  }
+    return postFormRequest(url, data, { rejectWithValue });
+  },
 );
 
 export const getPost = createAsyncThunk(
@@ -29,19 +30,19 @@ export const getPost = createAsyncThunk(
   async (id: number | string, { rejectWithValue }) => {
     const url = `${API_URL}/api/posts/${id}`;
     return getRequest(url, { rejectWithValue });
-  }
+  },
 );
 
 export const updatePost = createAsyncThunk(
   "POST/UPDATE_POST",
   async (
     { id, data }: { id: number; data: Pick<Post, "id" | "title" | "body"> },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     console.log(data);
     const url = `${API_URL}/api/posts/${id}`;
     return patchRequest(url, { post: data }, { rejectWithValue });
-  }
+  },
 );
 
 export const deletePost = createAsyncThunk(
@@ -49,7 +50,7 @@ export const deletePost = createAsyncThunk(
   async (id: string | number, { rejectWithValue }) => {
     const url = `${API_URL}/api/posts/${id}`;
     return deleteRequest(url, { rejectWithValue });
-  }
+  },
 );
 
 export const getUserPosts = createAsyncThunk(
@@ -59,7 +60,7 @@ export const getUserPosts = createAsyncThunk(
       ? `${API_URL}/api/user-posts?user_id=${id}`
       : `${API_URL}/api/user-posts`;
     return getRequest(url, { rejectWithValue });
-  }
+  },
 );
 
 export const getRepost = createAsyncThunk(
@@ -67,29 +68,29 @@ export const getRepost = createAsyncThunk(
   async (id: string | number, { rejectWithValue }) => {
     const url = `${API_URL}/api/reposts/${id}`;
     return getRequest(url, { rejectWithValue });
-  }
+  },
 );
 
 export const repostPost = createAsyncThunk(
   "POSTS/REPOST",
   async (
     data: Pick<Repost, "original_post_id" | "body">,
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     const url = `${API_URL}/api/posts/repost`;
     return postRequest(url, { repost: data }, { rejectWithValue });
-  }
+  },
 );
 
 export const updateRepost = createAsyncThunk(
   "POST/UPDATE_REPOST",
   async (
     { id, data }: { id: string | number; data: Pick<Repost, "body"> },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     const url = `${API_URL}/api/reposts/${id}`;
     return patchRequest(url, { repost: data }, { rejectWithValue });
-  }
+  },
 );
 
 export const deleteRepost = createAsyncThunk(
@@ -97,5 +98,5 @@ export const deleteRepost = createAsyncThunk(
   async (id: string | number, { rejectWithValue }) => {
     const url = `${API_URL}/api/reposts/${id}`;
     return deleteRequest(url, { rejectWithValue });
-  }
+  },
 );

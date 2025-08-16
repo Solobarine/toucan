@@ -1,14 +1,26 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Menu, X, Sparkles, Users, Zap, Handshake, EyeOff } from "lucide-react";
+import {
+  Menu,
+  X,
+  Sparkles,
+  Users,
+  Zap,
+  Handshake,
+  EyeOff,
+  Sun,
+  Moon,
+} from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../features/store";
-import { toggleMenu } from "../../features/slices/settings";
+import { toggleMenu, toggleTheme } from "../../features/slices/settings";
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const { isMenuOpen } = useSelector((state: RootState) => state.settings);
+  const { isMenuOpen, isDarkTheme } = useSelector(
+    (state: RootState) => state.settings,
+  );
 
   const navLinks = [
     {
@@ -92,6 +104,12 @@ const Header = () => {
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
               </NavLink>
             ))}
+            <button
+              className="text-xs w-fit px-2 py-1 flex items-center gap-2"
+              onClick={() => dispatch(toggleTheme())}
+            >
+              {isDarkTheme ? <Sun type="solid" /> : <Moon />}
+            </button>
           </nav>
 
           {/* Desktop Actions */}
@@ -183,6 +201,42 @@ const Header = () => {
                     </NavLink>
                   </motion.div>
                 ))}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: (navLinks.length - 1) * 0.1 }}
+                >
+                  <div
+                    className="group flex items-center gap-4 p-4 rounded-xl transition-all duration-200 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                    onClick={() => {
+                      dispatch(toggleMenu());
+                      dispatch(toggleTheme());
+                    }}
+                  >
+                    <div
+                      className={`p-2 rounded-lg ${({
+                        isActive,
+                      }: {
+                        isActive: boolean;
+                      }) =>
+                        isActive
+                          ? "bg-white/20"
+                          : "bg-neutral-100 dark:bg-neutral-800 group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700"}`}
+                    >
+                      {isDarkTheme ? (
+                        <Sun className="w-5 h-5" />
+                      ) : (
+                        <Moon className="w-5 h-5" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium">Theme</p>
+                      <p className="text-sm opacity-75">
+                        Swith between light and dark
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
 
               {/* Mobile Action Buttons */}
