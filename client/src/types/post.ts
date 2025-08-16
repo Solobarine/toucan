@@ -6,6 +6,7 @@ export interface Post {
   item_type: "post";
   title: string | null;
   body: string;
+  media: string[]
   user_id: number;
   user: User;
   likes_count: number;

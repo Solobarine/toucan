@@ -7,14 +7,15 @@ defmodule BackendWeb.UserController do
 
   action_fallback BackendWeb.FallbackController
 
-  def update_avatar(conn, params) do
+  def update_avatar(conn, %{"avatar" => %Plug.Upload{} = avatar}) do
     current_user = Guardian.Plug.current_resource(conn)
 
-    IO.inspect(current_user.id, label: "Current User")
+    ext = Path.extname(avatar.filename)
+    unique_name = "#{Ecto.UUID.generate()}#{ext}"
 
-    avatar = params["avatar"]
+    renamed_avatar = %Plug.Upload{avatar | filename: unique_name}
 
-    case Accounts.update_user_avatar(current_user, %{"avatar" => avatar}) do
+    case Accounts.update_user_avatar(current_user, %{"avatar" => renamed_avatar}) do
       {:ok, user} ->
         json(conn, %{avatar: Avatar.url({user.avatar, user})})
 

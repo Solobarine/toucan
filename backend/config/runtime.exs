@@ -133,6 +133,10 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+else
+  config :waffle,
+    storage: Waffle.Storage.Local,
+    asset_host: "http://localhost:4000"
 end
 
 config :backend,
@@ -142,10 +146,10 @@ config :backend,
   google_client_id: System.fetch_env!("GOOGLE_CLIENT_ID"),
   google_client_secret: System.fetch_env!("GOOGLE_CLIENT_SECRET")
 
-config :waffle,
-  storage: Waffle.Storage.S3,
-  asset_host: "https://test-toucan-assets.s3.us-east-1.amazonaws.com",
-  bucket: "test-toucan-assets"
+# config :waffle,
+# storage: Waffle.Storage.S3,
+# asset_host: "https://test-toucan-assets.s3.us-east-1.amazonaws.com",
+# bucket: "test-toucan-assets"
 
 config :ex_aws,
   json_codec: Jason,

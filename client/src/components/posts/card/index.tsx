@@ -13,6 +13,7 @@ import { likeContent, unlikeContent } from "../../../features/thunks/likes";
 import CreateRepostModal from "../create/repost";
 import LargeAvatar from "../../avatar/large";
 import Options from "../options";
+import MediaDisplay from "../mediaDisplay";
 
 const Card = ({ post }: { post: Post }) => {
   const navigate = useNavigate();
@@ -28,15 +29,15 @@ const Card = ({ post }: { post: Post }) => {
     if (post.is_liked_by_user) {
       dispatch(unlikeContent(post.id as number)).finally(() =>
         dispatch(
-          decrementLikeCount({ post_id: post.id as number, context: "posts" })
-        )
+          decrementLikeCount({ post_id: post.id as number, context: "posts" }),
+        ),
       );
     } else {
       const data = { content_id: post.id as number, content_type: "post" };
       dispatch(likeContent(data)).finally(() =>
         dispatch(
-          incrementLikeCount({ post_id: post.id as number, context: "posts" })
-        )
+          incrementLikeCount({ post_id: post.id as number, context: "posts" }),
+        ),
       );
     }
   };
@@ -77,15 +78,7 @@ const Card = ({ post }: { post: Post }) => {
                 {post.body}
               </p>
             </div>
-            {post.body && (
-              <div className="mb-4 rounded-lg overflow-hidden">
-                <img
-                  src="/placeholder.svg"
-                  alt="Post content"
-                  className="w-full h-auto object-cover"
-                />
-              </div>
-            )}
+            {post.media.length > 0 && <MediaDisplay media={post.media} />}
           </div>
           <div className="flex items-center justify-between text-sm text-neutral-500 dark:text-neutral-400 mb-4">
             <div className="flex items-center gap-2">

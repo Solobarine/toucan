@@ -21,8 +21,22 @@ defmodule BackendWeb.PostController do
 
   def create(conn, %{"post" => post_params}) do
     current_user = Guardian.Plug.current_resource(conn)
+    uploads = post_params["media"] || []
 
-    merged_params = Map.merge(post_params, %{"user_id" => current_user.id})
+    # Rename each uploaded file to prevent collisions
+    media_params =
+      Enum.map(uploads, fn %Plug.Upload{} = upload ->
+        ext = Path.extname(upload.filename)
+        unique_name = "#{Ecto.UUID.generate()}#{ext}"
+
+        %{"file" => %Plug.Upload{upload | filename: unique_name}}
+      end)
+
+    merged_params =
+      Map.merge(post_params, %{
+        "user_id" => current_user.id,
+        "media" => media_params
+      })
 
     with {:ok, %Post{} = post} <- Posts.create_post(merged_params) do
       object = %{id: post.id, body: post.body, post_owner: post.user_id}
@@ -50,9 +64,9 @@ defmodule BackendWeb.PostController do
 
     post = Posts.get_post!(id)
 
-    PostsPolicy.show_post(conn, post, current_user)
-
-    render(conn, :show, post: post, current_user_id: current_user.id || nil)
+    with :ok <- PostsPolicy.show_post(post, current_user) do
+      render(conn, :show, post: post, current_user_id: current_user.id || nil)
+    end
   end
 
   def update(conn, %{"id" => id, "post" => post_params}) do
@@ -60,9 +74,8 @@ defmodule BackendWeb.PostController do
 
     post = Posts.get_post!(id)
 
-    PostsPolicy.update(conn, post)
-
-    with {:ok, %Post{} = post} <- Posts.update_post(post, post_params) do
+    with :ok <- PostsPolicy.update(post, current_user),
+         {:ok, %Post{} = post} <- Posts.update_post(post, post_params) do
       render(conn, :show, post: post, current_user_id: current_user.id || nil)
     end
   end
@@ -76,11 +89,11 @@ defmodule BackendWeb.PostController do
   end
 
   def delete(conn, %{"id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
     post = Posts.get_post!(id)
 
-    PostsPolicy.delete(conn, post)
-
-    with {:ok, %Post{}} <- Posts.delete_post(post) do
+    with :ok <- PostsPolicy.delete(post, current_user),
+         {:ok, %Post{}} <- Posts.delete_post(post) do
       send_resp(conn, :no_content, "")
     end
   end
@@ -89,9 +102,10 @@ defmodule BackendWeb.PostController do
     current_user = Guardian.Plug.current_resource(conn)
 
     repost = Posts.get_repost!(id)
-    PostsPolicy.show_repost(conn, repost, current_user)
 
-    json(conn, %{repost: PostJSON.repost_data(repost)})
+    with :ok <- PostsPolicy.show_repost(repost, current_user) do
+      json(conn, %{repost: PostJSON.repost_data(repost)})
+    end
   end
 
   def create_repost(conn, %{"repost" => repost_params}) do
@@ -101,9 +115,8 @@ defmodule BackendWeb.PostController do
 
     post = Posts.get_post!(repost_params["original_post_id"])
 
-    PostsPolicy.repost(conn, post)
-
-    with {:ok, %Repost{} = repost} <- Posts.create_repost(params) do
+    with :ok <- PostsPolicy.repost(post, current_user),
+         {:ok, %Repost{} = repost} <- Posts.create_repost(params) do
       object = %{id: repost.id, body: repost.body, repost_owner: repost.user_id}
 
       Notifications.notify_users(current_user.id, repost.user_id,
@@ -115,6 +128,11 @@ defmodule BackendWeb.PostController do
       conn
       |> put_status(:created)
       |> json(%{message: "Repost created"})
+    else
+      _ ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: "Invalid repost request"})
     end
   end
 
@@ -123,24 +141,30 @@ defmodule BackendWeb.PostController do
 
     repost = Posts.get_repost!(id)
 
-    PostsPolicy.update_repost(conn, repost, current_user)
+    case PostsPolicy.update_repost(repost, current_user) do
+      :ok ->
+        {:ok, _updated_repost} = Posts.update_repost(repost, repost_params)
 
-    with {:ok, _updated_repost} <- Posts.update_repost(repost, repost_params) do
-      conn
-      |> put_status(:ok)
-      |> json(%{message: "Repost Updated"})
+        conn
+        |> put_status(:ok)
+        |> json(%{message: "Repost Updated"})
+
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 
   def delete_repost(conn, %{"id" => id}) do
     current_user = Guardian.Plug.current_resource(conn)
-
     repost = Posts.get_repost!(id)
 
-    PostsPolicy.delete_repost(conn, repost, current_user)
+    case PostsPolicy.delete_repost(repost, current_user) do
+      :ok ->
+        {:ok, _} = Posts.delete_repost(repost)
+        json(conn, %{message: "Repost deleted"})
 
-    Posts.delete_repost(repost)
-
-    send_resp(conn, :no_content, "")
+      {:error, reason} ->
+        {:error, reason}
+    end
   end
 end

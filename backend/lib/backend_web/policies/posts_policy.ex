@@ -1,58 +1,51 @@
 defmodule BackendWeb.Policies.PostsPolicy do
   alias Backend.UserBlocks
-  alias Backend.Accounts.User
-  alias BackendWeb.ErrorResponse
-  alias Backend.Guardian
 
-  def show_post(conn, post, user) do
+  def show_post(post, user) do
     if UserBlocks.is_banned(post.user_id, user.id) do
-      raise ErrorResponse.NotFound
+      {:error, :forbidden}
     else
-      conn
+      :ok
     end
   end
 
-  def update(conn, post) do
-    current_user = Guardian.Plug.current_resource(conn)
-
-    if current_user.id == post.user_id do
-      conn
+  def update(post, user) do
+    if user.id == post.user_id do
+      :ok
     else
-      raise ErrorResponse.Forbidden
+      {:error, :forbidden}
     end
   end
 
-  def delete(conn, post) do
-    update(conn, post)
+  def delete(post, user) do
+    update(post, user)
   end
 
-  def show_repost(conn, repost, user) do
+  def show_repost(repost, user) do
     if UserBlocks.is_banned(repost.original_post.user_id, user.id) do
-      raise ErrorResponse.NotFound
+      {:error, :forbidden}
     else
-      conn
+      :ok
     end
   end
 
-  def repost(conn, post) do
-    current_user = Guardian.Plug.current_resource(conn)
-
-    if current_user.id == post.user_id do
-      raise ErrorResponse.Conflict
+  def repost(post, user) do
+    if user.id == post.user_id do
+      {:error, :bad_request}
     else
-      conn
+      :ok
     end
   end
 
-  def update_repost(conn, repost, %User{} = user) do
+  def update_repost(repost, user) do
     if repost.user_id == user.id do
-      conn
+      :ok
     else
-      raise ErrorResponse.Forbidden
+      {:error, :forbidden}
     end
   end
 
-  def delete_repost(conn, repost, %User{} = user) do
-    update_repost(conn, repost, user)
+  def delete_repost(repost, user) do
+    update_repost(repost, user)
   end
 end

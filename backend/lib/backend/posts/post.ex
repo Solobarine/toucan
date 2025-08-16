@@ -10,6 +10,7 @@ defmodule Backend.Posts.Post do
   alias Backend.Comments.Comment
   alias Backend.Posts.Repost
   alias Backend.Likes.Like
+  alias Backend.Post.Media
 
   schema "posts" do
     field :title, :string
@@ -19,13 +20,16 @@ defmodule Backend.Posts.Post do
 
     has_many :comments, Comment,
       foreign_key: :content_id,
-      where: [content_type: "post"]
+      where: [content_type: "post"],
+      on_delete: :delete_all
 
     has_many :likes, Like,
       foreign_key: :content_id,
-      where: [content_type: "post"]
+      where: [content_type: "post"],
+      on_delete: :delete_all
 
-    has_many :reposts, Repost, foreign_key: :original_post_id
+    has_many :reposts, Repost, foreign_key: :original_post_id, on_delete: :delete_all
+    has_many :media, Media, on_delete: :delete_all
 
     timestamps(type: :utc_datetime)
 
@@ -82,6 +86,7 @@ defmodule Backend.Posts.Post do
     post
     |> cast(attrs, [:title, :body, :user_id])
     |> validate_required([:body, :user_id])
+    |> cast_assoc(:media, with: &Media.changeset/2)
   end
 
   def update_changeset(post, attrs) do

@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const getRequest = async (
   url: string,
-  { rejectWithValue }: { rejectWithValue: any }
+  { rejectWithValue }: { rejectWithValue: any },
 ) => {
   const token = localStorage.getItem("auth_token");
 
@@ -32,7 +32,7 @@ export const getRequest = async (
 export const postRequest = async (
   url: string,
   data: any,
-  { rejectWithValue }: { rejectWithValue: any }
+  { rejectWithValue }: { rejectWithValue: any },
 ) => {
   const token = localStorage.getItem("auth_token");
   try {
@@ -58,10 +58,39 @@ export const postRequest = async (
   }
 };
 
+export const postFormRequest = async (
+  url: string,
+  data: any,
+  { rejectWithValue }: { rejectWithValue: any },
+) => {
+  const token = localStorage.getItem("auth_token");
+  try {
+    const response = await axios.postForm(url, data, {
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      return rejectWithValue({
+        ...error.response.data,
+        statusCode: error.status,
+      });
+    }
+    return rejectWithValue({
+      error: "Network Error. Check your connection and try again",
+      statusCode: 0,
+    });
+  }
+};
+
 export const putRequest = async (
   url: string,
   data: any,
-  { rejectWithValue }: { rejectWithValue: any }
+  { rejectWithValue }: { rejectWithValue: any },
 ) => {
   const token = localStorage.getItem("auth_token");
   try {
@@ -90,7 +119,7 @@ export const putRequest = async (
 export const patchRequest = async (
   url: string,
   data: any,
-  { rejectWithValue }: { rejectWithValue: any }
+  { rejectWithValue }: { rejectWithValue: any },
 ) => {
   const token = localStorage.getItem("auth_token");
   try {
@@ -118,7 +147,7 @@ export const patchRequest = async (
 
 export const deleteRequest = async (
   url: string,
-  { rejectWithValue }: { rejectWithValue: any }
+  { rejectWithValue }: { rejectWithValue: any },
 ) => {
   const token = localStorage.getItem("auth_token");
   try {

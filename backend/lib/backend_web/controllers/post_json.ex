@@ -1,4 +1,5 @@
 defmodule BackendWeb.PostJSON do
+  alias Backend.Media
   alias Backend.Posts.Repost
   alias BackendWeb.PostJSON
   alias BackendWeb.UserJSON
@@ -44,6 +45,7 @@ defmodule BackendWeb.PostJSON do
       inserted_at: post.inserted_at,
       user: UserJSON.show(%{user: post.user}).user,
       user_id: post.user.id,
+      media: Enum.map(post.media, fn m -> Media.url({m["file"], post}) end),
       likes_count: post.likes_count,
       comments_count: post.comments_count,
       reposts_count: post.reposts_count,
@@ -55,6 +57,8 @@ defmodule BackendWeb.PostJSON do
   end
 
   defp data(%{item_type: "repost"} = repost, user_id) do
+    IO.inspect(repost, label: "Repost")
+
     %{
       item_type: repost.item_type,
       id: repost.id,
@@ -68,11 +72,18 @@ defmodule BackendWeb.PostJSON do
       is_owner: repost.user.id == user_id,
       is_liked_by_user: repost.is_liked_by_user,
       original_post_id: repost.original_post.id,
-      original_post:
-        PostJSON.show(%{
-          post: repost.original_post,
-          current_user_id: user_id
-        }).post
+      original_post: %{
+        id: repost.id,
+        user: UserJSON.show(%{user: repost.original_post.user}).user,
+        title: repost.original_post.title,
+        body: repost.original_post.body,
+        media:
+          Enum.map(repost.original_post.media, fn m ->
+            Media.url({m["file"], repost.original_post})
+          end),
+        inserted_at: repost.original_post.inserted_at,
+        updated_at: repost.original_post.updated_at
+      }
     }
   end
 
