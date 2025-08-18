@@ -1,7 +1,6 @@
 defmodule BackendWeb.PostJSON do
   alias Backend.Media
   alias Backend.Posts.Repost
-  alias BackendWeb.PostJSON
   alias BackendWeb.UserJSON
   alias Backend.Posts.Post
   alias Backend.{Accounts, Comments, Likes, Posts}
@@ -57,8 +56,6 @@ defmodule BackendWeb.PostJSON do
   end
 
   defp data(%{item_type: "repost"} = repost, user_id) do
-    IO.inspect(repost, label: "Repost")
-
     %{
       item_type: repost.item_type,
       id: repost.id,

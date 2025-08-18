@@ -48,8 +48,6 @@ defmodule Backend.Media do
 
   # Override the storage directory:
   def storage_dir(_version, {file, scope}) do
-    IO.inspect(file, label: "Uploaded file")
-    IO.inspect(scope, label: "Scope")
     "uploads/post_media"
   end
 
